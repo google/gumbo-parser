@@ -1,0 +1,25 @@
+# Compilation artifacts
+*.o
+*.lo
+*.la
+
+# Editor swap files
+*.swp
+*.swo
+*.swn
+
+# Other build artifacts
+.deps
+.dirstamp
+.libs
+config.log
+config.status
+gumbo.pc
+libtool
+Makefile
+
+# Example binaries
+clean_text
+find_links
+get_title
+positions_of_class
