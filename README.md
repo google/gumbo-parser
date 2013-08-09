@@ -2,8 +2,41 @@ Gumbo - A pure-C HTML5 parser.
 ============
 
 Copyright 2010-2013 Google Inc.
-https://github.com/google/gumbo-parser
 Version 0.9.0
+Project page: https://github.com/google/gumbo-parser
+
+Gumbo is an implementation of the [HTML5 parsing
+algorithm](http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12)
+implemented as a pure C99 library with no outside dependencies.  It's designed
+to serve as a building block for other tools and libraries such as linters,
+validators, templating languages, and refactoring and analysis tools.
+
+Goals & features:
+
+* Fully conformant with the [HTML5 spec](http://www.whatwg.org/specs/web-apps/current-work/multipage/).
+* Robust and resilient to bad input.
+* Simple API that can be easily wrapped by other languages.
+* Support for source locations and pointers back to the original text.
+* Relatively lightweight, with no outside dependencies.
+* Passes all [html5lib-0.95 tests](https://github.com/html5lib/html5lib-tests). 
+* Tested on every page in Google's index.
+
+Non-goals:
+
+* Execution speed.  Gumbo gains some of this by virtue of being written in C,
+  but it is not an important consideration for the intended use-case, and was
+  not a major design factor.
+* C89 support.  Most major compilers support C99 by now; the major exception
+  (Microsoft Visual Studio) should be able to compile this in C++ mode with
+  relatively few changes.  (Bug reports welcome.)
+
+Wishlist (aka "We couldn't get these into the original release, but are hoping
+to add them soon):
+
+* Support for recent HTML5 spec changes to support the <template> tag.
+* Support for fragment parsing.
+* Full-featured error reporting.
+* Bindings in other languages.
 
 Installation
 ============
