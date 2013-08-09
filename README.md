@@ -1,5 +1,6 @@
 Gumbo - A pure-C HTML5 parser.
 ============
+
 Copyright 2010-2013 Google Inc.
 https://github.com/google/gumbo-parser
 Version 0.9.0
