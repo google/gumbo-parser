@@ -21,7 +21,7 @@ Gumbo comes with full pkg-config support, so you can use the pkg-config to print
 
 For example:
 
-    $ gcc my_program.c \`pkg-config --cflags --libs gumbo\`
+    $ gcc my_program.c `pkg-config --cflags --libs gumbo`
 
 See the pkg-config man page for more info.
 
@@ -41,13 +41,15 @@ Basic Usage
 
 Within your program, you need to include "gumbo.h" and then issue a call to gumbo_parse:
 
-    #include "gumbo.h"
+```C++
+#include "gumbo.h"
 
-    int main(int argc, char** argv) {
-      GumboOutput* output = gumbo_parse(argv[1]);
-      // Do stuff with output->root
-      gumbo_destroy_output(&kGumboDefaultOptions, output);
-    }
+int main(int argc, char** argv) {
+  GumboOutput* output = gumbo_parse(argv[1]);
+  // Do stuff with output->root
+  gumbo_destroy_output(&kGumboDefaultOptions, output);
+}
+```
 
 See the API documentation and sample programs for more details.
 
