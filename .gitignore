@@ -17,6 +17,8 @@ config.status
 gumbo.pc
 libtool
 Makefile
+Makefile.in
+autom4te.cache
 
 # Example binaries
 clean_text
