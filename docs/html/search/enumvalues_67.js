@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['gumbo_5finsertion_5fadoption_5fagency_5fcloned',['GUMBO_INSERTION_ADOPTION_AGENCY_CLONED',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74ba03d2650d8f17abefd9dd4b633b03e217',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fadoption_5fagency_5fmoved',['GUMBO_INSERTION_ADOPTION_AGENCY_MOVED',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74babbd528bcd8e702fc5bab604e6988ae51',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fby_5fparser',['GUMBO_INSERTION_BY_PARSER',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74babc5578ef89b8ddd8b992f239bd332408',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fconverted_5ffrom_5fend_5ftag',['GUMBO_INSERTION_CONVERTED_FROM_END_TAG',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74ba865b2f369584e25c67f4816c25b766ff',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5ffoster_5fparented',['GUMBO_INSERTION_FOSTER_PARENTED',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74ba9afa0bd01c4480d76a0ca80b668f338b',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5ffrom_5fimage',['GUMBO_INSERTION_FROM_IMAGE',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74bae3c62bd3ec86284783013a2e78affb5a',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5ffrom_5fisindex',['GUMBO_INSERTION_FROM_ISINDEX',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74baadeea09dc8e7c65af3d47e8e8fb535ac',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fimplicit_5fend_5ftag',['GUMBO_INSERTION_IMPLICIT_END_TAG',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74ba8935aa552a7b6cec029ad3f20a54e22b',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fimplied',['GUMBO_INSERTION_IMPLIED',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74bad755e610f243d4aa7531316e884f3a75',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5fnormal',['GUMBO_INSERTION_NORMAL',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74ba65032b83de057f59ef88c192bfc6257e',1,'gumbo.h']]],
+  ['gumbo_5finsertion_5freconstructed_5fformatting_5felement',['GUMBO_INSERTION_RECONSTRUCTED_FORMATTING_ELEMENT',['../gumbo_8h.html#a74ff2c74a4bf7777efb2b9a29315e74baa1509526292f41998349376b86eab730',1,'gumbo.h']]],
+  ['gumbo_5fnode_5fcdata',['GUMBO_NODE_CDATA',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0a1b113ed18638a82264020253f4ab3339',1,'gumbo.h']]],
+  ['gumbo_5fnode_5fcomment',['GUMBO_NODE_COMMENT',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0aa5dec1a464a7b15949928f4c09626a05',1,'gumbo.h']]],
+  ['gumbo_5fnode_5fdocument',['GUMBO_NODE_DOCUMENT',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0a34d99fd84894e81da94be99d7d169119',1,'gumbo.h']]],
+  ['gumbo_5fnode_5felement',['GUMBO_NODE_ELEMENT',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0ac8229cb0a1c50040cf33a37886367032',1,'gumbo.h']]],
+  ['gumbo_5fnode_5ftext',['GUMBO_NODE_TEXT',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0a34bb32963a5c7b496c332235694ec29d',1,'gumbo.h']]],
+  ['gumbo_5fnode_5fwhitespace',['GUMBO_NODE_WHITESPACE',['../gumbo_8h.html#a74e7c5d1cb8189fcfad8443ce4c44ee0a4076182d6a1eac3b650992ecf18b33a6',1,'gumbo.h']]]
+];
