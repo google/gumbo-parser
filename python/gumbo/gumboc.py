@@ -25,8 +25,11 @@ __author__ = 'jdtang@google.com (Jonathan Tang)'
 import contextlib
 import ctypes
 
-
-_dll = ctypes.cdll.LoadLibrary('libgumbo.so')
+try:
+  _dll = ctypes.cdll.LoadLibrary('libgumbo.so')
+except OSError:
+  # MacOS X
+  _dll = ctypes.cdll.LoadLibrary('libgumbo.dylib')
 
 # Some aliases for common types.
 _bitvector = ctypes.c_uint
