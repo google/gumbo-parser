@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign subdir-objects
-
 # Googletest magic.  Gumbo relies on Googletest for its unittests, and
 # Googletest (by design) does not provide a "make install" option.  Instead,
 # we'll assume you copy (or symlink) the Googletest distribution into a 'gtest'
@@ -29,7 +27,7 @@ clean-local:
 	fi
 
 lib_LTLIBRARIES = libgumbo.la
-libgumbo_la_CFLAGS = -std=c99 -Wall
+libgumbo_la_CFLAGS = -Wall
 libgumbo_la_LDFLAGS = -version-info 1:0:0 -no-undefined
 libgumbo_la_SOURCES = \
 				src/attribute.c \
@@ -78,19 +76,10 @@ gumbo_test_SOURCES = \
 gumbo_test_DEPENDENCIES = check-local libgumbo.la
 
 noinst_PROGRAMS = clean_text find_links get_title positions_of_class
-clean_text_LDADD = libgumbo.la
-clean_text_CPPFLAGS = -I"$(srcdir)/src"
+LDADD = libgumbo.la
+AM_CPPFLAGS = -I"$(srcdir)/src"
+
 clean_text_SOURCES = examples/clean_text.cc
-
-find_links_LDADD = libgumbo.la
-find_links_CPPFLAGS = -I"$(srcdir)/src"
 find_links_SOURCES = examples/find_links.cc
-
-get_title_LDADD = libgumbo.la
-get_title_CPPFLAGS = -I"$(srcdir)/src" -std=gnu99
 get_title_SOURCES = examples/get_title.c
-
-positions_of_class_LDADD = libgumbo.la
-positions_of_class_CPPFLAGS = -I"$(srcdir)/src"
 positions_of_class_SOURCES = examples/positions_of_class.cc
-
