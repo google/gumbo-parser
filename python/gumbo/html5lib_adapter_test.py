@@ -13,15 +13,83 @@
 # limitations under the License.
 #
 """Tests for the Gumbo => Html5lib adapter."""
+import codecs
+import collections
+import glob
 import os
+import re
 import StringIO
 import warnings
 
-from html5lib.tests import support
-from html5lib.tests import test_parser
+from html5lib import treebuilders
 
 import unittest
 import html5lib_adapter
+
+
+TREEBUILDER = treebuilders.getTreeBuilder('dom')
+TESTDATA_BASE_PATH = os.path.join(
+    os.path.split(__file__)[0], '..', '..')
+
+
+# Copied from html5lib.tests/test_parser.py
+def convertTreeDump(data):
+  return "\n".join(convertExpected(data, 3).split("\n")[1:])
+
+
+# Copied/adapted/simplified from html5lib.tests/support.py
+def html5lib_test_files():
+  return glob.glob(os.path.join(
+      TESTDATA_BASE_PATH, 'testdata', 'tree-construction', '*.dat'))
+
+
+class TestData(object):
+  def __init__(self, filename):
+    self.f = codecs.open(filename, encoding="utf8")
+
+  def __iter__(self):
+    data = collections.defaultdict(lambda: None)
+    key=None
+    for line in self.f:
+      heading = self.isSectionHeading(line)
+      if heading:
+        if data and heading == 'data':
+          #Remove trailing newline
+          data[key] = data[key][:-1]
+          yield self.normaliseOutput(data)
+          data = collections.defaultdict(lambda: None)
+        key = heading
+        data[key] = ''
+      elif key is not None:
+          data[key] += line
+    if data:
+      yield self.normaliseOutput(data)
+
+  def isSectionHeading(self, line):
+    """If the current heading is a test section heading return the heading,
+    otherwise return False"""
+    if line.startswith("#"):
+      return line[1:].strip()
+    else:
+      return False
+
+  def normaliseOutput(self, data):
+    # Remove trailing newlines
+    for key, value in data.iteritems():
+      if value.endswith("\n"):
+        data[key] = value[:-1]
+    return data
+
+def convertExpected(data, stripChars):
+  """convert the output of str(document) to the format used in the testcases"""
+  data = data.split("\n")
+  rv = []
+  for line in data:
+    if line.startswith("|"):
+      rv.append(line[stripChars:])
+    else:
+      rv.append(line)
+  return "\n".join(rv)
 
 
 class Html5libAdapterTest(unittest.TestCase):
@@ -32,9 +100,12 @@ class Html5libAdapterTest(unittest.TestCase):
   method to this class for each one.  That method acts like
   test_parser.TestCase.runParserTest, running a parse, serializing the tree, and
   comparing it to the expected output.
+
+  The vague name is so nosetests doesn't try to run it as a test.
   """
-  def parser_test(self, inner_html, input, expected, errors, tree_cls):
-    p = html5lib_adapter.HTMLParser(tree=tree_cls(namespaceHTMLElements=True))
+  def impl(self, inner_html, input, expected, errors):
+    p = html5lib_adapter.HTMLParser(
+            tree=TREEBUILDER(namespaceHTMLElements=True))
     if not inner_html:
       # TODO(jdtang): Need to implement fragment parsing.
       document = p.parse(StringIO.StringIO(input))
@@ -44,10 +115,10 @@ class Html5libAdapterTest(unittest.TestCase):
     with warnings.catch_warnings():
       # Etree serializer in html5lib uses a deprecated getchildren() API.
       warnings.filterwarnings('ignore', category=DeprecationWarning)
-      output = test_parser.convertTreeDump(p.tree.testSerializer(document))
+      output = convertTreeDump(p.tree.testSerializer(document))
 
-    expected = test_parser.namespaceExpected(
-        r'\1<html \2>', test_parser.convertExpected(expected))
+    expected = re.compile(r'^(\s*)<(\S+)>', re.M).sub(
+        r'\1<html \2>', convertExpected(expected, 2))
 
     error_msg = '\n'.join(['\n\nInput:', input, '\nExpected:', expected,
                            '\nReceived:', output])
@@ -55,60 +126,29 @@ class Html5libAdapterTest(unittest.TestCase):
                       error_msg.encode('ascii', 'xmlcharrefreplace') + '\n')
     # TODO(jdtang): Check error messages, when there's full error support.
 
-  def testHtmlStructure(self):
-    p = html5lib_adapter.HTMLParser(
-        tree=test_parser.treeTypes['simpletree'](namespaceHTMLElements=True))
-    document = p.parse(StringIO.StringIO('<!DOCTYPE>Hello'))
-    self.assertEquals(1, document.type)
-    self.assertEquals(2, len(document.childNodes))
-
-    doctype = document.childNodes[0]
-    self.assertEquals(3, doctype.type)
-
-    root = document.childNodes[1]
-    self.assertEquals(5, root.type)
-    self.assertEquals('html', root.name)
-    self.assertEquals(2, len(root.childNodes))
-
-    head = root.childNodes[0]
-    self.assertEquals('head', head.name)
-    self.assertEquals(0, len(head.attributes))
-    self.assertEquals(0, len(head.childNodes))
-
-    body = root.childNodes[1]
-    self.assertEquals('body', body.name)
-    self.assertEquals(0, len(body.attributes))
-    self.assertEquals(1, len(body.childNodes))
-
-    hello = body.childNodes[0]
-    self.assertEquals(4, hello.type)
-    self.assertEquals('Hello', hello.value)
-
 
 def BuildTestCases(cls):
-  for filename in support.html5lib_test_files('tree-construction'):
+  for filename in html5lib_test_files():
     test_name = os.path.basename(filename).replace('.dat', '')
-    for i, test in enumerate(support.TestData(filename, 'data')):
-      for tree_name, tree_cls in test_parser.treeTypes.items():
-        # html5lib parses <noscript> tags as if the scripting-enabled flag is
-        # set, while we parse as if the scripting-disabled flag is set (since we
-        # don't really support scripting and the resulting parse tree is often
-        # more useful for toolsmiths).  That means our output will differ by
-        # design from html5lib's, so we disable any of their tests that involve
-        # <noscript>
-        if '<noscript>' in test['data']:
-          continue
+    for i, test in enumerate(TestData(filename)):
+      # html5lib parses <noscript> tags as if the scripting-enabled flag is
+      # set, while we parse as if the scripting-disabled flag is set (since we
+      # don't really support scripting and the resulting parse tree is often
+      # more useful for toolsmiths).  That means our output will differ by
+      # design from html5lib's, so we disable any of their tests that involve
+      # <noscript>
+      if '<noscript>' in test['data']:
+        continue
 
-        def test_func(
-            self,
-            inner_html=test['document-fragment'],
-            input=test['data'],
-            expected=test['document'],
-            errors=test.get('errors', '').split('\n'),
-            tree_cls=tree_cls):
-          return self.parser_test(inner_html, input, expected, errors, tree_cls)
-        test_func.__name__ = 'test_%s_%d_%s' % (test_name, i + 1, tree_name)
-        setattr(cls, test_func.__name__, test_func)
+      def test_func(
+          self,
+          inner_html=test['document-fragment'],
+          input=test['data'],
+          expected=test['document'],
+          errors=test.get('errors', '').split('\n')):
+        return self.impl(inner_html, input, expected, errors)
+      test_func.__name__ = 'test_%s_%d' % (test_name, i + 1)
+      setattr(cls, test_func.__name__, test_func)
 
 
 if __name__ == '__main__':

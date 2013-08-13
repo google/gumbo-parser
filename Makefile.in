@@ -42,7 +42,7 @@ TESTS = gumbo_test$(EXEEXT)
 noinst_PROGRAMS = clean_text$(EXEEXT) find_links$(EXEEXT) \
 	get_title$(EXEEXT) positions_of_class$(EXEEXT)
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(include_HEADERS) \
+DIST_COMMON = $(am__configure_deps) $(include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/gumbo.pc.in $(top_srcdir)/configure COPYING THANKS \
 	config.guess config.sub depcomp install-sh ltmain.sh missing

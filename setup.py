@@ -2,7 +2,7 @@
 from setuptools import setup
 
 def readme():
-  with open('README') as f:
+  with open('README.md') as f:
     return f.read()
 
 setup(name='gumbo',
@@ -16,6 +16,4 @@ setup(name='gumbo',
       license='Apache 2.0',
       packages=['gumbo'],
       package_dir={'': 'python'},
-      test_suite='nose.collector',
-      tests_require=['nose'],
       zip_safe=True)
