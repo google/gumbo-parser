@@ -29,7 +29,7 @@ Non-goals:
 Wishlist (aka "We couldn't get these into the original release, but are hoping
 to add them soon):
 
-* Support for recent HTML5 spec changes to support the <template> tag.
+* Support for recent HTML5 spec changes to support the template tag.
 * Support for fragment parsing.
 * Full-featured error reporting.
 * Bindings in other languages.
