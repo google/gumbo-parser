@@ -896,11 +896,10 @@ static void clear_stack_to_table_context(GumboParser* parser) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#clear-the-stack-back-to-a-table-body-context
 void clear_stack_to_table_body_context(GumboParser* parser) {
-  GumboNode* node = get_current_node(parser);
   while (!node_tag_in(get_current_node(parser), GUMBO_TAG_HTML,
                       GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD,
                       GUMBO_TAG_LAST)) {
-    node = pop_current_node(parser);
+    (void) pop_current_node(parser);
   }
 }
 
@@ -1546,6 +1545,9 @@ static bool is_special_node(const GumboNode* node) {
     case GUMBO_NAMESPACE_SVG:
       return node_tag_in(node,
           GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_LAST);
+    default:
+      assert(false);
+      return false;
   }
 }
 
