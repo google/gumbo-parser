@@ -92,6 +92,6 @@ We make no such guarantees about the ABI, and it's very likely that subsequent v
 
 Python usage
 ============
-To install the python bindings, make sure that the C library is installed first, and then "sudo python setup.py install" from the root of the distro.  This install a 'gumbo' module; 'pydoc gumbo' should tell you about them.
+To install the python bindings, make sure that the C library is installed first, and then "sudo python setup.py install" from the root of the distro.  This installs a 'gumbo' module; 'pydoc gumbo' should tell you about it.
 
 Recommended best-practice for Python usage is to use one of the adapters to an existing API (personally, I prefer BeautifulSoup) and write your program in terms of those.  The raw CTypes bindings should be considered building blocks for higher-level libraries and rarely referenced directly.
