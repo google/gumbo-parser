@@ -31,7 +31,7 @@ static std::string find_line(
   size_t attr_index = attr.original_value.data - original_text.data();
   size_t begin = original_text.rfind("\n", attr_index) + 1;
   size_t end = original_text.find("\n", attr_index) - 1;
-  if (end < 0) {
+  if (end == std::string::npos) {
     end = (size_t) original_text.length() - 1;
   }
   end = std::min(end, attr_index + 40);
