@@ -12,14 +12,23 @@
 .deps
 .dirstamp
 .libs
-compile
-config.log
-config.status
-gumbo.pc
-libtool
 Makefile
 Makefile.in
+aclocal.m4
 autom4te.cache
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+gumbo.pc
+install-sh
+libtool
+ltmain.sh
+m4/
+missing
 test-driver
 
 # `make dist` artifacts

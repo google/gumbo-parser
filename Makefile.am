@@ -5,6 +5,8 @@
 # it automatically.  This approach (and these rules) are copied from the
 # protobuf distribution.
 
+ACLOCAL_AMFLAGS = -I m4
+
 # Build gtest before we build protobuf tests.  We don't add gtest to SUBDIRS
 # because then "make check" would also build and run all of gtest's own tests,
 # which takes a lot of time and is generally not useful to us.  Also, we don't

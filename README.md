@@ -42,6 +42,7 @@ Installation
 To build and install the library, issue the standard UNIX incantation from
 the root of the distribution:
 
+    $ ./autogen.sh
     $ ./configure
     $ make
     $ sudo make install
