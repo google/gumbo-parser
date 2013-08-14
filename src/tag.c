@@ -210,7 +210,7 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
   }
 }
 
-const GumboTag gumbo_tag_enum(const char* tagname) {
+GumboTag gumbo_tag_enum(const char* tagname) {
   for (int i = 0; i < GUMBO_TAG_LAST; ++i) {
     // TODO(jdtang): strcasecmp is non-portable, so if we want to support
     // non-GCC compilers, we'll need some #ifdef magic.  This source already has
