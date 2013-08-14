@@ -679,7 +679,6 @@ static bool node_tag_in(const GumboNode* node, ...) {
   bool result = false;
   for (GumboTag tag = va_arg(tags, GumboTag); tag != GUMBO_TAG_LAST;
        tag = va_arg(tags, GumboTag)) {
-    assert(tag >= 0);
     assert(tag <= GUMBO_TAG_LAST);
     if (tag == node_tag) {
       result = true;

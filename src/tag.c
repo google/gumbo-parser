@@ -176,7 +176,6 @@ const char* kGumboTagNames[] = {
 };
 
 const char* gumbo_normalized_tagname(GumboTag tag) {
-  assert(tag >= 0);
   assert(tag <= GUMBO_TAG_LAST);
   return kGumboTagNames[tag];
 }
