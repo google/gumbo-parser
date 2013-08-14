@@ -22,6 +22,7 @@ Non-goals:
 * Execution speed.  Gumbo gains some of this by virtue of being written in C,
   but it is not an important consideration for the intended use-case, and was
   not a major design factor.
+* Support for encodings other than UTF-8.  For the most part, client code can convert the input stream to UTF-8 text using another library before processing.
 * C89 support.  Most major compilers support C99 by now; the major exception
   (Microsoft Visual Studio) should be able to compile this in C++ mode with
   relatively few changes.  (Bug reports welcome.)
