@@ -1545,6 +1545,9 @@ static bool is_special_node(const GumboNode* node) {
     case GUMBO_NAMESPACE_SVG:
       return node_tag_in(node,
           GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_LAST);
+    default:
+      assert(false);
+      return false;
   }
 }
 
