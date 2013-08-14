@@ -27,7 +27,7 @@ Non-goals:
   relatively few changes.  (Bug reports welcome.)
 
 Wishlist (aka "We couldn't get these into the original release, but are hoping
-to add them soon):
+to add them soon"):
 
 * Support for recent HTML5 spec changes to support the template tag.
 * Support for fragment parsing.
