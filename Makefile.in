@@ -15,6 +15,13 @@
 
 @SET_MAKE@
 
+# Googletest magic.  Gumbo relies on Googletest for its unittests, and
+# Googletest (by design) does not provide a "make install" option.  Instead,
+# we'll assume you copy (or symlink) the Googletest distribution into a 'gtest'
+# directory inside the main library directory, and then provide rules to build
+# it automatically.  This approach (and these rules) are copied from the
+# protobuf distribution.
+
 
 
 
@@ -94,18 +101,24 @@ am_libgumbo_la_OBJECTS = src/libgumbo_la-attribute.lo \
 	src/libgumbo_la-tokenizer.lo src/libgumbo_la-utf8.lo \
 	src/libgumbo_la-util.lo src/libgumbo_la-vector.lo
 libgumbo_la_OBJECTS = $(am_libgumbo_la_OBJECTS)
-libgumbo_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+libgumbo_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libgumbo_la_CFLAGS) \
 	$(CFLAGS) $(libgumbo_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(noinst_PROGRAMS)
-am_clean_text_OBJECTS = examples/clean_text-clean_text.$(OBJEXT)
+am_clean_text_OBJECTS = examples/clean_text.$(OBJEXT)
 clean_text_OBJECTS = $(am_clean_text_OBJECTS)
+clean_text_LDADD = $(LDADD)
 clean_text_DEPENDENCIES = libgumbo.la
-am_find_links_OBJECTS = examples/find_links-find_links.$(OBJEXT)
+am_find_links_OBJECTS = examples/find_links.$(OBJEXT)
 find_links_OBJECTS = $(am_find_links_OBJECTS)
+find_links_LDADD = $(LDADD)
 find_links_DEPENDENCIES = libgumbo.la
-am_get_title_OBJECTS = examples/get_title-get_title.$(OBJEXT)
+am_get_title_OBJECTS = examples/get_title.$(OBJEXT)
 get_title_OBJECTS = $(am_get_title_OBJECTS)
+get_title_LDADD = $(LDADD)
 get_title_DEPENDENCIES = libgumbo.la
 am_gumbo_test_OBJECTS = tests/gumbo_test-attribute.$(OBJEXT) \
 	tests/gumbo_test-char_ref.$(OBJEXT) \
@@ -117,9 +130,9 @@ am_gumbo_test_OBJECTS = tests/gumbo_test-attribute.$(OBJEXT) \
 	tests/gumbo_test-utf8.$(OBJEXT) \
 	tests/gumbo_test-vector.$(OBJEXT)
 gumbo_test_OBJECTS = $(am_gumbo_test_OBJECTS)
-am_positions_of_class_OBJECTS =  \
-	examples/positions_of_class-positions_of_class.$(OBJEXT)
+am_positions_of_class_OBJECTS = examples/positions_of_class.$(OBJEXT)
 positions_of_class_OBJECTS = $(am_positions_of_class_OBJECTS)
+positions_of_class_LDADD = $(LDADD)
 positions_of_class_DEPENDENCIES = libgumbo.la
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -127,22 +140,42 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_@AM_V@)
+am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD  " $@;
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_@AM_V@)
+am__v_CXX_ = $(am__v_CXX_@AM_DEFAULT_V@)
+am__v_CXX_0 = @echo "  CXX   " $@;
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
+am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
+am__v_CXXLD_0 = @echo "  CXXLD " $@;
+AM_V_GEN = $(am__v_GEN_@AM_V@)
+am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libgumbo_la_SOURCES) $(clean_text_SOURCES) \
 	$(find_links_SOURCES) $(get_title_SOURCES) \
 	$(gumbo_test_SOURCES) $(positions_of_class_SOURCES)
@@ -172,6 +205,7 @@ am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -288,9 +322,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AUTOMAKE_OPTIONS = foreign subdir-objects
 lib_LTLIBRARIES = libgumbo.la
-libgumbo_la_CFLAGS = -std=c99 -Wall
+libgumbo_la_CFLAGS = -Wall
 libgumbo_la_LDFLAGS = -version-info 1:0:0 -no-undefined
 libgumbo_la_SOURCES = \
 				src/attribute.c \
@@ -335,17 +368,11 @@ gumbo_test_SOURCES = \
 				tests/vector.cc
 
 gumbo_test_DEPENDENCIES = check-local libgumbo.la
-clean_text_LDADD = libgumbo.la
-clean_text_CPPFLAGS = -I"$(srcdir)/src"
+LDADD = libgumbo.la
+AM_CPPFLAGS = -I"$(srcdir)/src"
 clean_text_SOURCES = examples/clean_text.cc
-find_links_LDADD = libgumbo.la
-find_links_CPPFLAGS = -I"$(srcdir)/src"
 find_links_SOURCES = examples/find_links.cc
-get_title_LDADD = libgumbo.la
-get_title_CPPFLAGS = -I"$(srcdir)/src" -std=gnu99
 get_title_SOURCES = examples/get_title.c
-positions_of_class_LDADD = libgumbo.la
-positions_of_class_CPPFLAGS = -I"$(srcdir)/src"
 positions_of_class_SOURCES = examples/positions_of_class.cc
 all: all-am
 
@@ -447,7 +474,7 @@ src/libgumbo_la-util.lo: src/$(am__dirstamp) \
 src/libgumbo_la-vector.lo: src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 libgumbo.la: $(libgumbo_la_OBJECTS) $(libgumbo_la_DEPENDENCIES) $(EXTRA_libgumbo_la_DEPENDENCIES) 
-	$(libgumbo_la_LINK) -rpath $(libdir) $(libgumbo_la_OBJECTS) $(libgumbo_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libgumbo_la_LINK) -rpath $(libdir) $(libgumbo_la_OBJECTS) $(libgumbo_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -472,21 +499,21 @@ examples/$(am__dirstamp):
 examples/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) examples/$(DEPDIR)
 	@: > examples/$(DEPDIR)/$(am__dirstamp)
-examples/clean_text-clean_text.$(OBJEXT): examples/$(am__dirstamp) \
+examples/clean_text.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 clean_text$(EXEEXT): $(clean_text_OBJECTS) $(clean_text_DEPENDENCIES) $(EXTRA_clean_text_DEPENDENCIES) 
 	@rm -f clean_text$(EXEEXT)
-	$(CXXLINK) $(clean_text_OBJECTS) $(clean_text_LDADD) $(LIBS)
-examples/find_links-find_links.$(OBJEXT): examples/$(am__dirstamp) \
+	$(AM_V_CXXLD)$(CXXLINK) $(clean_text_OBJECTS) $(clean_text_LDADD) $(LIBS)
+examples/find_links.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 find_links$(EXEEXT): $(find_links_OBJECTS) $(find_links_DEPENDENCIES) $(EXTRA_find_links_DEPENDENCIES) 
 	@rm -f find_links$(EXEEXT)
-	$(CXXLINK) $(find_links_OBJECTS) $(find_links_LDADD) $(LIBS)
-examples/get_title-get_title.$(OBJEXT): examples/$(am__dirstamp) \
+	$(AM_V_CXXLD)$(CXXLINK) $(find_links_OBJECTS) $(find_links_LDADD) $(LIBS)
+examples/get_title.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 get_title$(EXEEXT): $(get_title_OBJECTS) $(get_title_DEPENDENCIES) $(EXTRA_get_title_DEPENDENCIES) 
 	@rm -f get_title$(EXEEXT)
-	$(LINK) $(get_title_OBJECTS) $(get_title_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(get_title_OBJECTS) $(get_title_LDADD) $(LIBS)
 tests/$(am__dirstamp):
 	@$(MKDIR_P) tests
 	@: > tests/$(am__dirstamp)
@@ -513,19 +540,19 @@ tests/gumbo_test-vector.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 gumbo_test$(EXEEXT): $(gumbo_test_OBJECTS) $(gumbo_test_DEPENDENCIES) $(EXTRA_gumbo_test_DEPENDENCIES) 
 	@rm -f gumbo_test$(EXEEXT)
-	$(CXXLINK) $(gumbo_test_OBJECTS) $(gumbo_test_LDADD) $(LIBS)
-examples/positions_of_class-positions_of_class.$(OBJEXT):  \
-	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
+	$(AM_V_CXXLD)$(CXXLINK) $(gumbo_test_OBJECTS) $(gumbo_test_LDADD) $(LIBS)
+examples/positions_of_class.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
 positions_of_class$(EXEEXT): $(positions_of_class_OBJECTS) $(positions_of_class_DEPENDENCIES) $(EXTRA_positions_of_class_DEPENDENCIES) 
 	@rm -f positions_of_class$(EXEEXT)
-	$(CXXLINK) $(positions_of_class_OBJECTS) $(positions_of_class_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(positions_of_class_OBJECTS) $(positions_of_class_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f examples/clean_text-clean_text.$(OBJEXT)
-	-rm -f examples/find_links-find_links.$(OBJEXT)
-	-rm -f examples/get_title-get_title.$(OBJEXT)
-	-rm -f examples/positions_of_class-positions_of_class.$(OBJEXT)
+	-rm -f examples/clean_text.$(OBJEXT)
+	-rm -f examples/find_links.$(OBJEXT)
+	-rm -f examples/get_title.$(OBJEXT)
+	-rm -f examples/positions_of_class.$(OBJEXT)
 	-rm -f src/libgumbo_la-attribute.$(OBJEXT)
 	-rm -f src/libgumbo_la-attribute.lo
 	-rm -f src/libgumbo_la-char_ref.$(OBJEXT)
@@ -561,10 +588,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/clean_text-clean_text.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/find_links-find_links.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/get_title-get_title.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/positions_of_class-positions_of_class.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/clean_text.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/find_links.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/get_title.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/positions_of_class.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libgumbo_la-attribute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libgumbo_la-char_ref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libgumbo_la-error.Plo@am__quote@
@@ -587,311 +614,255 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/gumbo_test-vector.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
 @am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
 src/libgumbo_la-attribute.lo: src/attribute.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-attribute.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-attribute.Tpo -c -o src/libgumbo_la-attribute.lo `test -f 'src/attribute.c' || echo '$(srcdir)/'`src/attribute.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-attribute.Tpo src/$(DEPDIR)/libgumbo_la-attribute.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/attribute.c' object='src/libgumbo_la-attribute.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-attribute.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-attribute.Tpo -c -o src/libgumbo_la-attribute.lo `test -f 'src/attribute.c' || echo '$(srcdir)/'`src/attribute.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-attribute.Tpo src/$(DEPDIR)/libgumbo_la-attribute.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/attribute.c' object='src/libgumbo_la-attribute.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-attribute.lo `test -f 'src/attribute.c' || echo '$(srcdir)/'`src/attribute.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-attribute.lo `test -f 'src/attribute.c' || echo '$(srcdir)/'`src/attribute.c
 
 src/libgumbo_la-char_ref.lo: src/char_ref.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-char_ref.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-char_ref.Tpo -c -o src/libgumbo_la-char_ref.lo `test -f 'src/char_ref.c' || echo '$(srcdir)/'`src/char_ref.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-char_ref.Tpo src/$(DEPDIR)/libgumbo_la-char_ref.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/char_ref.c' object='src/libgumbo_la-char_ref.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-char_ref.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-char_ref.Tpo -c -o src/libgumbo_la-char_ref.lo `test -f 'src/char_ref.c' || echo '$(srcdir)/'`src/char_ref.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-char_ref.Tpo src/$(DEPDIR)/libgumbo_la-char_ref.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/char_ref.c' object='src/libgumbo_la-char_ref.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-char_ref.lo `test -f 'src/char_ref.c' || echo '$(srcdir)/'`src/char_ref.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-char_ref.lo `test -f 'src/char_ref.c' || echo '$(srcdir)/'`src/char_ref.c
 
 src/libgumbo_la-error.lo: src/error.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-error.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-error.Tpo -c -o src/libgumbo_la-error.lo `test -f 'src/error.c' || echo '$(srcdir)/'`src/error.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-error.Tpo src/$(DEPDIR)/libgumbo_la-error.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/error.c' object='src/libgumbo_la-error.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-error.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-error.Tpo -c -o src/libgumbo_la-error.lo `test -f 'src/error.c' || echo '$(srcdir)/'`src/error.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-error.Tpo src/$(DEPDIR)/libgumbo_la-error.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/error.c' object='src/libgumbo_la-error.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-error.lo `test -f 'src/error.c' || echo '$(srcdir)/'`src/error.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-error.lo `test -f 'src/error.c' || echo '$(srcdir)/'`src/error.c
 
 src/libgumbo_la-parser.lo: src/parser.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-parser.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-parser.Tpo -c -o src/libgumbo_la-parser.lo `test -f 'src/parser.c' || echo '$(srcdir)/'`src/parser.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-parser.Tpo src/$(DEPDIR)/libgumbo_la-parser.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/parser.c' object='src/libgumbo_la-parser.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-parser.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-parser.Tpo -c -o src/libgumbo_la-parser.lo `test -f 'src/parser.c' || echo '$(srcdir)/'`src/parser.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-parser.Tpo src/$(DEPDIR)/libgumbo_la-parser.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/parser.c' object='src/libgumbo_la-parser.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-parser.lo `test -f 'src/parser.c' || echo '$(srcdir)/'`src/parser.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-parser.lo `test -f 'src/parser.c' || echo '$(srcdir)/'`src/parser.c
 
 src/libgumbo_la-string_buffer.lo: src/string_buffer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-string_buffer.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-string_buffer.Tpo -c -o src/libgumbo_la-string_buffer.lo `test -f 'src/string_buffer.c' || echo '$(srcdir)/'`src/string_buffer.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-string_buffer.Tpo src/$(DEPDIR)/libgumbo_la-string_buffer.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/string_buffer.c' object='src/libgumbo_la-string_buffer.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-string_buffer.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-string_buffer.Tpo -c -o src/libgumbo_la-string_buffer.lo `test -f 'src/string_buffer.c' || echo '$(srcdir)/'`src/string_buffer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-string_buffer.Tpo src/$(DEPDIR)/libgumbo_la-string_buffer.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/string_buffer.c' object='src/libgumbo_la-string_buffer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-string_buffer.lo `test -f 'src/string_buffer.c' || echo '$(srcdir)/'`src/string_buffer.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-string_buffer.lo `test -f 'src/string_buffer.c' || echo '$(srcdir)/'`src/string_buffer.c
 
 src/libgumbo_la-string_piece.lo: src/string_piece.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-string_piece.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-string_piece.Tpo -c -o src/libgumbo_la-string_piece.lo `test -f 'src/string_piece.c' || echo '$(srcdir)/'`src/string_piece.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-string_piece.Tpo src/$(DEPDIR)/libgumbo_la-string_piece.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/string_piece.c' object='src/libgumbo_la-string_piece.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-string_piece.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-string_piece.Tpo -c -o src/libgumbo_la-string_piece.lo `test -f 'src/string_piece.c' || echo '$(srcdir)/'`src/string_piece.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-string_piece.Tpo src/$(DEPDIR)/libgumbo_la-string_piece.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/string_piece.c' object='src/libgumbo_la-string_piece.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-string_piece.lo `test -f 'src/string_piece.c' || echo '$(srcdir)/'`src/string_piece.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-string_piece.lo `test -f 'src/string_piece.c' || echo '$(srcdir)/'`src/string_piece.c
 
 src/libgumbo_la-tag.lo: src/tag.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-tag.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-tag.Tpo -c -o src/libgumbo_la-tag.lo `test -f 'src/tag.c' || echo '$(srcdir)/'`src/tag.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-tag.Tpo src/$(DEPDIR)/libgumbo_la-tag.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/tag.c' object='src/libgumbo_la-tag.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-tag.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-tag.Tpo -c -o src/libgumbo_la-tag.lo `test -f 'src/tag.c' || echo '$(srcdir)/'`src/tag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-tag.Tpo src/$(DEPDIR)/libgumbo_la-tag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/tag.c' object='src/libgumbo_la-tag.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-tag.lo `test -f 'src/tag.c' || echo '$(srcdir)/'`src/tag.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-tag.lo `test -f 'src/tag.c' || echo '$(srcdir)/'`src/tag.c
 
 src/libgumbo_la-tokenizer.lo: src/tokenizer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-tokenizer.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-tokenizer.Tpo -c -o src/libgumbo_la-tokenizer.lo `test -f 'src/tokenizer.c' || echo '$(srcdir)/'`src/tokenizer.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-tokenizer.Tpo src/$(DEPDIR)/libgumbo_la-tokenizer.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/tokenizer.c' object='src/libgumbo_la-tokenizer.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-tokenizer.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-tokenizer.Tpo -c -o src/libgumbo_la-tokenizer.lo `test -f 'src/tokenizer.c' || echo '$(srcdir)/'`src/tokenizer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-tokenizer.Tpo src/$(DEPDIR)/libgumbo_la-tokenizer.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/tokenizer.c' object='src/libgumbo_la-tokenizer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-tokenizer.lo `test -f 'src/tokenizer.c' || echo '$(srcdir)/'`src/tokenizer.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-tokenizer.lo `test -f 'src/tokenizer.c' || echo '$(srcdir)/'`src/tokenizer.c
 
 src/libgumbo_la-utf8.lo: src/utf8.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-utf8.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-utf8.Tpo -c -o src/libgumbo_la-utf8.lo `test -f 'src/utf8.c' || echo '$(srcdir)/'`src/utf8.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-utf8.Tpo src/$(DEPDIR)/libgumbo_la-utf8.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/utf8.c' object='src/libgumbo_la-utf8.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-utf8.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-utf8.Tpo -c -o src/libgumbo_la-utf8.lo `test -f 'src/utf8.c' || echo '$(srcdir)/'`src/utf8.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-utf8.Tpo src/$(DEPDIR)/libgumbo_la-utf8.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/utf8.c' object='src/libgumbo_la-utf8.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-utf8.lo `test -f 'src/utf8.c' || echo '$(srcdir)/'`src/utf8.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-utf8.lo `test -f 'src/utf8.c' || echo '$(srcdir)/'`src/utf8.c
 
 src/libgumbo_la-util.lo: src/util.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-util.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-util.Tpo -c -o src/libgumbo_la-util.lo `test -f 'src/util.c' || echo '$(srcdir)/'`src/util.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-util.Tpo src/$(DEPDIR)/libgumbo_la-util.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/util.c' object='src/libgumbo_la-util.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-util.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-util.Tpo -c -o src/libgumbo_la-util.lo `test -f 'src/util.c' || echo '$(srcdir)/'`src/util.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-util.Tpo src/$(DEPDIR)/libgumbo_la-util.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/util.c' object='src/libgumbo_la-util.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-util.lo `test -f 'src/util.c' || echo '$(srcdir)/'`src/util.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-util.lo `test -f 'src/util.c' || echo '$(srcdir)/'`src/util.c
 
 src/libgumbo_la-vector.lo: src/vector.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-vector.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-vector.Tpo -c -o src/libgumbo_la-vector.lo `test -f 'src/vector.c' || echo '$(srcdir)/'`src/vector.c
-@am__fastdepCC_TRUE@	$(am__mv) src/$(DEPDIR)/libgumbo_la-vector.Tpo src/$(DEPDIR)/libgumbo_la-vector.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/vector.c' object='src/libgumbo_la-vector.lo' libtool=yes @AMDEPBACKSLASH@
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -MT src/libgumbo_la-vector.lo -MD -MP -MF src/$(DEPDIR)/libgumbo_la-vector.Tpo -c -o src/libgumbo_la-vector.lo `test -f 'src/vector.c' || echo '$(srcdir)/'`src/vector.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/libgumbo_la-vector.Tpo src/$(DEPDIR)/libgumbo_la-vector.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/vector.c' object='src/libgumbo_la-vector.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-vector.lo `test -f 'src/vector.c' || echo '$(srcdir)/'`src/vector.c
-
-examples/get_title-get_title.o: examples/get_title.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(get_title_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT examples/get_title-get_title.o -MD -MP -MF examples/$(DEPDIR)/get_title-get_title.Tpo -c -o examples/get_title-get_title.o `test -f 'examples/get_title.c' || echo '$(srcdir)/'`examples/get_title.c
-@am__fastdepCC_TRUE@	$(am__mv) examples/$(DEPDIR)/get_title-get_title.Tpo examples/$(DEPDIR)/get_title-get_title.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='examples/get_title.c' object='examples/get_title-get_title.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(get_title_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o examples/get_title-get_title.o `test -f 'examples/get_title.c' || echo '$(srcdir)/'`examples/get_title.c
-
-examples/get_title-get_title.obj: examples/get_title.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(get_title_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT examples/get_title-get_title.obj -MD -MP -MF examples/$(DEPDIR)/get_title-get_title.Tpo -c -o examples/get_title-get_title.obj `if test -f 'examples/get_title.c'; then $(CYGPATH_W) 'examples/get_title.c'; else $(CYGPATH_W) '$(srcdir)/examples/get_title.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) examples/$(DEPDIR)/get_title-get_title.Tpo examples/$(DEPDIR)/get_title-get_title.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='examples/get_title.c' object='examples/get_title-get_title.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(get_title_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o examples/get_title-get_title.obj `if test -f 'examples/get_title.c'; then $(CYGPATH_W) 'examples/get_title.c'; else $(CYGPATH_W) '$(srcdir)/examples/get_title.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgumbo_la_CFLAGS) $(CFLAGS) -c -o src/libgumbo_la-vector.lo `test -f 'src/vector.c' || echo '$(srcdir)/'`src/vector.c
 
 .cc.o:
-@am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
 
 .cc.obj:
-@am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
 @am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cc.lo:
-@am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
 @am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
-
-examples/clean_text-clean_text.o: examples/clean_text.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(clean_text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/clean_text-clean_text.o -MD -MP -MF examples/$(DEPDIR)/clean_text-clean_text.Tpo -c -o examples/clean_text-clean_text.o `test -f 'examples/clean_text.cc' || echo '$(srcdir)/'`examples/clean_text.cc
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/clean_text-clean_text.Tpo examples/$(DEPDIR)/clean_text-clean_text.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/clean_text.cc' object='examples/clean_text-clean_text.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(clean_text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/clean_text-clean_text.o `test -f 'examples/clean_text.cc' || echo '$(srcdir)/'`examples/clean_text.cc
-
-examples/clean_text-clean_text.obj: examples/clean_text.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(clean_text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/clean_text-clean_text.obj -MD -MP -MF examples/$(DEPDIR)/clean_text-clean_text.Tpo -c -o examples/clean_text-clean_text.obj `if test -f 'examples/clean_text.cc'; then $(CYGPATH_W) 'examples/clean_text.cc'; else $(CYGPATH_W) '$(srcdir)/examples/clean_text.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/clean_text-clean_text.Tpo examples/$(DEPDIR)/clean_text-clean_text.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/clean_text.cc' object='examples/clean_text-clean_text.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(clean_text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/clean_text-clean_text.obj `if test -f 'examples/clean_text.cc'; then $(CYGPATH_W) 'examples/clean_text.cc'; else $(CYGPATH_W) '$(srcdir)/examples/clean_text.cc'; fi`
-
-examples/find_links-find_links.o: examples/find_links.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(find_links_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/find_links-find_links.o -MD -MP -MF examples/$(DEPDIR)/find_links-find_links.Tpo -c -o examples/find_links-find_links.o `test -f 'examples/find_links.cc' || echo '$(srcdir)/'`examples/find_links.cc
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/find_links-find_links.Tpo examples/$(DEPDIR)/find_links-find_links.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/find_links.cc' object='examples/find_links-find_links.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(find_links_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/find_links-find_links.o `test -f 'examples/find_links.cc' || echo '$(srcdir)/'`examples/find_links.cc
-
-examples/find_links-find_links.obj: examples/find_links.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(find_links_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/find_links-find_links.obj -MD -MP -MF examples/$(DEPDIR)/find_links-find_links.Tpo -c -o examples/find_links-find_links.obj `if test -f 'examples/find_links.cc'; then $(CYGPATH_W) 'examples/find_links.cc'; else $(CYGPATH_W) '$(srcdir)/examples/find_links.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/find_links-find_links.Tpo examples/$(DEPDIR)/find_links-find_links.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/find_links.cc' object='examples/find_links-find_links.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(find_links_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/find_links-find_links.obj `if test -f 'examples/find_links.cc'; then $(CYGPATH_W) 'examples/find_links.cc'; else $(CYGPATH_W) '$(srcdir)/examples/find_links.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
 
 tests/gumbo_test-attribute.o: tests/attribute.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-attribute.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-attribute.Tpo -c -o tests/gumbo_test-attribute.o `test -f 'tests/attribute.cc' || echo '$(srcdir)/'`tests/attribute.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-attribute.Tpo tests/$(DEPDIR)/gumbo_test-attribute.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/attribute.cc' object='tests/gumbo_test-attribute.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-attribute.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-attribute.Tpo -c -o tests/gumbo_test-attribute.o `test -f 'tests/attribute.cc' || echo '$(srcdir)/'`tests/attribute.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-attribute.Tpo tests/$(DEPDIR)/gumbo_test-attribute.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/attribute.cc' object='tests/gumbo_test-attribute.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-attribute.o `test -f 'tests/attribute.cc' || echo '$(srcdir)/'`tests/attribute.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-attribute.o `test -f 'tests/attribute.cc' || echo '$(srcdir)/'`tests/attribute.cc
 
 tests/gumbo_test-attribute.obj: tests/attribute.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-attribute.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-attribute.Tpo -c -o tests/gumbo_test-attribute.obj `if test -f 'tests/attribute.cc'; then $(CYGPATH_W) 'tests/attribute.cc'; else $(CYGPATH_W) '$(srcdir)/tests/attribute.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-attribute.Tpo tests/$(DEPDIR)/gumbo_test-attribute.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/attribute.cc' object='tests/gumbo_test-attribute.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-attribute.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-attribute.Tpo -c -o tests/gumbo_test-attribute.obj `if test -f 'tests/attribute.cc'; then $(CYGPATH_W) 'tests/attribute.cc'; else $(CYGPATH_W) '$(srcdir)/tests/attribute.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-attribute.Tpo tests/$(DEPDIR)/gumbo_test-attribute.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/attribute.cc' object='tests/gumbo_test-attribute.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-attribute.obj `if test -f 'tests/attribute.cc'; then $(CYGPATH_W) 'tests/attribute.cc'; else $(CYGPATH_W) '$(srcdir)/tests/attribute.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-attribute.obj `if test -f 'tests/attribute.cc'; then $(CYGPATH_W) 'tests/attribute.cc'; else $(CYGPATH_W) '$(srcdir)/tests/attribute.cc'; fi`
 
 tests/gumbo_test-char_ref.o: tests/char_ref.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-char_ref.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-char_ref.Tpo -c -o tests/gumbo_test-char_ref.o `test -f 'tests/char_ref.cc' || echo '$(srcdir)/'`tests/char_ref.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-char_ref.Tpo tests/$(DEPDIR)/gumbo_test-char_ref.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/char_ref.cc' object='tests/gumbo_test-char_ref.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-char_ref.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-char_ref.Tpo -c -o tests/gumbo_test-char_ref.o `test -f 'tests/char_ref.cc' || echo '$(srcdir)/'`tests/char_ref.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-char_ref.Tpo tests/$(DEPDIR)/gumbo_test-char_ref.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/char_ref.cc' object='tests/gumbo_test-char_ref.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-char_ref.o `test -f 'tests/char_ref.cc' || echo '$(srcdir)/'`tests/char_ref.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-char_ref.o `test -f 'tests/char_ref.cc' || echo '$(srcdir)/'`tests/char_ref.cc
 
 tests/gumbo_test-char_ref.obj: tests/char_ref.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-char_ref.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-char_ref.Tpo -c -o tests/gumbo_test-char_ref.obj `if test -f 'tests/char_ref.cc'; then $(CYGPATH_W) 'tests/char_ref.cc'; else $(CYGPATH_W) '$(srcdir)/tests/char_ref.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-char_ref.Tpo tests/$(DEPDIR)/gumbo_test-char_ref.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/char_ref.cc' object='tests/gumbo_test-char_ref.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-char_ref.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-char_ref.Tpo -c -o tests/gumbo_test-char_ref.obj `if test -f 'tests/char_ref.cc'; then $(CYGPATH_W) 'tests/char_ref.cc'; else $(CYGPATH_W) '$(srcdir)/tests/char_ref.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-char_ref.Tpo tests/$(DEPDIR)/gumbo_test-char_ref.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/char_ref.cc' object='tests/gumbo_test-char_ref.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-char_ref.obj `if test -f 'tests/char_ref.cc'; then $(CYGPATH_W) 'tests/char_ref.cc'; else $(CYGPATH_W) '$(srcdir)/tests/char_ref.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-char_ref.obj `if test -f 'tests/char_ref.cc'; then $(CYGPATH_W) 'tests/char_ref.cc'; else $(CYGPATH_W) '$(srcdir)/tests/char_ref.cc'; fi`
 
 tests/gumbo_test-parser.o: tests/parser.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-parser.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-parser.Tpo -c -o tests/gumbo_test-parser.o `test -f 'tests/parser.cc' || echo '$(srcdir)/'`tests/parser.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-parser.Tpo tests/$(DEPDIR)/gumbo_test-parser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/parser.cc' object='tests/gumbo_test-parser.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-parser.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-parser.Tpo -c -o tests/gumbo_test-parser.o `test -f 'tests/parser.cc' || echo '$(srcdir)/'`tests/parser.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-parser.Tpo tests/$(DEPDIR)/gumbo_test-parser.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/parser.cc' object='tests/gumbo_test-parser.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-parser.o `test -f 'tests/parser.cc' || echo '$(srcdir)/'`tests/parser.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-parser.o `test -f 'tests/parser.cc' || echo '$(srcdir)/'`tests/parser.cc
 
 tests/gumbo_test-parser.obj: tests/parser.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-parser.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-parser.Tpo -c -o tests/gumbo_test-parser.obj `if test -f 'tests/parser.cc'; then $(CYGPATH_W) 'tests/parser.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-parser.Tpo tests/$(DEPDIR)/gumbo_test-parser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/parser.cc' object='tests/gumbo_test-parser.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-parser.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-parser.Tpo -c -o tests/gumbo_test-parser.obj `if test -f 'tests/parser.cc'; then $(CYGPATH_W) 'tests/parser.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-parser.Tpo tests/$(DEPDIR)/gumbo_test-parser.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/parser.cc' object='tests/gumbo_test-parser.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-parser.obj `if test -f 'tests/parser.cc'; then $(CYGPATH_W) 'tests/parser.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-parser.obj `if test -f 'tests/parser.cc'; then $(CYGPATH_W) 'tests/parser.cc'; else $(CYGPATH_W) '$(srcdir)/tests/parser.cc'; fi`
 
 tests/gumbo_test-string_buffer.o: tests/string_buffer.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_buffer.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo -c -o tests/gumbo_test-string_buffer.o `test -f 'tests/string_buffer.cc' || echo '$(srcdir)/'`tests/string_buffer.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo tests/$(DEPDIR)/gumbo_test-string_buffer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/string_buffer.cc' object='tests/gumbo_test-string_buffer.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_buffer.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo -c -o tests/gumbo_test-string_buffer.o `test -f 'tests/string_buffer.cc' || echo '$(srcdir)/'`tests/string_buffer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo tests/$(DEPDIR)/gumbo_test-string_buffer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/string_buffer.cc' object='tests/gumbo_test-string_buffer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_buffer.o `test -f 'tests/string_buffer.cc' || echo '$(srcdir)/'`tests/string_buffer.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_buffer.o `test -f 'tests/string_buffer.cc' || echo '$(srcdir)/'`tests/string_buffer.cc
 
 tests/gumbo_test-string_buffer.obj: tests/string_buffer.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_buffer.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo -c -o tests/gumbo_test-string_buffer.obj `if test -f 'tests/string_buffer.cc'; then $(CYGPATH_W) 'tests/string_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_buffer.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo tests/$(DEPDIR)/gumbo_test-string_buffer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/string_buffer.cc' object='tests/gumbo_test-string_buffer.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_buffer.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo -c -o tests/gumbo_test-string_buffer.obj `if test -f 'tests/string_buffer.cc'; then $(CYGPATH_W) 'tests/string_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_buffer.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-string_buffer.Tpo tests/$(DEPDIR)/gumbo_test-string_buffer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/string_buffer.cc' object='tests/gumbo_test-string_buffer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_buffer.obj `if test -f 'tests/string_buffer.cc'; then $(CYGPATH_W) 'tests/string_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_buffer.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_buffer.obj `if test -f 'tests/string_buffer.cc'; then $(CYGPATH_W) 'tests/string_buffer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_buffer.cc'; fi`
 
 tests/gumbo_test-string_piece.o: tests/string_piece.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_piece.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_piece.Tpo -c -o tests/gumbo_test-string_piece.o `test -f 'tests/string_piece.cc' || echo '$(srcdir)/'`tests/string_piece.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-string_piece.Tpo tests/$(DEPDIR)/gumbo_test-string_piece.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/string_piece.cc' object='tests/gumbo_test-string_piece.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_piece.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_piece.Tpo -c -o tests/gumbo_test-string_piece.o `test -f 'tests/string_piece.cc' || echo '$(srcdir)/'`tests/string_piece.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-string_piece.Tpo tests/$(DEPDIR)/gumbo_test-string_piece.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/string_piece.cc' object='tests/gumbo_test-string_piece.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_piece.o `test -f 'tests/string_piece.cc' || echo '$(srcdir)/'`tests/string_piece.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_piece.o `test -f 'tests/string_piece.cc' || echo '$(srcdir)/'`tests/string_piece.cc
 
 tests/gumbo_test-string_piece.obj: tests/string_piece.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_piece.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_piece.Tpo -c -o tests/gumbo_test-string_piece.obj `if test -f 'tests/string_piece.cc'; then $(CYGPATH_W) 'tests/string_piece.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_piece.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-string_piece.Tpo tests/$(DEPDIR)/gumbo_test-string_piece.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/string_piece.cc' object='tests/gumbo_test-string_piece.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-string_piece.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-string_piece.Tpo -c -o tests/gumbo_test-string_piece.obj `if test -f 'tests/string_piece.cc'; then $(CYGPATH_W) 'tests/string_piece.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_piece.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-string_piece.Tpo tests/$(DEPDIR)/gumbo_test-string_piece.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/string_piece.cc' object='tests/gumbo_test-string_piece.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_piece.obj `if test -f 'tests/string_piece.cc'; then $(CYGPATH_W) 'tests/string_piece.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_piece.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-string_piece.obj `if test -f 'tests/string_piece.cc'; then $(CYGPATH_W) 'tests/string_piece.cc'; else $(CYGPATH_W) '$(srcdir)/tests/string_piece.cc'; fi`
 
 tests/gumbo_test-tokenizer.o: tests/tokenizer.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-tokenizer.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo -c -o tests/gumbo_test-tokenizer.o `test -f 'tests/tokenizer.cc' || echo '$(srcdir)/'`tests/tokenizer.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo tests/$(DEPDIR)/gumbo_test-tokenizer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/tokenizer.cc' object='tests/gumbo_test-tokenizer.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-tokenizer.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo -c -o tests/gumbo_test-tokenizer.o `test -f 'tests/tokenizer.cc' || echo '$(srcdir)/'`tests/tokenizer.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo tests/$(DEPDIR)/gumbo_test-tokenizer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/tokenizer.cc' object='tests/gumbo_test-tokenizer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-tokenizer.o `test -f 'tests/tokenizer.cc' || echo '$(srcdir)/'`tests/tokenizer.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-tokenizer.o `test -f 'tests/tokenizer.cc' || echo '$(srcdir)/'`tests/tokenizer.cc
 
 tests/gumbo_test-tokenizer.obj: tests/tokenizer.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-tokenizer.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo -c -o tests/gumbo_test-tokenizer.obj `if test -f 'tests/tokenizer.cc'; then $(CYGPATH_W) 'tests/tokenizer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/tokenizer.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo tests/$(DEPDIR)/gumbo_test-tokenizer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/tokenizer.cc' object='tests/gumbo_test-tokenizer.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-tokenizer.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo -c -o tests/gumbo_test-tokenizer.obj `if test -f 'tests/tokenizer.cc'; then $(CYGPATH_W) 'tests/tokenizer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/tokenizer.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-tokenizer.Tpo tests/$(DEPDIR)/gumbo_test-tokenizer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/tokenizer.cc' object='tests/gumbo_test-tokenizer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-tokenizer.obj `if test -f 'tests/tokenizer.cc'; then $(CYGPATH_W) 'tests/tokenizer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/tokenizer.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-tokenizer.obj `if test -f 'tests/tokenizer.cc'; then $(CYGPATH_W) 'tests/tokenizer.cc'; else $(CYGPATH_W) '$(srcdir)/tests/tokenizer.cc'; fi`
 
 tests/gumbo_test-test_utils.o: tests/test_utils.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-test_utils.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-test_utils.Tpo -c -o tests/gumbo_test-test_utils.o `test -f 'tests/test_utils.cc' || echo '$(srcdir)/'`tests/test_utils.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-test_utils.Tpo tests/$(DEPDIR)/gumbo_test-test_utils.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/test_utils.cc' object='tests/gumbo_test-test_utils.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-test_utils.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-test_utils.Tpo -c -o tests/gumbo_test-test_utils.o `test -f 'tests/test_utils.cc' || echo '$(srcdir)/'`tests/test_utils.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-test_utils.Tpo tests/$(DEPDIR)/gumbo_test-test_utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/test_utils.cc' object='tests/gumbo_test-test_utils.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-test_utils.o `test -f 'tests/test_utils.cc' || echo '$(srcdir)/'`tests/test_utils.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-test_utils.o `test -f 'tests/test_utils.cc' || echo '$(srcdir)/'`tests/test_utils.cc
 
 tests/gumbo_test-test_utils.obj: tests/test_utils.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-test_utils.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-test_utils.Tpo -c -o tests/gumbo_test-test_utils.obj `if test -f 'tests/test_utils.cc'; then $(CYGPATH_W) 'tests/test_utils.cc'; else $(CYGPATH_W) '$(srcdir)/tests/test_utils.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-test_utils.Tpo tests/$(DEPDIR)/gumbo_test-test_utils.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/test_utils.cc' object='tests/gumbo_test-test_utils.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-test_utils.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-test_utils.Tpo -c -o tests/gumbo_test-test_utils.obj `if test -f 'tests/test_utils.cc'; then $(CYGPATH_W) 'tests/test_utils.cc'; else $(CYGPATH_W) '$(srcdir)/tests/test_utils.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-test_utils.Tpo tests/$(DEPDIR)/gumbo_test-test_utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/test_utils.cc' object='tests/gumbo_test-test_utils.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-test_utils.obj `if test -f 'tests/test_utils.cc'; then $(CYGPATH_W) 'tests/test_utils.cc'; else $(CYGPATH_W) '$(srcdir)/tests/test_utils.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-test_utils.obj `if test -f 'tests/test_utils.cc'; then $(CYGPATH_W) 'tests/test_utils.cc'; else $(CYGPATH_W) '$(srcdir)/tests/test_utils.cc'; fi`
 
 tests/gumbo_test-utf8.o: tests/utf8.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-utf8.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-utf8.Tpo -c -o tests/gumbo_test-utf8.o `test -f 'tests/utf8.cc' || echo '$(srcdir)/'`tests/utf8.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-utf8.Tpo tests/$(DEPDIR)/gumbo_test-utf8.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utf8.cc' object='tests/gumbo_test-utf8.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-utf8.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-utf8.Tpo -c -o tests/gumbo_test-utf8.o `test -f 'tests/utf8.cc' || echo '$(srcdir)/'`tests/utf8.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-utf8.Tpo tests/$(DEPDIR)/gumbo_test-utf8.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/utf8.cc' object='tests/gumbo_test-utf8.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-utf8.o `test -f 'tests/utf8.cc' || echo '$(srcdir)/'`tests/utf8.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-utf8.o `test -f 'tests/utf8.cc' || echo '$(srcdir)/'`tests/utf8.cc
 
 tests/gumbo_test-utf8.obj: tests/utf8.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-utf8.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-utf8.Tpo -c -o tests/gumbo_test-utf8.obj `if test -f 'tests/utf8.cc'; then $(CYGPATH_W) 'tests/utf8.cc'; else $(CYGPATH_W) '$(srcdir)/tests/utf8.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-utf8.Tpo tests/$(DEPDIR)/gumbo_test-utf8.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utf8.cc' object='tests/gumbo_test-utf8.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-utf8.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-utf8.Tpo -c -o tests/gumbo_test-utf8.obj `if test -f 'tests/utf8.cc'; then $(CYGPATH_W) 'tests/utf8.cc'; else $(CYGPATH_W) '$(srcdir)/tests/utf8.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-utf8.Tpo tests/$(DEPDIR)/gumbo_test-utf8.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/utf8.cc' object='tests/gumbo_test-utf8.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-utf8.obj `if test -f 'tests/utf8.cc'; then $(CYGPATH_W) 'tests/utf8.cc'; else $(CYGPATH_W) '$(srcdir)/tests/utf8.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-utf8.obj `if test -f 'tests/utf8.cc'; then $(CYGPATH_W) 'tests/utf8.cc'; else $(CYGPATH_W) '$(srcdir)/tests/utf8.cc'; fi`
 
 tests/gumbo_test-vector.o: tests/vector.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-vector.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-vector.Tpo -c -o tests/gumbo_test-vector.o `test -f 'tests/vector.cc' || echo '$(srcdir)/'`tests/vector.cc
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-vector.Tpo tests/$(DEPDIR)/gumbo_test-vector.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/vector.cc' object='tests/gumbo_test-vector.o' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-vector.o -MD -MP -MF tests/$(DEPDIR)/gumbo_test-vector.Tpo -c -o tests/gumbo_test-vector.o `test -f 'tests/vector.cc' || echo '$(srcdir)/'`tests/vector.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-vector.Tpo tests/$(DEPDIR)/gumbo_test-vector.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/vector.cc' object='tests/gumbo_test-vector.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-vector.o `test -f 'tests/vector.cc' || echo '$(srcdir)/'`tests/vector.cc
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-vector.o `test -f 'tests/vector.cc' || echo '$(srcdir)/'`tests/vector.cc
 
 tests/gumbo_test-vector.obj: tests/vector.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-vector.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-vector.Tpo -c -o tests/gumbo_test-vector.obj `if test -f 'tests/vector.cc'; then $(CYGPATH_W) 'tests/vector.cc'; else $(CYGPATH_W) '$(srcdir)/tests/vector.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) tests/$(DEPDIR)/gumbo_test-vector.Tpo tests/$(DEPDIR)/gumbo_test-vector.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/vector.cc' object='tests/gumbo_test-vector.obj' libtool=no @AMDEPBACKSLASH@
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/gumbo_test-vector.obj -MD -MP -MF tests/$(DEPDIR)/gumbo_test-vector.Tpo -c -o tests/gumbo_test-vector.obj `if test -f 'tests/vector.cc'; then $(CYGPATH_W) 'tests/vector.cc'; else $(CYGPATH_W) '$(srcdir)/tests/vector.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/gumbo_test-vector.Tpo tests/$(DEPDIR)/gumbo_test-vector.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/vector.cc' object='tests/gumbo_test-vector.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-vector.obj `if test -f 'tests/vector.cc'; then $(CYGPATH_W) 'tests/vector.cc'; else $(CYGPATH_W) '$(srcdir)/tests/vector.cc'; fi`
-
-examples/positions_of_class-positions_of_class.o: examples/positions_of_class.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(positions_of_class_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/positions_of_class-positions_of_class.o -MD -MP -MF examples/$(DEPDIR)/positions_of_class-positions_of_class.Tpo -c -o examples/positions_of_class-positions_of_class.o `test -f 'examples/positions_of_class.cc' || echo '$(srcdir)/'`examples/positions_of_class.cc
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/positions_of_class-positions_of_class.Tpo examples/$(DEPDIR)/positions_of_class-positions_of_class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/positions_of_class.cc' object='examples/positions_of_class-positions_of_class.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(positions_of_class_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/positions_of_class-positions_of_class.o `test -f 'examples/positions_of_class.cc' || echo '$(srcdir)/'`examples/positions_of_class.cc
-
-examples/positions_of_class-positions_of_class.obj: examples/positions_of_class.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(positions_of_class_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT examples/positions_of_class-positions_of_class.obj -MD -MP -MF examples/$(DEPDIR)/positions_of_class-positions_of_class.Tpo -c -o examples/positions_of_class-positions_of_class.obj `if test -f 'examples/positions_of_class.cc'; then $(CYGPATH_W) 'examples/positions_of_class.cc'; else $(CYGPATH_W) '$(srcdir)/examples/positions_of_class.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) examples/$(DEPDIR)/positions_of_class-positions_of_class.Tpo examples/$(DEPDIR)/positions_of_class-positions_of_class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='examples/positions_of_class.cc' object='examples/positions_of_class-positions_of_class.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(positions_of_class_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o examples/positions_of_class-positions_of_class.obj `if test -f 'examples/positions_of_class.cc'; then $(CYGPATH_W) 'examples/positions_of_class.cc'; else $(CYGPATH_W) '$(srcdir)/examples/positions_of_class.cc'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gumbo_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/gumbo_test-vector.obj `if test -f 'tests/vector.cc'; then $(CYGPATH_W) 'tests/vector.cc'; else $(CYGPATH_W) '$(srcdir)/tests/vector.cc'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1388,13 +1359,6 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-pkgconfigDATA
 
-
-# Googletest magic.  Gumbo relies on Googletest for its unittests, and
-# Googletest (by design) does not provide a "make install" option.  Instead,
-# we'll assume you copy (or symlink) the Googletest distribution into a 'gtest'
-# directory inside the main library directory, and then provide rules to build
-# it automatically.  This approach (and these rules) are copied from the
-# protobuf distribution.
 
 # Build gtest before we build protobuf tests.  We don't add gtest to SUBDIRS
 # because then "make check" would also build and run all of gtest's own tests,
