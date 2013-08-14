@@ -12,6 +12,7 @@
 .deps
 .dirstamp
 .libs
+compile
 config.log
 config.status
 gumbo.pc
@@ -19,6 +20,11 @@ libtool
 Makefile
 Makefile.in
 autom4te.cache
+test-driver
+
+# `make dist` artifacts
+/gumbo-[0-9].[0-9].tar.gz
+/gumbo-[0-9].[0-9]/
 
 # Example binaries
 clean_text
