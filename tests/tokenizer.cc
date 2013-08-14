@@ -54,7 +54,7 @@ class GumboTokenizerTest : public GumboTest {
   GumboToken token_;
 };
 
-TEST_F(GumboTokenizerTest, HtmlTagIncludesAllTags) {
+TEST(GumboTagEnumTest, HtmlTagIncludesAllTags) {
   EXPECT_EQ(146, GUMBO_TAG_UNKNOWN);
   EXPECT_STREQ("", kGumboTagNames[GUMBO_TAG_UNKNOWN]);
 }
