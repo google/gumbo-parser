@@ -358,7 +358,7 @@ const char* gumbo_normalize_svg_tagname(const GumboStringPiece* tagname);
  * Converts a tag name string (which may be in upper or mixed case) to a tag
  * enum.
  */
-const GumboTag gumbo_tag_enum(const char* tagname);
+GumboTag gumbo_tag_enum(const char* tagname);
 
 /**
  * Attribute namespaces.
