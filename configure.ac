@@ -22,6 +22,10 @@ AC_C_INLINE
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_CHECK_LIB([gtest_main],
+             [main],
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [true]),
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [false]))
 
 # Init Automake & libtool
 AM_INIT_AUTOMAKE([foreign subdir-objects])

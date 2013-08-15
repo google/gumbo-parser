@@ -7,6 +7,8 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
+if !HAVE_SHARED_LIBGTEST
+
 # Build gtest before we build protobuf tests.  We don't add gtest to SUBDIRS
 # because then "make check" would also build and run all of gtest's own tests,
 # which takes a lot of time and is generally not useful to us.  Also, we don't
@@ -27,6 +29,8 @@ clean-local:
 		echo "Making clean in gtest"; \
 		cd gtest && $(MAKE) $(AM_MAKEFLAGS) clean; \
 	fi
+
+endif !HAVE_SHARED_LIBGTEST
 
 lib_LTLIBRARIES = libgumbo.la
 libgumbo_la_CFLAGS = -Wall
@@ -63,7 +67,6 @@ pkgconfig_DATA = gumbo.pc
 
 check_PROGRAMS = gumbo_test
 TESTS = gumbo_test
-gumbo_test_LDADD = libgumbo.la gtest/lib/libgtest.la gtest/lib/libgtest_main.la
 gumbo_test_CPPFLAGS = \
 				-I"$(srcdir)/." \
 				-I"$(srcdir)/src" \
@@ -78,7 +81,16 @@ gumbo_test_SOURCES = \
 				tests/test_utils.cc \
 				tests/utf8.cc \
 				tests/vector.cc
-gumbo_test_DEPENDENCIES = check-local libgumbo.la
+gumbo_test_DEPENDENCIES = libgumbo.la
+gumbo_test_LDADD = libgumbo.la
+
+if HAVE_SHARED_LIBGTEST
+# FIXME(bnoordhuis) Should be configurable by the user.
+gumbo_test_LDADD += -lgtest -lgtest_main
+else
+gumbo_test_DEPENDENCIES += check-local
+gumbo_test_LDADD += gtest/lib/libgtest.la gtest/lib/libgtest_main.la
+endif
 
 noinst_PROGRAMS = clean_text find_links get_title positions_of_class
 LDADD = libgumbo.la
