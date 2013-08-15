@@ -14,9 +14,14 @@ if !HAVE_SHARED_LIBGTEST
 # which takes a lot of time and is generally not useful to us.  Also, we don't
 # want "make install" to recurse into gtest since we don't want to overwrite
 # the installed version of gtest if there is one.
-check-local:
+check-local: gtest/lib/libgtest.la gtest/lib/libgtest_main.la
+
+gtest/lib/libgtest.la gtest/lib/libgtest_main.la: gtest/Makefile
 	@echo "Making lib/libgtest.a lib/libgtest_main.a in gtest"
-	@cd gtest && ./configure && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
+	@cd gtest && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
+
+gtest/Makefile: gtest/configure
+	@cd gtest && ./configure
 
 # We would like to clean gtest when "make clean" is invoked.  But we have to
 # be careful because clean-local is also invoked during "make distclean", but
