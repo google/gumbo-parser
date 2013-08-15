@@ -64,7 +64,10 @@ pkgconfig_DATA = gumbo.pc
 check_PROGRAMS = gumbo_test
 TESTS = gumbo_test
 gumbo_test_LDADD = libgumbo.la gtest/lib/libgtest.la gtest/lib/libgtest_main.la
-gumbo_test_CPPFLAGS = -I"$(srcdir)/src" -I"$(srcdir)/gtest/include"
+gumbo_test_CPPFLAGS = \
+				-I"$(srcdir)/." \
+				-I"$(srcdir)/src" \
+				-I"$(srcdir)/gtest/include"
 gumbo_test_SOURCES = \
 				tests/attribute.cc \
 				tests/char_ref.cc \
