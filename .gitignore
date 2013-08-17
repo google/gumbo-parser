@@ -12,13 +12,32 @@
 .deps
 .dirstamp
 .libs
-config.log
-config.status
-gumbo.pc
-libtool
 Makefile
 Makefile.in
+aclocal.m4
 autom4te.cache
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+gumbo.pc
+gumbo_test
+gumbo_test.log
+gumbo_test.trs
+install-sh
+libtool
+ltmain.sh
+m4/
+missing
+test-driver
+test-suite.log
+
+# `make dist` artifacts
+/gumbo-[0-9].[0-9].tar.gz
+/gumbo-[0-9].[0-9]/
 
 # Example binaries
 clean_text
