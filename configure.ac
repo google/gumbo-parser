@@ -3,6 +3,7 @@
 
 AC_PREREQ([2.65])
 AC_INIT([gumbo], [1.0], [jdtang@google.com])
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/parser.c])
 #AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile gumbo.pc])
@@ -21,6 +22,10 @@ AC_C_INLINE
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_CHECK_LIB([gtest_main],
+             [main],
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [true]),
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [false]))
 
 # Init Automake & libtool
 AM_INIT_AUTOMAKE([foreign subdir-objects])
