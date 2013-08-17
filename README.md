@@ -107,7 +107,7 @@ Contributing
 ===========
 Bug reports are very much welcome.  Please use GitHub's issue-tracking feature, as it makes it easier to keep track of bugs and makes it possible for other project watchers to view the existing issues.
 
-Patches and pull requests are also welcome, but before accepting any patches that change the source code (documentation and autotools are fine, as Google doesn't use those), I need you to sign the Google Contributor License Agreement:
+Patches and pull requests are also welcome, but before accepting patches, I need you to sign the Google Contributor License Agreement:
 
 https://developers.google.com/open-source/cla/individual
 https://developers.google.com/open-source/cla/corporate
