@@ -2503,7 +2503,6 @@ static bool consume_named_ref(
   assert(output->first == kGumboNoChar);
   const NamedCharRef* char_ref = find_named_char_ref(input);
   if (char_ref) {
-    assert(char_ref->length >= 0);
     assert(char_ref->length == strlen(char_ref->name));
     char last_char = char_ref->name[char_ref->length - 1];
     if (last_char == ';') {
