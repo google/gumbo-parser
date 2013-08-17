@@ -96,3 +96,9 @@ Python usage
 To install the python bindings, make sure that the C library is installed first, and then "sudo python setup.py install" from the root of the distro.  This installs a 'gumbo' module; 'pydoc gumbo' should tell you about it.
 
 Recommended best-practice for Python usage is to use one of the adapters to an existing API (personally, I prefer BeautifulSoup) and write your program in terms of those.  The raw CTypes bindings should be considered building blocks for higher-level libraries and rarely referenced directly.
+
+Ruby usage
+============
+Nicolas Martyanoff has written Ruby bindings as a separate project.  Check them out at:
+
+https://github.com/galdor/ruby-gumbo
