@@ -145,23 +145,23 @@ an existing API (personally, I prefer BeautifulSoup) and write your program
 in terms of those.  The raw CTypes bindings should be considered building
 blocks for higher-level libraries and rarely referenced directly.
 
-Ruby usage
-============
-Nicolas Martyanoff has written Ruby bindings as a separate project.  Check them out at:
+External Bindings
+=================
 
-https://github.com/galdor/ruby-gumbo
+The following language bindings are maintained by various contributors in
+other repositories:
 
-NodeJS usage
-============
-Karl Westin has written Node.js bindings as a separate project.  Check them out at:
+* Ruby: [ruby-gumbo] by Nicolas Martyanoff
+* Node.js: [node-gumbo-parser] by Karl Westin
+* D: [gumbo-d] by Christopher Bertels
+* Lua: [lua-gumbo] by Craig Barnes
+* Objective-C: [OCGumbo] by TracyYih
 
-https://github.com/karlwestin/node-gumbo-parser
-
-D usage
-============
-Christopher Bertels has written D bindings as a separate project.  Check them out at:
-
-https://github.com/bakkdoor/gumbo-d
+[ruby-gumbo]: https://github.com/galdor/ruby-gumbo
+[node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
+[gumbo-d]: https://github.com/bakkdoor/gumbo-d
+[lua-gumbo]: https://github.com/craigbarnes/lua-gumbo
+[OCGumbo]: https://github.com/tracy-e/OCGumbo
 
 Contributing
 ===========
