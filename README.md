@@ -151,6 +151,12 @@ Nicolas Martyanoff has written Ruby bindings as a separate project.  Check them 
 
 https://github.com/galdor/ruby-gumbo
 
+NodeJS usage
+============
+Karl Westin has written Node.js bindings as a separate project.  Check them out at:
+
+https://github.com/karlwestin/node-gumbo-parser
+
 Contributing
 ===========
 Bug reports are very much welcome.  Please use GitHub's issue-tracking feature, as it makes it easier to keep track of bugs and makes it possible for other project watchers to view the existing issues.
