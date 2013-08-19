@@ -157,6 +157,12 @@ Karl Westin has written Node.js bindings as a separate project.  Check them out 
 
 https://github.com/karlwestin/node-gumbo-parser
 
+D usage
+============
+Christopher Bertels has written D bindings as a separate project.  Check them out at:
+
+https://github.com/bakkdoor/gumbo-d
+
 Contributing
 ===========
 Bug reports are very much welcome.  Please use GitHub's issue-tracking feature, as it makes it easier to keep track of bugs and makes it possible for other project watchers to view the existing issues.
