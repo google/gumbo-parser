@@ -24,6 +24,10 @@ Non-goals:
 * Support for encodings other than UTF-8.  For the most part, client code
   can convert the input stream to UTF-8 text using another library before
   processing.
+* Security.  Gumbo was initially designed for a product that worked with
+  trusted input files only.  We're working to harden this and make sure that it
+  behaves as expected even on malicious input, but for now, Gumbo should only be
+  run on trusted input or within a sandbox.
 * C89 support.  Most major compilers support C99 by now; the major exception
   (Microsoft Visual Studio) should be able to compile this in C++ mode with
   relatively few changes.  (Bug reports welcome.)
