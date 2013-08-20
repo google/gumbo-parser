@@ -155,13 +155,14 @@ other repositories:
 * Node.js: [node-gumbo-parser] by Karl Westin
 * D: [gumbo-d] by Christopher Bertels
 * Lua: [lua-gumbo] by Craig Barnes
-* Objective-C: [OCGumbo] by TracyYih
+* Objective-C: [OCGumbo] by TracyYih and [ObjectiveGumbo] by Programming Thomas
 
 [ruby-gumbo]: https://github.com/galdor/ruby-gumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
 [gumbo-d]: https://github.com/bakkdoor/gumbo-d
 [lua-gumbo]: https://github.com/craigbarnes/lua-gumbo
 [OCGumbo]: https://github.com/tracy-e/OCGumbo
+[ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 
 Contributing
 ===========
