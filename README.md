@@ -151,13 +151,18 @@ External Bindings
 The following language bindings are maintained by various contributors in
 other repositories:
 
-* Ruby: [ruby-gumbo] by Nicolas Martyanoff
+* Ruby: 
+  * [ruby-gumbo] by Nicolas Martyanoff
+  * [nokogumbo] by Sam Ruby
 * Node.js: [node-gumbo-parser] by Karl Westin
 * D: [gumbo-d] by Christopher Bertels
 * Lua: [lua-gumbo] by Craig Barnes
-* Objective-C: [OCGumbo] by TracyYih and [ObjectiveGumbo] by Programming Thomas
+* Objective-C:
+  * [ObjectiveGumbo] by Programming Thomas
+  * [OCGumbo] by TracyYih
 
 [ruby-gumbo]: https://github.com/galdor/ruby-gumbo
+[nokogumbo]: https://github.com/rubys/nokogumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
 [gumbo-d]: https://github.com/bakkdoor/gumbo-d
 [lua-gumbo]: https://github.com/craigbarnes/lua-gumbo
