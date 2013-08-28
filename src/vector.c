@@ -73,7 +73,8 @@ void gumbo_vector_add(
   vector->data[vector->length++] = element;
 }
 
-void* gumbo_vector_pop(struct GumboInternalParser* parser, GumboVector* vector) {
+void* gumbo_vector_pop(
+    struct GumboInternalParser* parser, GumboVector* vector) {
   if (vector->length == 0) {
     return NULL;
   }
@@ -90,7 +91,8 @@ int gumbo_vector_index_of(GumboVector* vector, void* element) {
 }
 
 void gumbo_vector_insert_at(
-    struct GumboInternalParser* parser, void* element, int index, GumboVector* vector) {
+    struct GumboInternalParser* parser, void* element, int index,
+    GumboVector* vector) {
   assert(index >= 0);
   assert(index <= vector->length);
   enlarge_vector_if_full(parser, vector);

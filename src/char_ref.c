@@ -2530,7 +2530,7 @@ static bool consume_named_ref(
 }
 
 bool consume_char_ref(
-    struct GumboInternalParser* parser, struct _Utf8Iterator* input,
+    struct GumboInternalParser* parser, struct GumboInternalUtf8Iterator* input,
     int additional_allowed_char, bool is_in_attribute,
     OneOrTwoCodepoints* output) {
   utf8iterator_mark(input);

@@ -29,11 +29,13 @@ struct GumboInternalParser;
 
 // Initializes a new GumboVector with the specified initial capacity.
 void gumbo_vector_init(
-    struct GumboInternalParser* parser, size_t initial_capacity, GumboVector* vector);
+    struct GumboInternalParser* parser, size_t initial_capacity,
+    GumboVector* vector);
 
 // Frees the memory used by an GumboVector.  Does not free the contained
 // pointers.
-void gumbo_vector_destroy(struct GumboInternalParser* parser, GumboVector* vector);
+void gumbo_vector_destroy(
+    struct GumboInternalParser* parser, GumboVector* vector);
 
 // Adds a new element to an GumboVector.
 void gumbo_vector_add(
@@ -47,7 +49,8 @@ void* gumbo_vector_pop(struct GumboInternalParser* parser, GumboVector* vector);
 // Inserts an element at a specific index.  This is potentially O(N) time, but
 // is necessary for some of the spec's behavior.
 void gumbo_vector_insert_at(
-    struct GumboInternalParser* parser, void* element, int index, GumboVector* vector);
+    struct GumboInternalParser* parser, void* element, int index,
+    GumboVector* vector);
 
 // Removes an element from the vector, or does nothing if the element is not in
 // the vector.

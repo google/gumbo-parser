@@ -7,6 +7,6 @@ Patches and pull requests are also welcome, but before accepting patches, I need
 https://developers.google.com/open-source/cla/individual
 https://developers.google.com/open-source/cla/corporate
 
-(Electronic signatures are fine or individual contributors.)
+(Electronic signatures are fine for individual contributors.)
 
 If you're unwilling to do this, it would be most helpful if you could file bug reports that include detailed prose about where in the code the error is and how to fix it, but leave out exact source code.

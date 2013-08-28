@@ -108,7 +108,7 @@ bool gumbo_lex(struct GumboInternalParser* parser, GumboToken* output);
 
 // Frees the internally-allocated pointers within an GumboToken.  Note that this
 // doesn't free the token itself, since oftentimes it will be allocated on the
-// stack.  A simple call to free() (or struct GumboInternalParser->deallocator, if
+// stack.  A simple call to free() (or GumboParser->deallocator, if
 // appropriate) can handle that.
 //
 // Note that if you are handing over ownership of the internal strings to some
