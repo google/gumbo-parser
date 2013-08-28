@@ -17,6 +17,7 @@
 __author__ = 'jdtang@google.com (Jonathan Tang)'
 
 import unittest
+
 import soup_adapter
 
 

@@ -6,7 +6,7 @@ def readme():
     return f.read()
 
 setup(name='gumbo',
-      version='0.9.0',
+      version='{{VERSION}}',
       description='Python bindings for Gumbo HTML parser',
       long_description=readme(),
       url='http://github.com/google/gumbo-parser',

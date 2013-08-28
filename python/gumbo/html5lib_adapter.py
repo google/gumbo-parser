@@ -23,7 +23,6 @@ tree, and gives back a DOM tree in that format.  Example:
 
 __author__ = 'jdtang@google.com (Jonathan Tang)'
 
-
 import gumboc
 
 

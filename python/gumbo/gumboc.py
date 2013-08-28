@@ -25,6 +25,7 @@ __author__ = 'jdtang@google.com (Jonathan Tang)'
 import contextlib
 import ctypes
 
+
 try:
   _dll = ctypes.cdll.LoadLibrary('libgumbo.so')
 except OSError:

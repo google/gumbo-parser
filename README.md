@@ -14,7 +14,7 @@ Goals & features:
 * Simple API that can be easily wrapped by other languages.
 * Support for source locations and pointers back to the original text.
 * Relatively lightweight, with no outside dependencies.
-* Passes all [html5lib-0.95 tests](https://github.com/html5lib/html5lib-tests). 
+* Passes all [html5lib-0.95 tests](https://github.com/html5lib/html5lib-tests).
 * Tested on over 2.5 billion pages from Google's index.
 
 Non-goals:

@@ -19,11 +19,11 @@ import glob
 import os
 import re
 import StringIO
+import unittest
 import warnings
 
 from html5lib import treebuilders
 
-import unittest
 import html5lib_adapter
 
 
