@@ -18,6 +18,7 @@
 __author__ = 'jdtang@google.com (Jonathan Tang)'
 
 import StringIO
+
 import unittest
 
 import gumboc

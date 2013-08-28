@@ -3,13 +3,14 @@
 
 AC_PREREQ([2.65])
 AC_INIT([gumbo], [1.0], [jdtang@google.com])
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/parser.c])
 #AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile gumbo.pc])
 
 # Checks for programs.
 AC_PROG_CXX
-AC_PROG_CC
+AC_PROG_CC_C99
 
 # Checks for libraries.
 
@@ -17,16 +18,18 @@ AC_PROG_CC
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h strings.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([memmove memset strcasecmp strncasecmp])
+AC_CHECK_LIB([gtest_main],
+             [main],
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [true]),
+             AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [false]))
 
 # Init Automake & libtool
 AM_INIT_AUTOMAKE([foreign subdir-objects])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 LT_INIT
 
 AC_OUTPUT

@@ -679,7 +679,6 @@ static bool node_tag_in(const GumboNode* node, ...) {
   bool result = false;
   for (GumboTag tag = va_arg(tags, GumboTag); tag != GUMBO_TAG_LAST;
        tag = va_arg(tags, GumboTag)) {
-    assert(tag >= 0);
     assert(tag <= GUMBO_TAG_LAST);
     if (tag == node_tag) {
       result = true;
@@ -896,11 +895,10 @@ static void clear_stack_to_table_context(GumboParser* parser) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#clear-the-stack-back-to-a-table-body-context
 void clear_stack_to_table_body_context(GumboParser* parser) {
-  GumboNode* node = get_current_node(parser);
   while (!node_tag_in(get_current_node(parser), GUMBO_TAG_HTML,
                       GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD,
                       GUMBO_TAG_LAST)) {
-    node = pop_current_node(parser);
+    pop_current_node(parser);
   }
 }
 
@@ -1547,6 +1545,8 @@ static bool is_special_node(const GumboNode* node) {
       return node_tag_in(node,
           GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_LAST);
   }
+  abort();
+  return false;  // Pacify compiler.
 }
 
 // Implicitly closes currently open tags until it reaches an element with the

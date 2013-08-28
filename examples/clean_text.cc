@@ -46,7 +46,7 @@ static std::string cleantext(GumboNode* node) {
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-    std::cout << "Usage: get_title <html filename>.\n";
+    std::cout << "Usage: clean_text <html filename>\n";
     exit(EXIT_FAILURE);
   }
   const char* filename = argv[1];

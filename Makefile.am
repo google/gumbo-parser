@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign subdir-objects
-
 # Googletest magic.  Gumbo relies on Googletest for its unittests, and
 # Googletest (by design) does not provide a "make install" option.  Instead,
 # we'll assume you copy (or symlink) the Googletest distribution into a 'gtest'
@@ -7,14 +5,23 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 # it automatically.  This approach (and these rules) are copied from the
 # protobuf distribution.
 
+ACLOCAL_AMFLAGS = -I m4
+
+if !HAVE_SHARED_LIBGTEST
+
 # Build gtest before we build protobuf tests.  We don't add gtest to SUBDIRS
 # because then "make check" would also build and run all of gtest's own tests,
 # which takes a lot of time and is generally not useful to us.  Also, we don't
 # want "make install" to recurse into gtest since we don't want to overwrite
 # the installed version of gtest if there is one.
-check-local:
+check-local: gtest/lib/libgtest.la gtest/lib/libgtest_main.la
+
+gtest/lib/libgtest.la gtest/lib/libgtest_main.la: gtest/Makefile
 	@echo "Making lib/libgtest.a lib/libgtest_main.a in gtest"
-	@cd gtest && ./configure && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
+	@cd gtest && $(MAKE) $(AM_MAKEFLAGS) lib/libgtest.la lib/libgtest_main.la
+
+gtest/Makefile: gtest/configure
+	@cd gtest && ./configure
 
 # We would like to clean gtest when "make clean" is invoked.  But we have to
 # be careful because clean-local is also invoked during "make distclean", but
@@ -28,8 +35,10 @@ clean-local:
 		cd gtest && $(MAKE) $(AM_MAKEFLAGS) clean; \
 	fi
 
+endif !HAVE_SHARED_LIBGTEST
+
 lib_LTLIBRARIES = libgumbo.la
-libgumbo_la_CFLAGS = -std=c99 -Wall
+libgumbo_la_CFLAGS = -Wall
 libgumbo_la_LDFLAGS = -version-info 1:0:0 -no-undefined
 libgumbo_la_SOURCES = \
 				src/attribute.c \
@@ -63,8 +72,10 @@ pkgconfig_DATA = gumbo.pc
 
 check_PROGRAMS = gumbo_test
 TESTS = gumbo_test
-gumbo_test_LDADD = libgumbo.la gtest/lib/libgtest.la gtest/lib/libgtest_main.la
-gumbo_test_CPPFLAGS = -I"$(srcdir)/src" -I"$(srcdir)/gtest/include"
+gumbo_test_CPPFLAGS = \
+				-I"$(srcdir)/." \
+				-I"$(srcdir)/src" \
+				-I"$(srcdir)/gtest/include"
 gumbo_test_SOURCES = \
 				tests/attribute.cc \
 				tests/char_ref.cc \
@@ -75,22 +86,22 @@ gumbo_test_SOURCES = \
 				tests/test_utils.cc \
 				tests/utf8.cc \
 				tests/vector.cc
-gumbo_test_DEPENDENCIES = check-local libgumbo.la
+gumbo_test_DEPENDENCIES = libgumbo.la
+gumbo_test_LDADD = libgumbo.la
+
+if HAVE_SHARED_LIBGTEST
+# FIXME(bnoordhuis) Should be configurable by the user.
+gumbo_test_LDADD += -lgtest -lgtest_main
+else
+gumbo_test_DEPENDENCIES += check-local
+gumbo_test_LDADD += gtest/lib/libgtest.la gtest/lib/libgtest_main.la
+endif
 
 noinst_PROGRAMS = clean_text find_links get_title positions_of_class
-clean_text_LDADD = libgumbo.la
-clean_text_CPPFLAGS = -I"$(srcdir)/src"
+LDADD = libgumbo.la
+AM_CPPFLAGS = -I"$(srcdir)/src"
+
 clean_text_SOURCES = examples/clean_text.cc
-
-find_links_LDADD = libgumbo.la
-find_links_CPPFLAGS = -I"$(srcdir)/src"
 find_links_SOURCES = examples/find_links.cc
-
-get_title_LDADD = libgumbo.la
-get_title_CPPFLAGS = -I"$(srcdir)/src" -std=gnu99
 get_title_SOURCES = examples/get_title.c
-
-positions_of_class_LDADD = libgumbo.la
-positions_of_class_CPPFLAGS = -I"$(srcdir)/src"
 positions_of_class_SOURCES = examples/positions_of_class.cc
-
