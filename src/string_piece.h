@@ -23,13 +23,13 @@
 extern "C" {
 #endif
 
-struct _GumboParser;
+struct GumboInternalParser;
 
 // Performs a deep-copy of an GumboStringPiece, allocating a fresh buffer in the
 // destination and copying over the characters from source.  Dest should be
 // empty, with no buffer allocated; otherwise, this leaks it.
 void gumbo_string_copy(
-    struct _GumboParser* parser, GumboStringPiece* dest,
+    struct GumboInternalParser* parser, GumboStringPiece* dest,
     const GumboStringPiece* source);
 
 #ifdef __cplusplus

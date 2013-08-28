@@ -29,7 +29,7 @@
 
 // The ordering of this enum is also used to build the dispatch table for the
 // tokenizer state machine, so if it is changed, be sure to update that too.
-typedef enum _GumboTokenizerEnum {
+typedef enum {
   GUMBO_LEX_DATA,
   GUMBO_LEX_CHAR_REF_IN_DATA,
   GUMBO_LEX_RCDATA,

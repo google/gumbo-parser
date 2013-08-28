@@ -23,7 +23,7 @@
 
 #include "util.h"
 
-struct _GumboParser;
+struct GumboInternalParser;
 
 const GumboStringPiece kGumboEmptyString = { NULL, 0 };
 
@@ -40,7 +40,7 @@ bool gumbo_string_equals_ignore_case(
 }
 
 void gumbo_string_copy(
-    struct _GumboParser* parser, GumboStringPiece* dest,
+    struct GumboInternalParser* parser, GumboStringPiece* dest,
     const GumboStringPiece* source) {
   dest->length = source->length;
   char* buffer = gumbo_parser_allocate(parser, source->length);

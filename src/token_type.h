@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 // An enum representing the type of token.
-typedef enum _GumboTokenType {
+typedef enum {
   GUMBO_TOKEN_DOCTYPE,
   GUMBO_TOKEN_START_TAG,
   GUMBO_TOKEN_END_TAG,

@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-struct _GumboParser;
+struct GumboInternalParser;
 
 typedef enum {
   GUMBO_ERR_UTF8_INVALID,
@@ -78,7 +78,7 @@ typedef enum {
 } GumboErrorType;
 
 // Additional data for duplicated attributes.
-typedef struct _GumboDuplicateAttrError {
+typedef struct GumboInternalDuplicateAttrError {
   // The name of the attribute.  Owned by this struct.
   const char* name;
 
@@ -114,7 +114,7 @@ typedef enum {
 // Additional data for tokenizer errors.
 // This records the current state and codepoint encountered - this is usually
 // enough to reconstruct what went wrong and provide a friendly error message.
-typedef struct _GumboTokenizerError {
+typedef struct GumboInternalTokenizerError {
   // The bad codepoint encountered.
   int codepoint;
 
@@ -123,7 +123,7 @@ typedef struct _GumboTokenizerError {
 } GumboTokenizerError;
 
 // Additional data for parse errors.
-typedef struct _GumboParserError {
+typedef struct GumboInternalParserError {
   // The type of input token that resulted in this error.
   GumboTokenType input_type;
 
@@ -142,7 +142,7 @@ typedef struct _GumboParserError {
 // The overall error struct representing an error in decoding/tokenizing/parsing
 // the HTML.  This contains an enumerated type flag, a source position, and then
 // a union of fields containing data specific to the error.
-typedef struct _GumboError {
+typedef struct GumboInternalError {
   // The type of error.
   GumboErrorType type;
 
@@ -176,23 +176,23 @@ typedef struct _GumboError {
 
     // Parser state, for GUMBO_ERR_PARSER and
     // GUMBO_ERR_UNACKNOWLEDGE_SELF_CLOSING_TAG.
-    struct _GumboParserError parser;
+    struct GumboInternalParserError parser;
   } v;
 } GumboError;
 
 // Adds a new error to the parser's error list, and returns a pointer to it so
 // that clients can fill out the rest of its fields.  May return NULL if we're
 // already over the max_errors field specified in GumboOptions.
-GumboError* gumbo_add_error(struct _GumboParser* parser);
+GumboError* gumbo_add_error(struct GumboInternalParser* parser);
 
 // Initializes the errors vector in the parser.
-void gumbo_init_errors(struct _GumboParser* errors);
+void gumbo_init_errors(struct GumboInternalParser* errors);
 
 // Frees all the errors in the 'errors_' field of the parser.
-void gumbo_destroy_errors(struct _GumboParser* errors);
+void gumbo_destroy_errors(struct GumboInternalParser* errors);
 
 // Frees the memory used for a single GumboError.
-void gumbo_error_destroy(struct _GumboParser* parser, GumboError* error);
+void gumbo_error_destroy(struct GumboInternalParser* parser, GumboError* error);
 
 // Prints an error to a string.  This fills an empty GumboStringBuffer with a
 // freshly-allocated buffer containing the error message text.  The caller is
@@ -200,7 +200,7 @@ void gumbo_error_destroy(struct _GumboParser* parser, GumboError* error);
 // the allocator specified in the GumboParser config and hence should be freed
 // by gumbo_parser_deallocate().)
 void gumbo_error_to_string(
-    struct _GumboParser* parser, const GumboError* error,
+    struct GumboInternalParser* parser, const GumboError* error,
     GumboStringBuffer* output);
 
 // Prints a caret diagnostic to a string.  This fills an empty GumboStringBuffer
@@ -209,13 +209,13 @@ void gumbo_error_to_string(
 // allocated with the allocator specified in the GumboParser config and hence
 // should be freed by gumbo_parser_deallocate().)
 void gumbo_caret_diagnostic_to_string(
-    struct _GumboParser* parser, const GumboError* error,
+    struct GumboInternalParser* parser, const GumboError* error,
     const char* source_text, GumboStringBuffer* output);
 
 // Like gumbo_caret_diagnostic_to_string, but prints the text to stdout instead
 // of writing to a string.
 void gumbo_print_caret_diagnostic(
-    struct _GumboParser* parser, const GumboError* error,
+    struct GumboInternalParser* parser, const GumboError* error,
     const char* source_text);
 
 #ifdef __cplusplus

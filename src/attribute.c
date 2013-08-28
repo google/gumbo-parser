@@ -23,10 +23,10 @@
 
 #include "util.h"
 
-struct _GumboParser;
+struct GumboInternalParser;
 
 GumboAttribute* gumbo_get_attribute(
-    const struct _GumboVector* attributes, const char* name) {
+    const GumboVector* attributes, const char* name) {
   for (int i = 0; i < attributes->length; ++i) {
     GumboAttribute* attr = attributes->data[i];
     if (!strcasecmp(attr->name, name)) {
@@ -37,7 +37,7 @@ GumboAttribute* gumbo_get_attribute(
 }
 
 void gumbo_destroy_attribute(
-    struct _GumboParser* parser, GumboAttribute* attribute) {
+    struct GumboInternalParser* parser, GumboAttribute* attribute) {
   gumbo_parser_deallocate(parser, (void*) attribute->name);
   gumbo_parser_deallocate(parser, (void*) attribute->value);
   gumbo_parser_deallocate(parser, (void*) attribute);

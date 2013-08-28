@@ -59,7 +59,7 @@ extern "C" {
  * buffer of bytes), while the column field is often used to reference a
  * particular column on a printable display, which nowadays is usually UTF-8.
  */
-typedef struct _GumboSourcePosition {
+typedef struct {
   unsigned int line;
   unsigned int column;
   unsigned int offset;
@@ -81,7 +81,7 @@ extern const GumboSourcePosition kGumboEmptySourcePosition;
  * Clients should assume that it is not NUL-terminated, and should always use
  * explicit lengths when manipulating them.
  */
-typedef struct _GumboStringPiece {
+typedef struct {
   /** A pointer to the beginning of the string.  NULL iff length == 0. */
   const char* data;
 
@@ -116,7 +116,7 @@ bool gumbo_string_equals_ignore_case(
  * library.  Iteration can be done through inspecting the structure directly in
  * a for-loop.
  */
-typedef struct _GumboVector {
+typedef struct {
   /** Data elements.  This points to a dynamically-allocated array of capacity
    * elements, each a void* to the element itself.
    */
@@ -151,7 +151,7 @@ int gumbo_vector_index_of(GumboVector* vector, void* element);
  * efficiency benefits, by letting the parser work with enums instead of
  * strings.
  */
-typedef enum _GumboTag {
+typedef enum {
   // http://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#the-root-element
   GUMBO_TAG_HTML,
   // http://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#document-metadata
@@ -365,7 +365,7 @@ GumboTag gumbo_tag_enum(const char* tagname);
  * HTML includes special handling for XLink, XML, and XMLNS namespaces on
  * attributes.  Everything else goes in the generatic "NONE" namespace.
  */
-typedef enum _GumboAttributeNamespaceEnum {
+typedef enum {
   GUMBO_ATTR_NAMESPACE_NONE,
   GUMBO_ATTR_NAMESPACE_XLINK,
   GUMBO_ATTR_NAMESPACE_XML,
@@ -377,7 +377,7 @@ typedef enum _GumboAttributeNamespaceEnum {
  * name-value pair, but also includes information about source locations and
  * original source text.
  */
-typedef struct _GumboAttribute {
+typedef struct {
   /**
    * The namespace for the attribute.  This will usually be
    * GUMBO_ATTR_NAMESPACE_NONE, but some XLink/XMLNS/XML attributes take special
@@ -438,14 +438,13 @@ typedef struct _GumboAttribute {
  * and return it, or NULL if no such attribute exists.  This uses a
  * case-insensitive match, as HTML is case-insensitive.
  */
-GumboAttribute* gumbo_get_attribute(
-    const struct _GumboVector* attrs, const char* name);
+GumboAttribute* gumbo_get_attribute(const GumboVector* attrs, const char* name);
 
 /**
  * Enum denoting the type of node.  This determines the type of the node.v
  * union.
  */
-typedef enum _GumboNodeType {
+typedef enum {
   /** Document node.  v will be a GumboDocument. */
   GUMBO_NODE_DOCUMENT,
   /** Element node.  v will be a GumboElement. */
@@ -464,10 +463,10 @@ typedef enum _GumboNodeType {
  * Forward declaration of GumboNode so it can be used recursively in
  * GumboNode.parent.
  */
-typedef struct _GumboNode GumboNode;
+typedef struct GumboInternalNode GumboNode;
 
 /** http://www.whatwg.org/specs/web-apps/current-work/complete/dom.html#quirks-mode */
-typedef enum _GumboQuirksModeEnum {
+typedef enum {
   GUMBO_DOCTYPE_NO_QUIRKS,
   GUMBO_DOCTYPE_QUIRKS,
   GUMBO_DOCTYPE_LIMITED_QUIRKS
@@ -480,7 +479,7 @@ typedef enum _GumboQuirksModeEnum {
  * <math> tag is in the MathML namespace, and anything else is inside the HTML
  * namespace.  No other namespaces are supported, so this can be an enum only.
  */
-typedef enum _GumboNamespaceEnum {
+typedef enum {
   GUMBO_NAMESPACE_HTML,
   GUMBO_NAMESPACE_SVG,
   GUMBO_NAMESPACE_MATHML
@@ -494,7 +493,7 @@ typedef enum _GumboNamespaceEnum {
  * may not be allowed by a style guide, or track the prevalence of incorrect or
  * tricky HTML code.
  */
-typedef enum _GumboParseFlags {
+typedef enum {
   /**
    * A normal node - both start and end tags appear in the source, nothing has
    * been reparented.
@@ -568,7 +567,7 @@ typedef enum _GumboParseFlags {
 /**
  * Information specific to document nodes.
  */
-typedef struct _GumboDocument {
+typedef struct {
   /**
    * An array of GumboNodes, containing the children of this element.  This will
    * normally consist of the <html> element and any comment nodes found.
@@ -595,7 +594,7 @@ typedef struct _GumboDocument {
  * The struct used to represent TEXT, CDATA, COMMENT, and WHITESPACE elements.
  * This contains just a block of text and its position.
  */
-typedef struct _GumboText {
+typedef struct {
   /**
    * The text of this node, after entities have been parsed and decoded.  For
    * comment/cdata nodes, this does not include the comment delimiters.
@@ -619,7 +618,7 @@ typedef struct _GumboText {
  * The struct used to represent all HTML elements.  This contains information
  * about the tag, attributes, and child nodes.
  */
-typedef struct _GumboElement {
+typedef struct {
   /**
    * An array of GumboNodes, containing the children of this element.  Pointers
    * are owned.
@@ -664,7 +663,7 @@ typedef struct _GumboElement {
  * A supertype for GumboElement and GumboText, so that we can include one
  * generic type in lists of children and cast as necessary to subtypes.
  */
-struct _GumboNode {
+struct GumboInternalNode {
   /** The type of node that this is. */
   GumboNodeType type;
 
@@ -710,7 +709,7 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * handling, etc.
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
-typedef struct _GumboOptions {
+typedef struct GumboInternalOptions {
   /** A memory allocator function.  Default: malloc. */
   GumboAllocatorFunction allocator;
 
@@ -749,7 +748,7 @@ typedef struct _GumboOptions {
 extern const GumboOptions kGumboDefaultOptions;
 
 /** The output struct containing the results of the parse. */
-typedef struct _GumboOutput {
+typedef struct GumboInternalOutput {
   /**
    * Pointer to the document node.  This is a GumboNode of type NODE_DOCUMENT
    * that contains the entire document as its child.
@@ -779,18 +778,18 @@ typedef struct _GumboOutput {
  *
  * This doesn't support buffers longer than 4 gigabytes.
  */
-struct _GumboOutput* gumbo_parse(const char* buffer);
+GumboOutput* gumbo_parse(const char* buffer);
 
 /**
  * Extended version of gumbo_parse that takes an explicit options structure,
  * buffer, and length.
  */
-struct _GumboOutput* gumbo_parse_with_options(
+GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t buffer_length);
 
 /** Release the memory used for the parse tree & parse errors. */
 void gumbo_destroy_output(
-    const struct _GumboOptions* options, GumboOutput* output);
+    const GumboOptions* options, GumboOutput* output);
 
 
 #ifdef __cplusplus

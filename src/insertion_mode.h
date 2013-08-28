@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#insertion-mode
-typedef enum _GumboInsertionMode {
+typedef enum {
   GUMBO_INSERTION_MODE_INITIAL,
   GUMBO_INSERTION_MODE_BEFORE_HTML,
   GUMBO_INSERTION_MODE_BEFORE_HEAD,

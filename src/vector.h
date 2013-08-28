@@ -25,39 +25,39 @@ extern "C" {
 
 // Forward declaration since it's passed into some of the functions in this
 // header.
-struct _GumboParser;
+struct GumboInternalParser;
 
 // Initializes a new GumboVector with the specified initial capacity.
 void gumbo_vector_init(
-    struct _GumboParser* parser, size_t initial_capacity, GumboVector* vector);
+    struct GumboInternalParser* parser, size_t initial_capacity, GumboVector* vector);
 
 // Frees the memory used by an GumboVector.  Does not free the contained
 // pointers.
-void gumbo_vector_destroy(struct _GumboParser* parser, GumboVector* vector);
+void gumbo_vector_destroy(struct GumboInternalParser* parser, GumboVector* vector);
 
 // Adds a new element to an GumboVector.
 void gumbo_vector_add(
-    struct _GumboParser* parser, void* element, GumboVector* vector);
+    struct GumboInternalParser* parser, void* element, GumboVector* vector);
 
 // Removes and returns the element most recently added to the GumboVector.
 // Ownership is transferred to caller.  Capacity is unchanged.  If the vector is
 // empty, NULL is returned.
-void* gumbo_vector_pop(struct _GumboParser* parser, GumboVector* vector);
+void* gumbo_vector_pop(struct GumboInternalParser* parser, GumboVector* vector);
 
 // Inserts an element at a specific index.  This is potentially O(N) time, but
 // is necessary for some of the spec's behavior.
 void gumbo_vector_insert_at(
-    struct _GumboParser* parser, void* element, int index, GumboVector* vector);
+    struct GumboInternalParser* parser, void* element, int index, GumboVector* vector);
 
 // Removes an element from the vector, or does nothing if the element is not in
 // the vector.
 void gumbo_vector_remove(
-    struct _GumboParser* parser, void* element, GumboVector* vector);
+    struct GumboInternalParser* parser, void* element, GumboVector* vector);
 
 // Removes and returns an element at a specific index.  Note that this is
 // potentially O(N) time and should be used sparingly.
 void* gumbo_vector_remove_at(
-    struct _GumboParser* parser, int index, GumboVector* vector);
+    struct GumboInternalParser* parser, int index, GumboVector* vector);
 
 #ifdef __cplusplus
 }

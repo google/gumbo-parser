@@ -340,7 +340,7 @@ typedef struct _TextNodeBufferState {
   GumboNodeType _type;
 } TextNodeBufferState;
 
-typedef struct _GumboParserState {
+typedef struct GumboInternalParserState {
   // http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#insertion-mode
   GumboInsertionMode _insertion_mode;
 
