@@ -169,19 +169,6 @@ other repositories:
 [OCGumbo]: https://github.com/tracy-e/OCGumbo
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 
-Contributing
-===========
-Bug reports are very much welcome.  Please use GitHub's issue-tracking feature, as it makes it easier to keep track of bugs and makes it possible for other project watchers to view the existing issues.
-
-Patches and pull requests are also welcome, but before accepting patches, I need you to sign the Google Contributor License Agreement:
-
-https://developers.google.com/open-source/cla/individual
-https://developers.google.com/open-source/cla/corporate
-
-(Electronic signatures are fine or individual contributors.)
-
-If you're unwilling to do this, it would be most helpful if you could file bug reports that include detailed prose about where in the code the error is and how to fix it, but leave out exact source code.
-
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
 [html5lib-0.95 tests]: https://github.com/html5lib/html5lib-tests
