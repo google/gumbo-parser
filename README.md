@@ -151,7 +151,7 @@ External Bindings
 The following language bindings are maintained by various contributors in
 other repositories:
 
-* Ruby: 
+* Ruby:
   * [ruby-gumbo] by Nicolas Martyanoff
   * [nokogumbo] by Sam Ruby
 * Node.js: [node-gumbo-parser] by Karl Westin

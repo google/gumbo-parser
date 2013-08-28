@@ -23,9 +23,7 @@ tree, and gives back a DOM tree in that format.  Example:
 
 __author__ = 'jdtang@google.com (Jonathan Tang)'
 
-
 import gumboc
-
 
 # These should match html5lib.constants.namespaces, and be indexed by the enum
 # values of gumboc.Namespace
