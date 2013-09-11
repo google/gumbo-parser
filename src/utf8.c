@@ -115,7 +115,7 @@ static void read_char(Utf8Iterator* iter) {
   // we want.  If not, we set the iter_truncated flag, mark this as a bad
   // character, and adjust the current width so that it consumes the rest of the
   // iter.
-  int code_point = c & mask;
+  uint64_t code_point = c & mask;
   if (iter->_start + iter->_width > iter->_end) {
     iter->_width = iter->_end - iter->_start;
     add_error(iter, GUMBO_ERR_UTF8_TRUNCATED);
@@ -136,6 +136,7 @@ static void read_char(Utf8Iterator* iter) {
     }
     code_point = (code_point << 6) | (c & ~0x80);
   }
+  if (code_point > 0x10FFFF) is_bad_char = true;
 
   // If we had a decode error, set the current code point to the replacement
   // character and flip the flag indicating that a decode error occurred.
