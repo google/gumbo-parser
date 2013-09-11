@@ -30,11 +30,13 @@ static std::string find_line(
     const std::string& original_text, const GumboAttribute& attr) {
   size_t attr_index = attr.original_value.data - original_text.data();
   size_t begin = original_text.rfind("\n", attr_index) + 1;
-  ssize_t end = original_text.find("\n", attr_index) - 1;
-  if (end < 0) {
+  size_t end = original_text.find("\n", attr_index);
+  if (end != std::string::npos) {
+    end--;
+  } else {
     end = (size_t) original_text.length() - 1;
   }
-  end = std::min((size_t)end, attr_index + 40);
+  end = std::min(end, attr_index + 40);
   begin = std::max(begin, attr_index - 40);
   return original_text.substr(begin, end - begin);
 }
