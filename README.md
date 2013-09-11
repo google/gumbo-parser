@@ -86,6 +86,15 @@ Debian and Fedora users can install libgtest with:
     $ apt-get install libgtest-dev  # Debian/Ubuntu
     $ yum install gtest-devel       # CentOS/Fedora
 
+Note for Ubuntu users: libgtest-dev package only install source files.
+You have to make libraries yourself using cmake:
+
+    $ sudo apt-get install cmake
+    $ cd /usr/src/gtest
+    $ sudo cmake CMakeLists.txt
+    $ sudo make
+    $ sudo cp *.a /usr/lib
+
 The configure script will detect the presence of the library and use that
 instead.
 
