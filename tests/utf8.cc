@@ -22,7 +22,7 @@
 #include "gumbo.h"
 #include "parser.h"
 #include "test_utils.h"
-#include "gtest/gtest.h"
+#include "third_party/gtest/include/gtest/gtest.h"
 
 namespace {
 

@@ -19,8 +19,7 @@
 #include <stdio.h>
 
 #include "test_utils.h"
-
-#include "gtest/gtest.h"
+#include "third_party/gtest/include/gtest/gtest.h"
 
 extern const char* kGumboTagNames[];
 

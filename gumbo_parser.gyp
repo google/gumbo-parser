@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 {
   'targets': [
@@ -44,6 +43,32 @@
         'src/util.h',
         'src/vector.c',
         'src/vector.h',
+      ],
+    },
+    {
+      'target_name': 'gumbo_parser_unittests',
+      'type': 'executable',
+      'dependencies': [
+        'gtest.gyp:gtest',
+        'gtest.gyp:gtest_main',
+        'gumbo_parser',
+      ],
+      'include_dirs': [
+        '.',
+        '..',
+        'src',
+      ],
+      'sources': [
+        'tests/attribute.cc',
+        'tests/char_ref.cc',
+        'tests/parser.cc',
+        'tests/string_buffer.cc',
+        'tests/string_piece.cc',
+        'tests/test_utils.cc',
+        'tests/test_utils.h',
+        'tests/tokenizer.cc',
+        'tests/utf8.cc',
+        'tests/vector.cc',
       ],
     },
   ],
