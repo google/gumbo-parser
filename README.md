@@ -170,6 +170,7 @@ other repositories:
   * [ObjectiveGumbo] by Programming Thomas
   * [OCGumbo] by TracyYih
 * C#: [GumboBindings] by Vladimir Zotov
+* PHP: [GumboPHP] by Paul Preece
 [ruby-gumbo]: https://github.com/galdor/ruby-gumbo
 [nokogumbo]: https://github.com/rubys/nokogumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
@@ -178,6 +179,7 @@ other repositories:
 [OCGumbo]: https://github.com/tracy-e/OCGumbo
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 [GumboBindings]: https://github.com/rgripper/GumboBindings
+[GumboPHP]: https://github.com/BipSync/gumbo
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
