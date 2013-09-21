@@ -18,8 +18,8 @@
 
 #include <string>
 
+#include "gtest/gtest.h"
 #include "test_utils.h"
-#include "third_party/gtest/include/gtest/gtest.h"
 
 namespace {
 
