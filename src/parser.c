@@ -603,7 +603,7 @@ static GumboInsertionMode get_appropriate_insertion_mode(
 // This performs the actual "reset the insertion mode" loop.
 static void reset_insertion_mode_appropriately(GumboParser* parser) {
   const GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  for (int i = open_elements->length - 1; i >= 0; --i) {
+  for (int i = open_elements->length; --i >= 0; ) {
     GumboInsertionMode mode =
         get_appropriate_insertion_mode(open_elements->data[i], i == 0);
     if (mode != GUMBO_INSERTION_MODE_INITIAL) {
@@ -787,7 +787,7 @@ static void foster_parent_element(GumboParser* parser, GumboNode* node) {
   GumboNode* foster_parent_element = open_elements->data[0];
   assert(foster_parent_element->type == GUMBO_NODE_ELEMENT);
   assert(node_tag_is(foster_parent_element, GUMBO_TAG_HTML));
-  for (int i = open_elements->length - 1; i > 1; --i) {
+  for (int i = open_elements->length; --i > 1; ) {
     GumboNode* table_element = open_elements->data[i];
     if (node_tag_is(table_element, GUMBO_TAG_TABLE)) {
       foster_parent_element = table_element->parent;
@@ -1087,7 +1087,7 @@ static void acknowledge_self_closing_tag(GumboParser* parser) {
 // elements, and fills in its index if so.
 static bool find_last_anchor_index(GumboParser* parser, int* anchor_index) {
   GumboVector* elements = &parser->_parser_state->_active_formatting_elements;
-  for (int i = elements->length - 1; i >= 0; --i) {
+  for (int i = elements->length; --i >= 0; ) {
     GumboNode* node = elements->data[i];
     if (node == &kActiveFormattingScopeMarker) {
       return false;
@@ -1110,7 +1110,7 @@ static int count_formatting_elements_of_tag(
   const GumboElement* desired_element = &desired_node->v.element;
   GumboVector* elements = &parser->_parser_state->_active_formatting_elements;
   int num_identical_elements = 0;
-  for (int i = elements->length - 1; i >= 0; --i) {
+  for (int i = elements->length; --i >= 0; ) {
     GumboNode* node = elements->data[i];
     if (node == &kActiveFormattingScopeMarker) {
       break;
@@ -1314,7 +1314,7 @@ static bool has_an_element_in_specific_scope(
   va_end(args);
 
   bool result = false;
-  for (int i = open_elements->length - 1; i >= 0; --i) {
+  for (int i = open_elements->length; --i >= 0; ) {
     const GumboNode* node = open_elements->data[i];
     if (node->type != GUMBO_NODE_ELEMENT) {
       continue;
@@ -1375,7 +1375,7 @@ static bool has_an_element_in_scope(GumboParser* parser, GumboTag tag) {
 // parameterize it.
 static bool has_node_in_scope(GumboParser* parser, const GumboNode* node) {
   GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  for (int i = open_elements->length - 1; i >= 0; --i) {
+  for (int i = open_elements->length; --i >= 0; ) {
     const GumboNode* current = open_elements->data[i];
     if (current == node) {
       return true;
@@ -1611,7 +1611,7 @@ static void maybe_implicitly_close_list_tag(
     GumboParser* parser, GumboToken* token, bool is_li) {
   GumboParserState* state = parser->_parser_state;
   state->_frameset_ok = false;
-  for (int i = state->_open_elements.length - 1; i >= 0; --i) {
+  for (int i = state->_open_elements.length; --i >= 0; ) {
     const GumboNode* node = state->_open_elements.data[i];
     bool is_list_tag = is_li ?
         node_tag_is(node, GUMBO_TAG_LI) :
@@ -1786,7 +1786,7 @@ static bool adoption_agency_algorithm(
     // Step 4.
     GumboNode* formatting_node = NULL;
     int formatting_node_in_open_elements = -1;
-    for (int j = state->_active_formatting_elements.length - 1; j >= 0; --j) {
+    for (int j = state->_active_formatting_elements.length; --j >= 0; ) {
       GumboNode* current_node = state->_active_formatting_elements.data[j];
       if (current_node == &kActiveFormattingScopeMarker) {
         gumbo_debug("Broke on scope marker; aborting.\n");
@@ -2898,7 +2898,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     // If we see a), implicitly close everything up to and including it.  If we
     // see b), then record a parse error, don't close anything (except the
     // implied end tags) and ignore the end tag token.
-    for (int i = state->_open_elements.length - 1; ; --i) {
+    for (int i = state->_open_elements.length; --i >= 0; ) {
       const GumboNode* node = state->_open_elements.data[i];
       if (node->v.element.tag_namespace == GUMBO_NAMESPACE_HTML &&
           node_tag_is(node, end_tag)) {
@@ -3718,8 +3718,8 @@ static bool handle_in_foreign_content(GumboParser* parser, GumboToken* token) {
       add_parse_error(parser, token);
       is_success = false;
     }
-    int i = parser->_parser_state->_open_elements.length - 1;
-    while (i > 0) {
+    int i = parser->_parser_state->_open_elements.length;
+    for( --i; i > 0; ) {
       // Here we move up the stack until we find an HTML element (in which
       // case we do nothing) or we find the element that we're about to
       // close (in which case we pop everything we've seen until that

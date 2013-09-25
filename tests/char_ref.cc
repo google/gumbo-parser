@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "gtest/gtest.h"
 #include "test_utils.h"
 #include "utf8.h"
-#include "gtest/gtest.h"
 
 namespace {
 
