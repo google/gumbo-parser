@@ -354,6 +354,10 @@ typedef struct GumboInternalParserState {
   // http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#the-list-of-active-formatting-elements
   GumboVector /*GumboNode*/ _active_formatting_elements;
 
+  // The stack of template insertion modes.
+  // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#the-insertion-mode
+  GumboVector /*InsertionMode*/ _template_insertion_modes;
+
   // http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#the-element-pointers
   GumboNode* _head_element;
   GumboNode* _form_element;
@@ -482,6 +486,7 @@ static void parser_state_init(GumboParser* parser) {
   gumbo_string_buffer_init(parser, &parser_state->_text_node._buffer);
   gumbo_vector_init(parser, 10, &parser_state->_open_elements);
   gumbo_vector_init(parser, 5, &parser_state->_active_formatting_elements);
+  gumbo_vector_init(parser, 5, &parser_state->_template_insertion_modes);
   parser_state->_head_element = NULL;
   parser_state->_form_element = NULL;
   parser_state->_current_token = NULL;
@@ -494,6 +499,7 @@ static void parser_state_destroy(GumboParser* parser) {
   GumboParserState* state = parser->_parser_state;
   gumbo_vector_destroy(parser, &state->_active_formatting_elements);
   gumbo_vector_destroy(parser, &state->_open_elements);
+  gumbo_vector_destroy(parser, &state->_template_insertion_modes);
   gumbo_string_buffer_destroy(parser, &state->_text_node._buffer);
   gumbo_parser_deallocate(parser, state);
 }
@@ -529,6 +535,25 @@ static bool is_in_static_list(
     }
   }
   return false;
+}
+
+static void push_template_insertion_mode(
+    GumboParser* parser, GumboInsertionMode mode) {
+  gumbo_vector_add(
+      parser, (void*) mode, &parser->_parser_state->_template_insertion_modes);
+}
+
+static void pop_template_insertion_mode(GumboParser* parser) {
+  gumbo_vector_pop(parser, &parser->_parser_state->_template_insertion_modes);
+}
+
+static GumboInsertionMode get_current_template_insertion_mode(
+    GumboParser* parser) {
+  GumboVector* template_insertion_modes =
+      &parser->_parser_state->_template_insertion_modes;
+  assert(template_insertion_modes->length > 0);
+  return (GumboInsertionMode) template_insertion_modes->data[
+      template_insertion_modes->length - 1];
 }
 
 static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
