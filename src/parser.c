@@ -3440,6 +3440,12 @@ static bool handle_in_select_in_table(GumboParser* parser, GumboToken* token) {
   }
 }
 
+// http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#parsing-main-intemplate
+static bool handle_in_template(GumboParser* parser, GumboToken* token) {
+  // TODO(jdtang): Implement this.
+  return true;
+}
+
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-afterbody
 static bool handle_after_body(GumboParser* parser, GumboToken* token) {
   if (token->type == GUMBO_TOKEN_WHITESPACE ||
@@ -3611,6 +3617,7 @@ static const TokenHandler kTokenHandlers[] = {
   handle_in_cell,
   handle_in_select,
   handle_in_select_in_table,
+  handle_in_template,
   handle_after_body,
   handle_in_frameset,
   handle_after_frameset,
@@ -3619,7 +3626,7 @@ static const TokenHandler kTokenHandlers[] = {
 };
 
 static bool handle_html_content(GumboParser* parser, GumboToken* token) {
-  return kTokenHandlers[parser->_parser_state->_insertion_mode](
+  return kTokenHandlers[(unsigned int) parser->_parser_state->_insertion_mode](
       parser, token);
 }
 
