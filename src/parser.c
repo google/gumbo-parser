@@ -1520,7 +1520,7 @@ static bool is_special_node(const GumboNode* node) {
            GUMBO_TAG_BASEFONT, GUMBO_TAG_BGSOUND, GUMBO_TAG_BLOCKQUOTE,
            GUMBO_TAG_BODY, GUMBO_TAG_BR, GUMBO_TAG_BUTTON, GUMBO_TAG_CAPTION,
            GUMBO_TAG_CENTER, GUMBO_TAG_COL, GUMBO_TAG_COLGROUP,
-           GUMBO_TAG_COMMAND, GUMBO_TAG_DD, GUMBO_TAG_DETAILS, GUMBO_TAG_DIR,
+           GUMBO_TAG_MENUITEM, GUMBO_TAG_DD, GUMBO_TAG_DETAILS, GUMBO_TAG_DIR,
            GUMBO_TAG_DIV, GUMBO_TAG_DL, GUMBO_TAG_DT, GUMBO_TAG_EMBED,
            GUMBO_TAG_FIELDSET, GUMBO_TAG_FIGCAPTION, GUMBO_TAG_FIGURE,
            GUMBO_TAG_FOOTER, GUMBO_TAG_FORM, GUMBO_TAG_FRAME,
@@ -2105,7 +2105,7 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HTML)) {
     return handle_in_body(parser, token);
   } else if (tag_in(token, kStartTag, GUMBO_TAG_BASE, GUMBO_TAG_BASEFONT,
-                    GUMBO_TAG_BGSOUND, GUMBO_TAG_COMMAND, GUMBO_TAG_LINK,
+                    GUMBO_TAG_BGSOUND, GUMBO_TAG_MENUITEM, GUMBO_TAG_LINK,
                     GUMBO_TAG_LAST)) {
     insert_element_from_token(parser, token);
     pop_current_node(parser);
@@ -2316,7 +2316,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     merge_attributes(parser, token, parser->_output->root);
     return false;
   } else if (tag_in(token, kStartTag, GUMBO_TAG_BASE, GUMBO_TAG_BASEFONT,
-                    GUMBO_TAG_BGSOUND, GUMBO_TAG_COMMAND, GUMBO_TAG_LINK,
+                    GUMBO_TAG_BGSOUND, GUMBO_TAG_MENUITEM, GUMBO_TAG_LINK,
                     GUMBO_TAG_META, GUMBO_TAG_NOFRAMES, GUMBO_TAG_SCRIPT,
                     GUMBO_TAG_STYLE, GUMBO_TAG_TITLE, GUMBO_TAG_LAST)) {
     return handle_in_head(parser, token);

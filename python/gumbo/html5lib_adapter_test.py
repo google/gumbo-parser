@@ -140,6 +140,12 @@ def BuildTestCases(cls):
       if '<noscript>' in test['data']:
         continue
 
+      # <command> has been renamed to <menuitem> in recent versions of the spec.
+      # html5lib 0.95 does not include this yet, and so we disable tests that
+      # include the old tag.
+      if '<command>' in test['data']:
+        continue
+
       def test_func(
           self,
           inner_html=test['document-fragment'],
