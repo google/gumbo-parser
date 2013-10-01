@@ -743,7 +743,7 @@ static bool is_html_integration_point(const GumboNode* node) {
 static void append_node(
     GumboParser* parser, GumboNode* parent, GumboNode* node) {
   assert(node->parent == NULL);
-  assert(node->index_within_parent = -1);
+  assert(node->index_within_parent == -1);
   GumboVector* children;
   if (parent->type == GUMBO_NODE_ELEMENT) {
     children = &parent->v.element.children;
@@ -762,7 +762,7 @@ static void append_node(
 static void insert_node(
     GumboParser* parser, GumboNode* parent, int index, GumboNode* node) {
   assert(node->parent == NULL);
-  assert(node->index_within_parent = -1);
+  assert(node->index_within_parent == -1);
   assert(parent->type == GUMBO_NODE_ELEMENT);
   GumboVector* children = &parent->v.element.children;
   assert(index >= 0);
