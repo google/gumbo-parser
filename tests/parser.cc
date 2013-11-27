@@ -285,7 +285,7 @@ TEST_F(GumboParserTest, Whitespace) {
 }
 
 TEST_F(GumboParserTest, DuplicateAttributes) {
-  std::string text("<input checked=\"false\" checked id=foo id='bar'>");
+  std::string text("<input checked=\"false\" checked=true id=foo id='bar'>");
   Parse(text);
 
   GumboNode* body;
