@@ -815,6 +815,7 @@ static void finish_attribute_value(GumboParser* parser) {
     // Duplicate attribute name detected in an earlier state, so we have to
     // ignore the value.
     tag_state->_drop_next_attr_value = false;
+    reinitialize_tag_buffer(parser);
     return;
   }
 
