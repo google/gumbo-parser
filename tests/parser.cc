@@ -484,6 +484,25 @@ TEST_F(GumboParserTest, CommentInText) {
   EXPECT_STREQ(" end", end->v.text.text);
 }
 
+TEST_F(GumboParserTest, CommentBeforeNode) {
+  Parse("<!--This is a comment-->\n<h1>hello world!</h1>");
+  GumboNode* comment = GetChild(root_, 0);
+  ASSERT_EQ(GUMBO_NODE_COMMENT, comment->type);
+  EXPECT_STREQ("This is a comment", comment->v.text.text);
+  EXPECT_EQ("<!--This is a comment-->",
+            ToString(comment->v.text.original_text));
+
+  // Newline is ignored per the rules for "initial" insertion mode.
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* h1 = GetChild(body, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, h1->type);
+  EXPECT_EQ(GUMBO_TAG_H1, h1->v.element.tag);
+}
+
 TEST_F(GumboParserTest, CommentInVerbatimMode) {
   Parse("<body> <div id='onegoogle'>Text</div>  </body><!-- comment \n\n-->");
 
