@@ -366,7 +366,7 @@ GumboTag gumbo_tag_enum(const char* tagname);
 /**
  * Attribute namespaces.
  * HTML includes special handling for XLink, XML, and XMLNS namespaces on
- * attributes.  Everything else goes in the generatic "NONE" namespace.
+ * attributes.  Everything else goes in the generic "NONE" namespace.
  */
 typedef enum {
   GUMBO_ATTR_NAMESPACE_NONE,
