@@ -43,7 +43,7 @@ static void* malloc_wrapper(void* unused, size_t size) {
 }
 
 static void free_wrapper(void* unused, void* ptr) {
-  return free(ptr);
+  free(ptr);
 }
 
 const GumboOptions kGumboDefaultOptions = {
