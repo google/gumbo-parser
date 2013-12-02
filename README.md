@@ -81,10 +81,11 @@ inside gumbo's root directory, and then `make check`:
 Gumbo's `make check` has code to automatically configure & build gtest and
 then link in the library.
 
-Debian and Fedora users can install libgtest with:
+Debian, Fedora and Gentoo users can install libgtest with:
 
     $ apt-get install libgtest-dev  # Debian/Ubuntu
     $ yum install gtest-devel       # CentOS/Fedora
+    $ emerge -vat gtest             # Gentoo
 
 Note for Ubuntu users: libgtest-dev package only install source files.
 You have to make libraries yourself using cmake:
