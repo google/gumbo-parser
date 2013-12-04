@@ -36,7 +36,7 @@ void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
 }
 
 void gumbo_parser_deallocate(GumboParser* parser, void* ptr) {
-  return parser->_options->deallocator(parser->_options->userdata, ptr);
+  parser->_options->deallocator(parser->_options->userdata, ptr);
 }
 
 char* gumbo_copy_stringz(GumboParser* parser, const char* str) {
