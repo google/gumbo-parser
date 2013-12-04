@@ -442,7 +442,8 @@ static void finish_token(GumboParser* parser, GumboToken* token) {
   reset_token_start_point(tokenizer);
   token->original_text.length =
       tokenizer->_token_start - token->original_text.data;
-  if (token->original_text.length > 0 && token->original_text.data[token->original_text.length - 1] == '\r') {
+  if (token->original_text.length > 0 &&
+      token->original_text.data[token->original_text.length - 1] == '\r') {
     // The UTF8 iterator will ignore carriage returns in the input stream, which
     // means that the next token may start one past a \r character.  The pointer
     // arithmetic above results in that \r being appended to the original text
