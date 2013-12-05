@@ -18,11 +18,11 @@
 
 #include <string.h>
 
+#include "gtest/gtest.h"
 #include "error.h"
 #include "gumbo.h"
 #include "parser.h"
 #include "test_utils.h"
-#include "gtest/gtest.h"
 
 namespace {
 
