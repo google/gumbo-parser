@@ -537,25 +537,6 @@ static bool is_in_static_list(
   return false;
 }
 
-static void push_template_insertion_mode(
-    GumboParser* parser, GumboInsertionMode mode) {
-  gumbo_vector_add(
-      parser, (void*) mode, &parser->_parser_state->_template_insertion_modes);
-}
-
-static void pop_template_insertion_mode(GumboParser* parser) {
-  gumbo_vector_pop(parser, &parser->_parser_state->_template_insertion_modes);
-}
-
-static GumboInsertionMode get_current_template_insertion_mode(
-    GumboParser* parser) {
-  GumboVector* template_insertion_modes =
-      &parser->_parser_state->_template_insertion_modes;
-  assert(template_insertion_modes->length > 0);
-  return (GumboInsertionMode) template_insertion_modes->data[
-      template_insertion_modes->length - 1];
-}
-
 static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
   parser->_parser_state->_insertion_mode = mode;
 }
