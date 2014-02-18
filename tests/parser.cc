@@ -131,6 +131,7 @@ TEST_F(GumboParserTest, OneChar) {
 
 TEST_F(GumboParserTest, TextOnly) {
   Parse("Test");
+  EXPECT_EQ(1, output_->errors.length);  // No doctype.
   ASSERT_EQ(1, GetChildCount(root_));
 
   GumboNode* html = GetChild(root_, 0);
@@ -200,6 +201,12 @@ TEST_F(GumboParserTest, ExplicitHtmlStructure) {
         "<head><title>Foo</title></head>\n"
         "<body><div class=bar>Test</div></body></html>");
   ASSERT_EQ(1, GetChildCount(root_));
+  EXPECT_EQ(0, output_->errors.length);
+
+  ASSERT_EQ(GUMBO_NODE_DOCUMENT, root_->type);
+  EXPECT_STREQ("html", root_->v.document.name);
+  EXPECT_STREQ("", root_->v.document.public_identifier);
+  EXPECT_STREQ("", root_->v.document.system_identifier);
 
   GumboNode* html = GetChild(root_, 0);
   ASSERT_EQ(GUMBO_NODE_ELEMENT, html->type);

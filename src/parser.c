@@ -1735,10 +1735,10 @@ static bool maybe_add_doctype_error(
     GumboParser* parser, const GumboToken* token) {
   const GumboTokenDocType* doctype = &token->v.doc_type;
   bool html_doctype = !strcmp(doctype->name, kDoctypeHtml.data);
-  if (!html_doctype ||
-      doctype->has_public_identifier ||
-      (doctype->has_system_identifier && !strcmp(
-          doctype->system_identifier, kSystemIdLegacyCompat.data)) ||
+  if ((!html_doctype ||
+       doctype->has_public_identifier ||
+       (doctype->has_system_identifier && !strcmp(
+          doctype->system_identifier, kSystemIdLegacyCompat.data))) &&
       !(html_doctype && (
           doctype_matches(doctype, &kPublicIdHtml4_0,
                           &kSystemIdRecHtml4_0, true) ||
