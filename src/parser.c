@@ -2372,6 +2372,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
       node = pop_current_node(parser);
     } while (node != state->_open_elements.data[1]);
 
+    // Removing & destroying the body node is going to kill any nodes that have
+    // been added to the list of active formatting elements, and so we should
+    // clear it to prevent a use-after-free if the list of active formatting
+    // elements is reconstructed afterwards.  This may happen if whitespace
+    // follows the </frameset>.
+    clear_active_formatting_elements(parser);
+
     // Remove the body node.  We may want to factor this out into a generic
     // helper, but right now this is the only code that needs to do this.
     GumboVector* children = &parser->_output->root->v.element.children;
@@ -3543,6 +3550,10 @@ static bool handle_after_frameset(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HTML)) {
     return handle_in_body(parser, token);
   } else if (tag_is(token, kEndTag, GUMBO_TAG_HTML)) {
+    GumboNode* html = parser->_parser_state->_open_elements.data[0];
+    assert(node_tag_is(html, GUMBO_TAG_HTML));
+    record_end_of_element(
+        parser->_parser_state->_current_token, &html->v.element);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_AFTER_FRAMESET);
     return true;
   } else if (tag_is(token, kStartTag, GUMBO_TAG_NOFRAMES)) {

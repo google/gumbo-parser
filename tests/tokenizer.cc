@@ -21,7 +21,6 @@
 #include "gtest/gtest.h"
 #include "test_utils.h"
 
-
 extern const char* kGumboTagNames[];
 
 namespace {
