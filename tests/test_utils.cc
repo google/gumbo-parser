@@ -100,7 +100,7 @@ void SanityCheckPointers(const char* input, size_t input_length,
   // depth here to avoid blowing the stack. Alternatively, we could externalize
   // the stack and use an iterative algorithm, but that gets us very little for
   // the additional programming complexity.
-  if (node->type == GUMBO_NODE_DOCUMENT || depth > 500) {
+  if (node->type == GUMBO_NODE_DOCUMENT || depth > 400) {
     // Don't sanity-check the document as well...we start with the root.
     return;
   }
