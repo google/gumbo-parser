@@ -537,25 +537,6 @@ static bool is_in_static_list(
   return false;
 }
 
-static void push_template_insertion_mode(
-    GumboParser* parser, GumboInsertionMode mode) {
-  gumbo_vector_add(
-      parser, (void*) mode, &parser->_parser_state->_template_insertion_modes);
-}
-
-static void pop_template_insertion_mode(GumboParser* parser) {
-  gumbo_vector_pop(parser, &parser->_parser_state->_template_insertion_modes);
-}
-
-static GumboInsertionMode get_current_template_insertion_mode(
-    GumboParser* parser) {
-  GumboVector* template_insertion_modes =
-      &parser->_parser_state->_template_insertion_modes;
-  assert(template_insertion_modes->length > 0);
-  return (GumboInsertionMode) template_insertion_modes->data[
-      template_insertion_modes->length - 1];
-}
-
 static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
   parser->_parser_state->_insertion_mode = mode;
 }
@@ -1735,10 +1716,10 @@ static bool maybe_add_doctype_error(
     GumboParser* parser, const GumboToken* token) {
   const GumboTokenDocType* doctype = &token->v.doc_type;
   bool html_doctype = !strcmp(doctype->name, kDoctypeHtml.data);
-  if (!html_doctype ||
-      doctype->has_public_identifier ||
-      (doctype->has_system_identifier && !strcmp(
-          doctype->system_identifier, kSystemIdLegacyCompat.data)) ||
+  if ((!html_doctype ||
+       doctype->has_public_identifier ||
+       (doctype->has_system_identifier && !strcmp(
+          doctype->system_identifier, kSystemIdLegacyCompat.data))) &&
       !(html_doctype && (
           doctype_matches(doctype, &kPublicIdHtml4_0,
                           &kSystemIdRecHtml4_0, true) ||
@@ -2375,6 +2356,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     do {
       node = pop_current_node(parser);
     } while (node != state->_open_elements.data[1]);
+
+    // Removing & destroying the body node is going to kill any nodes that have
+    // been added to the list of active formatting elements, and so we should
+    // clear it to prevent a use-after-free if the list of active formatting
+    // elements is reconstructed afterwards.  This may happen if whitespace
+    // follows the </frameset>.
+    clear_active_formatting_elements(parser);
 
     // Remove the body node.  We may want to factor this out into a generic
     // helper, but right now this is the only code that needs to do this.
@@ -3547,6 +3535,10 @@ static bool handle_after_frameset(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HTML)) {
     return handle_in_body(parser, token);
   } else if (tag_is(token, kEndTag, GUMBO_TAG_HTML)) {
+    GumboNode* html = parser->_parser_state->_open_elements.data[0];
+    assert(node_tag_is(html, GUMBO_TAG_HTML));
+    record_end_of_element(
+        parser->_parser_state->_current_token, &html->v.element);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_AFTER_FRAMESET);
     return true;
   } else if (tag_is(token, kStartTag, GUMBO_TAG_NOFRAMES)) {
