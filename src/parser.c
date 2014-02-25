@@ -2175,6 +2175,10 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
                       GUMBO_TAG_BR, GUMBO_TAG_LAST))) {
     parser_add_parse_error(parser, token);
     return false;
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_UNKNOWN) && token->v.start_tag.is_self_closing) {
+    parser_add_parse_error(parser, token);
+    ignore_token(parser);
+    return false;
   } else {
     const GumboNode* node = pop_current_node(parser);
     assert(node_tag_is(node, GUMBO_TAG_HEAD));
@@ -3896,6 +3900,12 @@ GumboOutput* gumbo_parse_with_options(
   }
   if (doc_type->system_identifier == NULL) {
     doc_type->system_identifier = gumbo_copy_stringz(&parser, "");
+  }
+
+  if (/*options->show_errors && */ has_error) {
+    for (int i = 0; i < parser._output->errors.length; ++i) {
+      gumbo_print_caret_diagnostic(&parser, parser._output->errors.data[i], ((GumboError *)parser._output->errors.data[i])->original_text);
+    }
   }
 
   parser_state_destroy(&parser);
