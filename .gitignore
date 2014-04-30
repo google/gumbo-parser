@@ -9,6 +9,15 @@
 *.swn
 
 # Other build artifacts
+/Debug
+/visualc/Debug
+/visualc/Release
+/visualc/gumbo.sdf
+/visualc/gumbo.opensdf
+/build
+.log
+.sdf
+.opensdf
 .deps
 .dirstamp
 .libs
