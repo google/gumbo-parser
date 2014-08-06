@@ -75,9 +75,9 @@ For the ctypes bindings:
 
 .. code-block:: python
 
-    from gumbo import gumboc
+    import gumbo
     
-    with gumboc.parse(text) as output:
+    with gumbo.parse(text) as output:
         root = output.contents.root.contents
         # root is a Node object representing the root of the parse tree
         # tree-walk over it as necessary.
@@ -86,18 +86,18 @@ For the BeautifulSoup bindings:
 
 .. code-block:: python
 
-    from gumbo import soup_adapter
+    import gumbo
 
-    soup = soup_adapter.parse(text)
+    soup = gumbo.soup_parse(text)
     # soup is a BeautifulSoup object representing the parse tree.
 
 For the html5lib bindings:
 
 .. code-block:: python
 
-    from gumbo import html5lib_adapter
+    from gumbo import html5lib
 
-    doc = html5lib_adapter.parse(text[, treebuilder='lxml'])
+    doc = html5lib.parse(text[, treebuilder='lxml'])
 
 Recommended best-practice for Python usage is to use one of the adapters to
 an existing API (personally, I prefer BeautifulSoup) and write your program
