@@ -41,6 +41,7 @@ test-suite.log
 
 # Python dist artifacts
 dist
+build
 python/gumbo.egg-info
 
 # Example binaries
