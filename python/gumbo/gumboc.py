@@ -24,9 +24,15 @@ __author__ = 'jdtang@google.com (Jonathan Tang)'
 
 import contextlib
 import ctypes
-
+import os.path
 
 try:
+  # First look for a freshly-built .so in the .libs directory, for development
+  # and PyPI packaging.
+  _dll = ctypes.cdll.LoadLibrary(os.path.join(
+      os.path.dirname(__file__), '..', '..', '.libs', 'libgumbo.so'))
+except OSError:
+  # System library, on unix
   _dll = ctypes.cdll.LoadLibrary('libgumbo.so')
 except OSError:
   # MacOS X
