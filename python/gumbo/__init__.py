@@ -31,5 +31,15 @@ are exported from this module.  They include:
 """
 
 from gumbo.gumboc import *
-from gumbo import html5lib_adapter as html5lib
-from gumbo.soup_adapter import parse as soup_parse
+
+try:
+  from gumbo import html5lib_adapter as html5lib
+except ImportError:
+  # html5lib not installed
+  pass
+
+try:
+  from gumbo.soup_adapter import parse as soup_parse
+except ImportError:
+  # BeautifulSoup not installed
+  pass
