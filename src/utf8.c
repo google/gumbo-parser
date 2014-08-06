@@ -208,6 +208,12 @@ void utf8iterator_init(
 }
 
 void utf8iterator_next(Utf8Iterator* iter) {
+  if (iter->_current == -1) {
+    // If we're already at EOF, bail out before advancing anything to avoid
+    // reading past the end of the buffer.  It's easier to catch this case here
+    // than litter the code with lots of individual checks for EOF.
+    return;
+  }
   iter->_start += iter->_width;
   // We update positions based on the *last* character read, so that the first
   // character following a newline is at column 1 in the next line.

@@ -42,6 +42,11 @@
 #ifndef GUMBO_GUMBO_H_
 #define GUMBO_GUMBO_H_
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#define fileno _fileno
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -366,7 +371,7 @@ GumboTag gumbo_tag_enum(const char* tagname);
 /**
  * Attribute namespaces.
  * HTML includes special handling for XLink, XML, and XMLNS namespaces on
- * attributes.  Everything else goes in the generatic "NONE" namespace.
+ * attributes.  Everything else goes in the generic "NONE" namespace.
  */
 typedef enum {
   GUMBO_ATTR_NAMESPACE_NONE,
