@@ -39,6 +39,10 @@ test-suite.log
 /gumbo-[0-9].[0-9].tar.gz
 /gumbo-[0-9].[0-9]/
 
+# Python dist artifacts
+dist
+python/gumbo.egg-info
+
 # Example binaries
 clean_text
 find_links
