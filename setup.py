@@ -136,6 +136,7 @@ classifiers = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: Apache Software License',
     'Operating System :: Unix',
+    'Operating System :: POSIX :: Linux',
     'Programming Language :: C',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
