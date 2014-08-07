@@ -45,22 +45,31 @@ except OSError:
 _bitvector = ctypes.c_uint
 _Ptr = ctypes.POINTER
 
-
-class Enum(ctypes.c_uint):
-  class __metaclass__(type(ctypes.c_uint)):
-    def __new__(metaclass, name, bases, cls_dict):
-      cls = type(ctypes.c_uint).__new__(metaclass, name, bases, cls_dict)
-      if name == 'Enum':
-        return cls
-      try:
-        for i, value in enumerate(cls_dict['_values_']):
-          setattr(cls, value, cls.from_param(i))
-      except KeyError:
-        raise ValueError('No _values_ list found inside enum type.')
-      except TypeError:
-        raise ValueError('_values_ must be a list of names of enum constants.')
+class EnumMetaclass(type(ctypes.c_uint)):
+  def __new__(metaclass, name, bases, cls_dict):
+    cls = type(ctypes.c_uint).__new__(metaclass, name, bases, cls_dict)
+    if name == 'Enum':
       return cls
+    try:
+      for i, value in enumerate(cls_dict['_values_']):
+        setattr(cls, value, cls.from_param(i))
+    except KeyError:
+      raise ValueError('No _values_ list found inside enum type.')
+    except TypeError:
+      raise ValueError('_values_ must be a list of names of enum constants.')
+    return cls
 
+def with_metaclass(mcls):
+    def decorator(cls):
+        body = vars(cls).copy()
+        # clean out class body
+        body.pop('__dict__', None)
+        body.pop('__weakref__', None)
+        return mcls(cls.__name__, cls.__bases__, body)
+    return decorator
+
+@with_metaclass(EnumMetaclass)
+class Enum(ctypes.c_uint):
   @classmethod
   def from_param(cls, param):
     if isinstance(param, Enum):
@@ -154,18 +163,30 @@ class Vector(ctypes.Structure):
     def __iter__(self):
       return self
 
-    def next(self):
+    def __next__(self):
+      # Python 3
       if self.current >= self.vector.length:
         raise StopIteration
       obj = self.vector[self.current]
       self.current += 1
       return obj
 
+    def next(self):
+      # Python 2
+      return self.__next__()
+
   def __len__(self):
     return self.length
 
   def __getitem__(self, i):
-    if isinstance(i, (int, long)):
+    try:
+      # Python 2
+      numeric_types = (int, long)
+    except NameError:
+      # Python 3
+      numeric_types = int
+
+    if isinstance(i, numeric_types):
       if i < 0:
         i += self.length
       if i > self.length:
@@ -433,8 +454,9 @@ class NodeUnion(ctypes.Union):
 class Node(ctypes.Structure):
   # _fields_ set later to avoid a circular reference
 
-  @property
-  def contents(self):
+  def _contents(self):
+    # Python3 enters an infinite loop if you use an @property within
+    # __getattr__, so we factor it out to a helper.
     if self.type == NodeType.DOCUMENT:
       return self.v.document
     elif self.type == NodeType.ELEMENT:
@@ -442,11 +464,15 @@ class Node(ctypes.Structure):
     else:
       return self.v.text
 
+  @property
+  def contents(self):
+    return self._contents()
+
   def __getattr__(self, name):
-    return getattr(self.contents, name)
+    return getattr(self._contents(), name)
 
   def __setattr__(self, name, value):
-    return setattr(self.contents, name, value)
+    return setattr(self._contents(), name, value)
 
   def __repr__(self):
     return repr(self.contents)
@@ -501,7 +527,7 @@ def parse(text, **kwargs):
   # outlives the parse output.  If we let ctypes do it automatically on function
   # call, it creates a temporary buffer which is destroyed when the call
   # completes, and then the original_text pointers point into invalid memory.
-  text_ptr = ctypes.c_char_p(text)
+  text_ptr = ctypes.c_char_p(text.encode('utf-8'))
   output = _parse_with_options(ctypes.byref(options), text_ptr, len(text))
   try:
     yield output

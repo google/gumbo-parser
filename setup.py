@@ -11,7 +11,7 @@ class CustomSdistCommand(sdist):
             shutil.copyfile('.libs/libgumbo.so', 'python/gumbo/libgumbo.so')
             sdist.run(self)
         except IOError as e:
-            print e
+            print(e)
 
 
 README = '''Gumbo - A pure-C HTML5 parser.
@@ -153,8 +153,9 @@ CLASSIFIERS = [
     'Programming Language :: C',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.4',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Markup :: HTML'
 ]
