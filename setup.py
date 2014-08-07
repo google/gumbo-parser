@@ -144,7 +144,7 @@ does mean you'll have to re-deploy the gumboc library and C extension when
 upgrading to a new version.
 '''
 
-classifiers = [
+CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: Apache Software License',
@@ -160,14 +160,15 @@ classifiers = [
 ]
 
 setup(name='gumbo',
-      version='0.9.8',
+      version='0.9.9',
       description='Python bindings for Gumbo HTML parser',
       long_description=README,
       url='http://github.com/google/gumbo-parser',
       keywords='gumbo html html5 parser google html5lib beautifulsoup',
       author='Jonathan Tang',
-      author_email='jdtang@google.com',
+      author_email='jonathan.d.tang@gmail.com',
       license='Apache 2.0',
+      classifiers=CLASSIFIERS,
       packages=['gumbo'],
       package_dir={'': 'python'},
       package_data={'gumbo': ['libgumbo.so']},
