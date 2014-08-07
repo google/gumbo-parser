@@ -27,10 +27,13 @@ import ctypes
 import os.path
 
 try:
-  # First look for a freshly-built .so in the .libs directory, for development
-  # and PyPI packaging.
+  # First look for a freshly-built .so in the .libs directory, for development.
   _dll = ctypes.cdll.LoadLibrary(os.path.join(
       os.path.dirname(__file__), '..', '..', '.libs', 'libgumbo.so'))
+except OSError:
+  # PyPI or setuptools install, look in the current directory.
+  _dll = ctypes.cdll.LoadLibrary(os.path.join(
+      os.path.dirname(__file__), 'libgumbo.so'))
 except OSError:
   # System library, on unix
   _dll = ctypes.cdll.LoadLibrary('libgumbo.so')

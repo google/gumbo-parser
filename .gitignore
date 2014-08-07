@@ -49,9 +49,11 @@ test-suite.log
 /gumbo-[0-9].[0-9]/
 
 # Python dist artifacts
+*.pyc
 dist
 build
 python/gumbo.egg-info
+python/gumbo/libgumbo.so
 
 # Example binaries
 clean_text

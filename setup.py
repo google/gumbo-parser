@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 from setuptools import setup
+from setuptools.command.sdist import sdist
+
+class CustomSdistCommand(sdist):
+    """Customized Sdist command, to copy libgumbo.so into the Python directory
+    so that it can be installed with `pip install`."""
+    def run(self):
+        try:
+            import shutil
+            shutil.copyfile('.libs/libgumbo.so', 'python/gumbo/libgumbo.so')
+            sdist.run(self)
+        except IOError as e:
+            print e
+
 
 README = '''Gumbo - A pure-C HTML5 parser.
 ==============================
@@ -147,7 +160,7 @@ classifiers = [
 ]
 
 setup(name='gumbo',
-      version='0.9.4',
+      version='0.9.8',
       description='Python bindings for Gumbo HTML parser',
       long_description=README,
       url='http://github.com/google/gumbo-parser',
@@ -157,4 +170,6 @@ setup(name='gumbo',
       license='Apache 2.0',
       packages=['gumbo'],
       package_dir={'': 'python'},
-      zip_safe=True)
+      package_data={'gumbo': ['libgumbo.so']},
+      cmdclass={ 'sdist': CustomSdistCommand },
+      zip_safe=False)
