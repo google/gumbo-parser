@@ -44,6 +44,9 @@ missing
 test-driver
 test-suite.log
 
+# gyp android artifacts
+gumbo_parser.target.mk
+
 # `make dist` artifacts
 /gumbo-[0-9].[0-9].tar.gz
 /gumbo-[0-9].[0-9]/
