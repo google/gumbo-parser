@@ -17,6 +17,7 @@
     {
       'target_name': 'gumbo_parser',
       'type': 'static_library',
+      'cflags': ['-std=c99', '-Wall'],
       'sources': [
         'src/attribute.c',
         'src/attribute.h',
