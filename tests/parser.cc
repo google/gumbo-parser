@@ -1238,6 +1238,35 @@ TEST_F(GumboParserTest, IsIndex) {
   ASSERT_EQ(0, GetChildCount(hr2));
 }
 
+TEST_F(GumboParserTest, IsIndexDuplicateAttribute) {
+  Parse("<isindex name=foo>");
+  
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* form = GetChild(body, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, form->type);
+  EXPECT_EQ(GUMBO_TAG_FORM, GetTag(form));
+  ASSERT_EQ(3, GetChildCount(form));
+
+  GumboNode* label = GetChild(form, 1);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, label->type);
+  EXPECT_EQ(GUMBO_TAG_LABEL, GetTag(label));
+  ASSERT_EQ(2, GetChildCount(label));
+
+  GumboNode* input = GetChild(label, 1);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, input->type);
+  EXPECT_EQ(GUMBO_TAG_INPUT, GetTag(input));
+  ASSERT_EQ(0, GetChildCount(input));
+  ASSERT_EQ(1, GetAttributeCount(input));
+
+  GumboAttribute* name = GetAttribute(input, 1);
+  EXPECT_STREQ("name", name->name);
+  EXPECT_STREQ("foo", name->value);
+
+}
+
 TEST_F(GumboParserTest, NestedRawtextTags) {
   Parse("<noscript><noscript jstag=false>"
         "<style>div{text-align:center}</style></noscript>");
