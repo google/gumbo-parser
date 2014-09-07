@@ -25,7 +25,7 @@
 
 #include "gumbo.h"
 
-static const int kNumReps = 1;
+static const int kNumReps = 10;
 
 static uint64_t get_time() {
   struct timespec time;
