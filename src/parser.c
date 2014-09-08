@@ -2719,7 +2719,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     GumboVector* token_attrs = &token->v.start_tag.attributes;
     GumboAttribute* prompt_attr = gumbo_get_attribute(token_attrs, "prompt");
     GumboAttribute* action_attr = gumbo_get_attribute(token_attrs, "action");
-    GumboAttribute* name_attr = gumbo_get_attribute(token_attrs, "isindex");
+    GumboAttribute* name_attr = gumbo_get_attribute(token_attrs, "name");
 
     GumboNode* form = insert_element_of_tag_type(
         parser, GUMBO_TAG_FORM, GUMBO_INSERTION_FROM_ISINDEX);
