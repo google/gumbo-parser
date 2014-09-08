@@ -750,6 +750,8 @@ typedef struct GumboInternalOptions {
    * Default: -1
    */
   int max_errors;
+
+  bool show_errors;
 } GumboOptions;
 
 /** Default options struct; use this with gumbo_parse_with_options. */
