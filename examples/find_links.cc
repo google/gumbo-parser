@@ -35,7 +35,7 @@ static void search_for_links(GumboNode* node) {
   }
 
   GumboVector* children = &node->v.element.children;
-  for (int i = 0; i < children->length; ++i) {
+  for (unsigned int i = 0; i < children->length; ++i) {
     search_for_links(static_cast<GumboNode*>(children->data[i]));
   }
 }
