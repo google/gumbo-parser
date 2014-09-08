@@ -157,19 +157,8 @@ static void read_char(Utf8Iterator* iter) {
       iter->_current = code_point;
       return;
     } else if (state == UTF8_REJECT) {
-      // The WhatWG Encoding guidelines and Unicode standard recommend consuming
-      // as much of the input as could not possibly be a valid UTF-8 sequence,
-      // so we start with the character we just rejected and keep expanding the
-      // width until we try to decode a character and it's not a reject.
-      /*
-      const char* c2;
-      for (c2 = c; c2 < iter->_end; ++c2) {
-        state = UTF8_ACCEPT;
-        if (decode(&state, &code_point, (unsigned char) *c2) != UTF8_REJECT) {
-          break;
-        }
-      }
-      */
+      // We don't want to consume the invalid continuation byte of a multi-byte
+      // run, but we do want to skip past an invalid first byte.
       iter->_width = c - iter->_start + (c == iter->_start);
       iter->_current = kUtf8ReplacementChar;
       add_error(iter, GUMBO_ERR_UTF8_INVALID);
@@ -184,115 +173,6 @@ static void read_char(Utf8Iterator* iter) {
   iter->_width = iter->_end - iter->_start;
   add_error(iter, GUMBO_ERR_UTF8_TRUNCATED);
 }
-
-/*
-static void read_char(Utf8Iterator* iter) {
-  unsigned char c;
-  unsigned char mask = '\0';
-  int is_bad_char = false;
-
-  c = (unsigned char) *iter->_start;
-  if (c < 0x80) {
-    // Valid one-byte sequence.
-    iter->_width = 1;
-    mask = 0xFF;
-  } else if (c < 0xC0) {
-    // Continuation character not following a multibyte sequence.
-    // The HTML5 spec here says to consume the byte and output a replacement
-    // character.
-    iter->_width = 1;
-    is_bad_char = true;
-  } else if (c < 0xE0) {
-    iter->_width = 2;
-    mask = 0x1F;                // 00011111 in binary.
-    if (c < 0xC2) {
-      // Overlong encoding; error according to UTF8/HTML5 spec.
-      is_bad_char = true;
-    }
-  } else if (c < 0xF0) {
-    iter->_width = 3;
-    mask = 0xF;                 // 00001111 in binary.
-  } else if (c < 0xF5) {
-    iter->_width = 4;
-    mask = 0x7;                 // 00000111 in binary.
-  } else if (c < 0xF8) {
-    // The following cases are all errors, but we need to handle them separately
-    // so that we consume the proper number of bytes from the input stream
-    // before replacing them with the replacement char.  The HTML5 spec
-    // specifies that we should consume the shorter of the length specified by
-    // the first bit or the run leading up to the first non-continuation
-    // character.
-    iter->_width = 5;
-    is_bad_char = true;
-  } else if (c < 0xFC) {
-    iter->_width = 6;
-    is_bad_char = true;
-  } else if (c < 0xFE) {
-    iter->_width = 7;
-    is_bad_char = true;
-  } else {
-    iter->_width = 1;
-    is_bad_char = true;
-  }
-
-  // Check to make sure we have enough bytes left in the iter to read all that
-  // we want.  If not, we set the iter_truncated flag, mark this as a bad
-  // character, and adjust the current width so that it consumes the rest of the
-  // iter.
-  uint64_t code_point = c & mask;
-  if (iter->_start + iter->_width > iter->_end) {
-    iter->_width = iter->_end - iter->_start;
-    add_error(iter, GUMBO_ERR_UTF8_TRUNCATED);
-    is_bad_char = true;
-  }
-
-  // Now we decode continuation bytes, shift them appropriately, and build up
-  // the appropriate code point.
-  assert(iter->_width < 8);
-  for (int i = 1; i < iter->_width; ++i) {
-    c = (unsigned char) iter->_start[i];
-    if (c < 0x80 || c > 0xBF) {
-      // Per HTML5 spec, we don't include the invalid continuation char in the
-      // run that we consume here.
-      iter->_width = i;
-      is_bad_char = true;
-      break;
-    }
-    code_point = (code_point << 6) | (c & ~0x80);
-  }
-  if (code_point > 0x10FFFF) is_bad_char = true;
-
-  // If we had a decode error, set the current code point to the replacement
-  // character and flip the flag indicating that a decode error occurred.
-  // Ditto if we have a code point that is explicitly on the list of characters
-  // prohibited by the HTML5 spec, such as control characters.
-  if (is_bad_char || utf8_is_invalid_code_point(code_point)) {
-    add_error(iter, GUMBO_ERR_UTF8_INVALID);
-    code_point = kUtf8ReplacementChar;
-  }
-
-  // This is the special handling for carriage returns that is mandated by the
-  // HTML5 spec.  Since we're looking for particular 7-bit literal characters,
-  // we operate in terms of chars and only need a check for iter overrun,
-  // instead of having to read in a full next code point.
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream
-  if (code_point == '\r') {
-    const char* next = iter->_start + iter->_width;
-    if (next < iter->_end && *next == '\n') {
-      // Advance the iter, as if the carriage return didn't exist.
-      ++iter->_start;
-      // Preserve the true offset, since other tools that look at it may be
-      // unaware of HTML5's rules for converting \r into \n.
-      ++iter->_pos.offset;
-    }
-    code_point = '\n';
-  }
-
-  // At this point, we know we have a valid character as the code point, so we
-  // set it, and we're done.
-  iter->_current = code_point;
-}
-*/
 
 static void update_position(Utf8Iterator* iter) {
   iter->_pos.offset += iter->_width;
