@@ -171,6 +171,9 @@ TEST_F(Utf8Test, OverlongEncodingWithContinuationByte) {
   EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
   EXPECT_EQ('\xC0', *utf8iterator_get_char_pointer(&input_));
 
+  utf8iterator_next(&input_);
+  EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
+
   errors_are_expected_ = true;
   GumboError* error = GetFirstError();
   EXPECT_EQ(GUMBO_ERR_UTF8_INVALID, error->type);
@@ -178,7 +181,7 @@ TEST_F(Utf8Test, OverlongEncodingWithContinuationByte) {
   EXPECT_EQ(1, error->position.column);
   EXPECT_EQ(0, error->position.offset);
   EXPECT_EQ('\xC0', *error->original_text);
-  EXPECT_EQ(0xC085, error->v.codepoint);
+  EXPECT_EQ(0xC0, error->v.codepoint);
 
   utf8iterator_next(&input_);
   EXPECT_EQ(-1, utf8iterator_current(&input_));
@@ -285,6 +288,11 @@ TEST_F(Utf8Test, FiveByteCharIsError) {
   EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
 
   utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
+  utf8iterator_next(&input_);
   EXPECT_EQ('x', utf8iterator_current(&input_));
 }
 
@@ -295,6 +303,12 @@ TEST_F(Utf8Test, SixByteCharIsError) {
   EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
 
   utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
+  utf8iterator_next(&input_);
   EXPECT_EQ('x', utf8iterator_current(&input_));
 }
 
@@ -304,6 +318,13 @@ TEST_F(Utf8Test, SevenByteCharIsError) {
   EXPECT_EQ(1, GetNumErrors());
   EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
 
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  utf8iterator_next(&input_);
+  EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
   utf8iterator_next(&input_);
   EXPECT_EQ('x', utf8iterator_current(&input_));
 }
@@ -329,9 +350,9 @@ TEST_F(Utf8Test, InvalidControlCharIsError) {
 }
 
 TEST_F(Utf8Test, TruncatedInput) {
-  ResetText("\xF8\xA7");
+  ResetText("\xF1\xA7");
 
-  EXPECT_EQ(2, GetNumErrors());
+  EXPECT_EQ(1, GetNumErrors());
   EXPECT_EQ(0xFFFD, utf8iterator_current(&input_));
 
   errors_are_expected_ = true;
@@ -340,15 +361,17 @@ TEST_F(Utf8Test, TruncatedInput) {
   EXPECT_EQ(1, error->position.line);
   EXPECT_EQ(1, error->position.column);
   EXPECT_EQ(0, error->position.offset);
-  EXPECT_EQ('\xF8', *error->original_text);
-  EXPECT_EQ(0xF8A7, error->v.codepoint);
+  EXPECT_EQ('\xF1', *error->original_text);
+  EXPECT_EQ(0xF1A7, error->v.codepoint);
 
   utf8iterator_next(&input_);
   EXPECT_EQ(-1, utf8iterator_current(&input_));
 }
 
 TEST_F(Utf8Test, Html5SpecExample) {
-  // http://www.whatwg.org/specs/web-apps/current-work/epub.html#utf-8
+  // This example has since been removed from the spec, and the spec has been
+  // changed to reference the Unicode Standard 6.2, 5.22 "Best practices for
+  // U+FFFD substitution."
   ResetText("\x41\x98\xBA\x42\xE2\x98\x43\xE2\x98\xBA\xE2\x98");
 
   EXPECT_EQ('A', utf8iterator_current(&input_));
