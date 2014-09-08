@@ -196,7 +196,7 @@ typedef struct GumboInternalTokenizerState {
 } GumboTokenizerState;
 
 // Adds an ERR_UNEXPECTED_CODE_POINT parse error to the parser's error struct.
-static void add_parse_error(GumboParser* parser, GumboErrorType type) {
+static void tokenizer_add_parse_error(GumboParser* parser, GumboErrorType type) {
   GumboError* error = gumbo_add_error(parser);
   if (!error) {
     return;
@@ -485,7 +485,7 @@ static void emit_char(GumboParser* parser, int c, GumboToken* output) {
 static StateResult emit_replacement_char(
     GumboParser* parser, GumboToken* output) {
   // In all cases, this is because of a null byte in the input stream.
-  add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+  tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
   emit_char(parser, kUtf8ReplacementChar, output);
   return RETURN_ERROR;
 }
@@ -906,7 +906,7 @@ static StateResult handle_data_state(
       append_char_to_temporary_buffer(parser, '<');
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       emit_char(parser, c, output);
       return RETURN_ERROR;
     default:
@@ -1023,7 +1023,7 @@ static StateResult handle_tag_open_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_COMMENT);
       clear_temporary_buffer(parser);
       append_char_to_temporary_buffer(parser, '?');
-      add_parse_error(parser, GUMBO_ERR_TAG_STARTS_WITH_QUESTION);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_TAG_STARTS_WITH_QUESTION);
       return NEXT_CHAR;
     default:
       if (is_alpha(c)) {
@@ -1031,7 +1031,7 @@ static StateResult handle_tag_open_state(
         start_new_tag(parser, true);
         return NEXT_CHAR;
       } else {
-        add_parse_error(parser, GUMBO_ERR_TAG_INVALID);
+        tokenizer_add_parse_error(parser, GUMBO_ERR_TAG_INVALID);
         gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
         emit_temporary_buffer(parser, output);
         return RETURN_ERROR;
@@ -1046,11 +1046,11 @@ static StateResult handle_end_tag_open_state(
   assert(temporary_buffer_equals(parser, "</"));
   switch (c) {
     case '>':
-      add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_EMPTY);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_EMPTY);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_temporary_buffer(parser, output);
     default:
@@ -1058,7 +1058,7 @@ static StateResult handle_end_tag_open_state(
         gumbo_tokenizer_set_state(parser, GUMBO_LEX_TAG_NAME);
         start_new_tag(parser, false);
       } else {
-        add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_INVALID);
+        tokenizer_add_parse_error(parser, GUMBO_ERR_CLOSE_TAG_INVALID);
         gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_COMMENT);
         clear_temporary_buffer(parser);
         append_char_to_temporary_buffer(parser, c);
@@ -1088,11 +1088,11 @@ static StateResult handle_tag_name_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_current_tag(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, true);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_TAG_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_TAG_EOF);
       abandon_current_tag(parser);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
@@ -1349,7 +1349,7 @@ static StateResult handle_script_escaped_state(
     case '\0':
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       return emit_eof(parser, output);
     default:
       return emit_current_char(parser, output);
@@ -1373,7 +1373,7 @@ static StateResult handle_script_escaped_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_ESCAPED);
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     default:
@@ -1401,7 +1401,7 @@ static StateResult handle_script_escaped_dash_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_ESCAPED);
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     default:
@@ -1523,7 +1523,7 @@ static StateResult handle_script_double_escaped_state(
     case '\0':
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     default:
@@ -1547,7 +1547,7 @@ static StateResult handle_script_double_escaped_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_DOUBLE_ESCAPED);
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     default:
@@ -1573,7 +1573,7 @@ static StateResult handle_script_double_escaped_dash_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_DOUBLE_ESCAPED);
       return emit_replacement_char(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SCRIPT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return NEXT_CHAR;
     default:
@@ -1644,12 +1644,12 @@ static StateResult handle_before_attr_name_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_current_tag(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_NAME);
       append_char_to_temporary_buffer(parser, 0xfffd);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       return NEXT_CHAR;
@@ -1657,7 +1657,7 @@ static StateResult handle_before_attr_name_state(
     case '\'':
     case '<':
     case '=':
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
       // Fall through.
     default:
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_NAME);
@@ -1691,18 +1691,18 @@ static StateResult handle_attr_name_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_current_tag(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, true);
       return NEXT_CHAR;
     case -1:
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
       return NEXT_CHAR;
     case '"':
     case '\'':
     case '<':
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
       // Fall through.
     default:
       append_char_to_tag_buffer(parser, ensure_lowercase(c), true);
@@ -1730,19 +1730,19 @@ static StateResult handle_after_attr_name_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_current_tag(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_NAME);
       append_char_to_temporary_buffer(parser, 0xfffd);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       return NEXT_CHAR;
     case '"':
     case '\'':
     case '<':
-      add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_NAME_INVALID);
       // Fall through.
     default:
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_NAME);
@@ -1774,25 +1774,25 @@ static StateResult handle_before_attr_value_state(
       reset_tag_buffer_start_point(parser);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_VALUE_UNQUOTED);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, true);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_RIGHT_BRACKET);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_RIGHT_BRACKET);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_current_tag(parser, output);
       return RETURN_ERROR;
     case '<':
     case '=':
     case '`':
-      add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EQUALS);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EQUALS);
       // Fall through.
     default:
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_ATTR_VALUE_UNQUOTED);
@@ -1815,11 +1815,11 @@ static StateResult handle_attr_value_double_quoted_state(
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, false);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_DOUBLE_QUOTE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_DOUBLE_QUOTE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       tokenizer->_reconsume_current_input = true;
@@ -1844,11 +1844,11 @@ static StateResult handle_attr_value_single_quoted_state(
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, false);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_SINGLE_QUOTE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_SINGLE_QUOTE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       tokenizer->_reconsume_current_input = true;
@@ -1881,11 +1881,11 @@ static StateResult handle_attr_value_unquoted_state(
       finish_attribute_value(parser);
       return emit_current_tag(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_tag_buffer(parser, kUtf8ReplacementChar, true);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_reconsume_current_input = true;
       abandon_current_tag(parser);
@@ -1895,7 +1895,7 @@ static StateResult handle_attr_value_unquoted_state(
     case '"':
     case '\'':
     case '`':
-      add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EQUALS);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_UNQUOTED_EQUALS);
       // Fall through.
     default:
       append_char_to_tag_buffer(parser, c, true);
@@ -1965,13 +1965,13 @@ static StateResult handle_after_attr_value_quoted_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_current_tag(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_ATTR_AFTER_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_AFTER_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
     default:
-      add_parse_error(parser, GUMBO_ERR_ATTR_AFTER_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_ATTR_AFTER_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BEFORE_ATTR_NAME);
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
@@ -1988,12 +1988,12 @@ static StateResult handle_self_closing_start_tag_state(
       tokenizer->_tag_state._is_self_closing = true;
       return emit_current_tag(parser, output);
     case -1:
-      add_parse_error(parser, GUMBO_ERR_SOLIDUS_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SOLIDUS_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       abandon_current_tag(parser);
       return NEXT_CHAR;
     default:
-      add_parse_error(parser, GUMBO_ERR_SOLIDUS_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_SOLIDUS_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BEFORE_ATTR_NAME);
       tokenizer->_reconsume_current_input = true;
       return NEXT_CHAR;
@@ -2043,7 +2043,7 @@ static StateResult handle_markup_declaration_state(
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_CDATA);
     tokenizer->_reconsume_current_input = true;
   } else {
-    add_parse_error(parser, GUMBO_ERR_DASHES_OR_DOCTYPE);
+    tokenizer_add_parse_error(parser, GUMBO_ERR_DASHES_OR_DOCTYPE);
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_COMMENT);
     tokenizer->_reconsume_current_input = true;
     clear_temporary_buffer(parser);
@@ -2060,17 +2060,17 @@ static StateResult handle_comment_start_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT_START_DASH);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
@@ -2090,18 +2090,18 @@ static StateResult handle_comment_start_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT_END);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
@@ -2122,11 +2122,11 @@ static StateResult handle_comment_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT_END_DASH);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
@@ -2145,13 +2145,13 @@ static StateResult handle_comment_end_dash_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT_END);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
@@ -2172,27 +2172,27 @@ static StateResult handle_comment_end_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_comment(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '!':
-      add_parse_error(parser, GUMBO_ERR_COMMENT_BANG_AFTER_DOUBLE_DASH);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_BANG_AFTER_DOUBLE_DASH);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT_END_BANG);
       return NEXT_CHAR;
     case '-':
-      add_parse_error(parser, GUMBO_ERR_COMMENT_DASH_AFTER_DOUBLE_DASH);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_DASH_AFTER_DOUBLE_DASH);
       append_char_to_temporary_buffer(parser, '-');
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, '-');
@@ -2216,7 +2216,7 @@ static StateResult handle_comment_end_bang_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       return emit_comment(parser, output);
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_COMMENT);
       append_char_to_temporary_buffer(parser, '-');
       append_char_to_temporary_buffer(parser, '-');
@@ -2224,7 +2224,7 @@ static StateResult handle_comment_end_bang_state(
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_COMMENT_END_BANG_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_COMMENT_END_BANG_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       emit_comment(parser, output);
       return RETURN_ERROR;
@@ -2251,13 +2251,13 @@ static StateResult handle_doctype_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BEFORE_DOCTYPE_NAME);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_SPACE);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_SPACE);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BEFORE_DOCTYPE_NAME);
       tokenizer->_reconsume_current_input = true;
       tokenizer->_doc_type_state.force_quirks = true;
@@ -2276,19 +2276,19 @@ static StateResult handle_before_doctype_name_state(
     case ' ':
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DOCTYPE_NAME);
       tokenizer->_doc_type_state.force_quirks = true;
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_RIGHT_BRACKET);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_RIGHT_BRACKET);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
@@ -2323,11 +2323,11 @@ static StateResult handle_doctype_name_state(
       emit_doctype(parser, output);
       return RETURN_SUCCESS;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       gumbo_parser_deallocate(parser, (void*) tokenizer->_doc_type_state.name);
@@ -2358,7 +2358,7 @@ static StateResult handle_after_doctype_name_state(
       emit_doctype(parser, output);
       return RETURN_SUCCESS;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
@@ -2375,7 +2375,7 @@ static StateResult handle_after_doctype_name_state(
             parser, GUMBO_LEX_AFTER_DOCTYPE_SYSTEM_KEYWORD);
         tokenizer->_reconsume_current_input = true;
       } else {
-        add_parse_error(parser, GUMBO_ERR_DOCTYPE_SPACE_OR_RIGHT_BRACKET);
+        tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_SPACE_OR_RIGHT_BRACKET);
         gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
         tokenizer->_doc_type_state.force_quirks = true;
       }
@@ -2396,31 +2396,31 @@ static StateResult handle_after_doctype_public_keyword_state(
           parser, GUMBO_LEX_BEFORE_DOCTYPE_PUBLIC_ID);
       return NEXT_CHAR;
     case '"':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_PUBLIC_ID_DOUBLE_QUOTED);
       return NEXT_CHAR;
     case '\'':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_PUBLIC_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_RIGHT_BRACKET);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_RIGHT_BRACKET);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
@@ -2449,19 +2449,19 @@ static StateResult handle_before_doctype_public_id_state(
           parser, GUMBO_LEX_DOCTYPE_PUBLIC_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
@@ -2479,18 +2479,18 @@ static StateResult handle_doctype_public_id_double_quoted_state(
       finish_doctype_public_id(parser);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_public_id(parser);
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_public_id(parser);
@@ -2512,18 +2512,18 @@ static StateResult handle_doctype_public_id_single_quoted_state(
       finish_doctype_public_id(parser);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_public_id(parser);
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_public_id(parser);
@@ -2552,25 +2552,25 @@ static StateResult handle_after_doctype_public_id_state(
       emit_doctype(parser, output);
       return RETURN_SUCCESS;
     case '"':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_DOUBLE_QUOTED);
       return NEXT_CHAR;
     case '\'':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_reconsume_current_input = true;
       tokenizer->_doc_type_state.force_quirks = true;
       return NEXT_CHAR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       return NEXT_CHAR;
@@ -2602,13 +2602,13 @@ static StateResult handle_between_doctype_public_system_id_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
@@ -2628,31 +2628,31 @@ static StateResult handle_after_doctype_system_keyword_state(
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BEFORE_DOCTYPE_SYSTEM_ID);
       return NEXT_CHAR;
     case '"':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_DOUBLE_QUOTED);
       return NEXT_CHAR;
     case '\'':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       assert(temporary_buffer_equals(parser, ""));
       gumbo_tokenizer_set_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       return NEXT_CHAR;
@@ -2680,19 +2680,19 @@ static StateResult handle_before_doctype_system_id_state(
           parser, GUMBO_LEX_DOCTYPE_SYSTEM_ID_SINGLE_QUOTED);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       tokenizer->_doc_type_state.force_quirks = true;
       return NEXT_CHAR;
@@ -2709,18 +2709,18 @@ static StateResult handle_doctype_system_id_double_quoted_state(
       finish_doctype_system_id(parser);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_system_id(parser);
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_system_id(parser);
@@ -2742,18 +2742,18 @@ static StateResult handle_doctype_system_id_single_quoted_state(
       finish_doctype_system_id(parser);
       return NEXT_CHAR;
     case '\0':
-      add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_UTF8_NULL);
       append_char_to_temporary_buffer(parser, kUtf8ReplacementChar);
       return NEXT_CHAR;
     case '>':
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_END);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_system_id(parser);
       emit_doctype(parser, output);
       return RETURN_ERROR;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       finish_doctype_system_id(parser);
@@ -2780,13 +2780,13 @@ static StateResult handle_after_doctype_system_id_state(
       emit_doctype(parser, output);
       return RETURN_SUCCESS;
     case -1:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_EOF);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
       tokenizer->_doc_type_state.force_quirks = true;
       emit_doctype(parser, output);
       return RETURN_ERROR;
     default:
-      add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
+      tokenizer_add_parse_error(parser, GUMBO_ERR_DOCTYPE_INVALID);
       gumbo_tokenizer_set_state(parser, GUMBO_LEX_BOGUS_DOCTYPE);
       return NEXT_CHAR;
   }
