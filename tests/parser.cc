@@ -1263,7 +1263,7 @@ TEST_F(GumboParserTest, IsIndexDuplicateAttribute) {
 
   GumboAttribute* name = GetAttribute(input, 1);
   EXPECT_STREQ("name", name->name);
-  EXPECT_STREQ("foo", name->value);
+  EXPECT_STREQ("isindex", name->value);
 
 }
 
