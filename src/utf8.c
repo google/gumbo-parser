@@ -33,7 +33,7 @@ const int kUtf8ReplacementChar = 0xFFFD;
 // Wikipedia: http://en.wikipedia.org/wiki/UTF-8#Description
 // RFC 3629: http://tools.ietf.org/html/rfc3629
 // HTML5 Unicode handling:
-// http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#decoded-as-utf-8,-with-error-handling
+// http://www.whatwg.org/specs/web-apps/current-work/multipage/syntax.html#preprocessing-the-input-stream
 //
 // This implementation is based on a DFA-based decoder by Bjoern Hoehrmann
 // <bjoern@hoehrmann.de>.  We wrap the inner table-based decoder routine in our
@@ -41,7 +41,7 @@ const int kUtf8ReplacementChar = 0xFFFD;
 // conditions that the HTML5 spec fully specifies but normal UTF8 decoders do
 // not handle.
 // See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.  Full text of
-// the license agreement and inner loop follows.
+// the license agreement and code follows.
 
 // Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
 
@@ -119,6 +119,71 @@ static void add_error(Utf8Iterator* iter, GumboErrorType type) {
 // This assumes that iter->_start points to the beginning of the character.
 // When this method returns, iter->_width and iter->_current will be set
 // appropriately, as well as any error flags.
+static void read_char(Utf8Iterator* iter) {
+  if (iter->_start >= iter->_end) {
+    // No input left to consume; emit an EOF and set width = 0.
+    iter->_current = -1;
+    iter->_width = 0;
+    return;
+  }
+
+  uint32_t code_point = 0;
+  uint32_t state = UTF8_ACCEPT;
+  for (const char* c = iter->_start; c < iter->_end; ++c) {
+    decode(&state, &code_point, (uint32_t) (unsigned char) (*c));
+    if (state == UTF8_ACCEPT) {
+      iter->_width = c - iter->_start + 1;
+      // This is the special handling for carriage returns that is mandated by the
+      // HTML5 spec.  Since we're looking for particular 7-bit literal characters,
+      // we operate in terms of chars and only need a check for iter overrun,
+      // instead of having to read in a full next code point.
+      // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream
+      if (code_point == '\r') {
+        assert(iter->_width == 1);
+        const char* next = c + 1;
+        if (next < iter->_end && *next == '\n') {
+          // Advance the iter, as if the carriage return didn't exist.
+          ++iter->_start;
+          // Preserve the true offset, since other tools that look at it may be
+          // unaware of HTML5's rules for converting \r into \n.
+          ++iter->_pos.offset;
+        }
+        code_point = '\n';
+      }
+      if (utf8_is_invalid_code_point(code_point)) {
+        add_error(iter, GUMBO_ERR_UTF8_INVALID);
+        code_point = kUtf8ReplacementChar;
+      }
+      iter->_current = code_point;
+      return;
+    } else if (state == UTF8_REJECT) {
+      // The WhatWG Encoding guidelines and Unicode standard recommend consuming
+      // as much of the input as could not possibly be a valid UTF-8 sequence,
+      // so we start with the character we just rejected and keep expanding the
+      // width until we try to decode a character and it's not a reject.
+      const char* c2;
+      for (c2 = c; c2 < iter->_end; ++c2) {
+        state = UTF8_ACCEPT;
+        if (decode(&state, &code_point, (unsigned char) *c2) != UTF8_REJECT) {
+          break;
+        }
+      }
+      iter->_width = c2 - iter->_start;
+      iter->_current = kUtf8ReplacementChar;
+      add_error(iter, GUMBO_ERR_UTF8_INVALID);
+      return;
+    }
+  }
+  // If we got here without exiting early, then we've reached the end of the iterator.
+  // Add an error for truncated input, set the width to consume the rest of the
+  // iterator, and emit a replacement character.  The next time we enter this method,
+  // it will detect that there's no input to consume and 
+  iter->_current = kUtf8ReplacementChar;
+  iter->_width = iter->_end - iter->_start;
+  add_error(iter, GUMBO_ERR_UTF8_TRUNCATED);
+}
+
+/*
 static void read_char(Utf8Iterator* iter) {
   unsigned char c;
   unsigned char mask = '\0';
@@ -225,6 +290,7 @@ static void read_char(Utf8Iterator* iter) {
   // set it, and we're done.
   iter->_current = code_point;
 }
+*/
 
 static void update_position(Utf8Iterator* iter) {
   iter->_pos.offset += iter->_width;
@@ -234,7 +300,7 @@ static void update_position(Utf8Iterator* iter) {
   } else if(iter->_current == '\t') {
     int tab_stop = iter->_parser->_options->tab_stop;
     iter->_pos.column = ((iter->_pos.column / tab_stop) + 1) * tab_stop;
-  } else {
+  } else if(iter->_current != -1) {
     ++iter->_pos.column;
   }
 }
@@ -252,34 +318,19 @@ void utf8iterator_init(
     Utf8Iterator* iter) {
   iter->_start = source;
   iter->_end = source + source_length;
-  iter->_width = 0;
   iter->_pos.line = 1;
   iter->_pos.column = 1;
   iter->_pos.offset = 0;
   iter->_parser = parser;
-  if (source_length) {
-    read_char(iter);
-  } else {
-    iter->_current = -1;
-  }
+  read_char(iter);
 }
 
 void utf8iterator_next(Utf8Iterator* iter) {
-  if (iter->_current == -1) {
-    // If we're already at EOF, bail out before advancing anything to avoid
-    // reading past the end of the buffer.  It's easier to catch this case here
-    // than litter the code with lots of individual checks for EOF.
-    return;
-  }
-  iter->_start += iter->_width;
   // We update positions based on the *last* character read, so that the first
   // character following a newline is at column 1 in the next line.
   update_position(iter);
-  if (iter->_start < iter->_end) {
-    read_char(iter);
-  } else {  // EOF
-    iter->_current = -1;
-  }
+  iter->_start += iter->_width;
+  read_char(iter);
 }
 
 int utf8iterator_current(const Utf8Iterator* iter) {
