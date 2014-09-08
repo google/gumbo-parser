@@ -1261,10 +1261,9 @@ TEST_F(GumboParserTest, IsIndexDuplicateAttribute) {
   ASSERT_EQ(0, GetChildCount(input));
   ASSERT_EQ(1, GetAttributeCount(input));
 
-  GumboAttribute* name = GetAttribute(input, 1);
+  GumboAttribute* name = GetAttribute(input, 0);
   EXPECT_STREQ("name", name->name);
   EXPECT_STREQ("isindex", name->value);
-
 }
 
 TEST_F(GumboParserTest, NestedRawtextTags) {
