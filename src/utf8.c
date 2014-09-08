@@ -161,6 +161,7 @@ static void read_char(Utf8Iterator* iter) {
       // as much of the input as could not possibly be a valid UTF-8 sequence,
       // so we start with the character we just rejected and keep expanding the
       // width until we try to decode a character and it's not a reject.
+      /*
       const char* c2;
       for (c2 = c; c2 < iter->_end; ++c2) {
         state = UTF8_ACCEPT;
@@ -168,7 +169,8 @@ static void read_char(Utf8Iterator* iter) {
           break;
         }
       }
-      iter->_width = c2 - iter->_start;
+      */
+      iter->_width = c - iter->_start + (c == iter->_start);
       iter->_current = kUtf8ReplacementChar;
       add_error(iter, GUMBO_ERR_UTF8_INVALID);
       return;
