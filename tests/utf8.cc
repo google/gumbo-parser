@@ -371,9 +371,7 @@ TEST_F(Utf8Test, TruncatedInput) {
 TEST_F(Utf8Test, Html5SpecExample) {
   // This example has since been removed from the spec, and the spec has been
   // changed to reference the Unicode Standard 6.2, 5.22 "Best practices for
-  // U+FFFD substitution."  This differs slightly from the original testcase in
-  // that it does not output runs of multiple 0xFFFD characters, but if I'm
-  // reading the Unicode spec right, this is the desired behavior.
+  // U+FFFD substitution."
   ResetText("\x41\x98\xBA\x42\xE2\x98\x43\xE2\x98\xBA\xE2\x98");
 
   EXPECT_EQ('A', utf8iterator_current(&input_));
