@@ -2464,19 +2464,189 @@ static bool consume_numeric_ref(
   return status;
 }
 
+
+#line 2474 "char_ref.rl"
+
+
+
+#line 2473 "char_ref.c"
+static const int char_ref_start = 12;
+static const int char_ref_first_final = 12;
+static const int char_ref_error = 0;
+
+static const int char_ref_en_valid_named_ref = 12;
+
+
+#line 2477 "char_ref.rl"
+
 static const NamedCharRef* find_named_char_ref(Utf8Iterator* input) {
-  for (int i = 0; kNamedEntities[i].codepoints.first != -1; ++i) {
-    const NamedCharRef* current = &kNamedEntities[i];
-    assert(strlen(current->name) == current->length);
-    if (utf8iterator_maybe_consume_match(
-        input, current->name, current->length, true)) {
-      assert(current->name != NULL);
-      assert(current->length > 0);
-      assert(current->codepoints.first != kGumboNoChar);
-      return current;
-    }
-  }
-  return NULL;
+  const char* p = utf8iterator_get_char_pointer(input);
+  const char* pe = utf8iterator_get_end_pointer(input);
+  const char* ts, te;
+  int cs, act;
+  
+#line 2489 "char_ref.c"
+	{
+	cs = char_ref_start;
+	ts = 0;
+	te = 0;
+	act = 0;
+	}
+
+#line 2484 "char_ref.rl"
+  
+#line 2499 "char_ref.c"
+	{
+	if ( p == pe )
+		goto _test_eof;
+	switch ( cs )
+	{
+tr9:
+#line 2471 "char_ref.rl"
+	{te = p+1;{ output->first = 0xc2 }}
+	goto st12;
+tr12:
+#line 2472 "char_ref.rl"
+	{te = p+1;{ output->first = 0x22d2 }}
+	goto st12;
+tr15:
+#line 2470 "char_ref.rl"
+	{te = p;p--;{ output->first = 0xc1 }}
+	goto st12;
+tr16:
+#line 2469 "char_ref.rl"
+	{te = p+1;{ output->first = 0xc1 }}
+	goto st12;
+st12:
+#line 1 "NONE"
+	{ts = 0;}
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+#line 1 "NONE"
+	{ts = p;}
+#line 2529 "char_ref.c"
+	switch( (*p) ) {
+		case 65: goto st1;
+		case 67: goto st9;
+	}
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st1:
+	if ( ++p == pe )
+		goto _test_eof1;
+case 1:
+	switch( (*p) ) {
+		case 97: goto st2;
+		case 99: goto st6;
+	}
+	goto st0;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	if ( (*p) == 99 )
+		goto st3;
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	if ( (*p) == 117 )
+		goto st4;
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	if ( (*p) == 116 )
+		goto st5;
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) == 101 )
+		goto st13;
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	if ( (*p) == 59 )
+		goto tr16;
+	goto tr15;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	if ( (*p) == 105 )
+		goto st7;
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 114 )
+		goto st8;
+	goto st0;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	if ( (*p) == 99 )
+		goto tr9;
+	goto st0;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	if ( (*p) == 97 )
+		goto st10;
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	if ( (*p) == 112 )
+		goto st11;
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	if ( (*p) == 59 )
+		goto tr12;
+	goto st0;
+	}
+	_test_eof12: cs = 12; goto _test_eof; 
+	_test_eof1: cs = 1; goto _test_eof; 
+	_test_eof2: cs = 2; goto _test_eof; 
+	_test_eof3: cs = 3; goto _test_eof; 
+	_test_eof4: cs = 4; goto _test_eof; 
+	_test_eof5: cs = 5; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
+	_test_eof6: cs = 6; goto _test_eof; 
+	_test_eof7: cs = 7; goto _test_eof; 
+	_test_eof8: cs = 8; goto _test_eof; 
+	_test_eof9: cs = 9; goto _test_eof; 
+	_test_eof10: cs = 10; goto _test_eof; 
+	_test_eof11: cs = 11; goto _test_eof; 
+
+	_test_eof: {}
+	if ( p == eof )
+	{
+	switch ( cs ) {
+	case 13: goto tr15;
+	}
+	}
+
+	_out: {}
+	}
+
+#line 2485 "char_ref.rl"
 }
 
 static bool is_legal_attribute_char_next(Utf8Iterator* input) {

@@ -2462,19 +2462,26 @@ static bool consume_numeric_ref(
   return status;
 }
 
+%%{
+machine char_ref;
+
+valid_named_ref := |*
+  'Aacute;' => { output->first = 0xc1 };
+  'Aacute' => { output->first = 0xc1 };
+  'Acirc' => { output->first = 0xc2 };
+  'Cap;' => { output->first = 0x22d2 };
+*|;
+}%%
+
+%% write data;
+
 static const NamedCharRef* find_named_char_ref(Utf8Iterator* input) {
-  for (int i = 0; kNamedEntities[i].codepoints.first != -1; ++i) {
-    const NamedCharRef* current = &kNamedEntities[i];
-    assert(strlen(current->name) == current->length);
-    if (utf8iterator_maybe_consume_match(
-        input, current->name, current->length, true)) {
-      assert(current->name != NULL);
-      assert(current->length > 0);
-      assert(current->codepoints.first != kGumboNoChar);
-      return current;
-    }
-  }
-  return NULL;
+  const char* p = utf8iterator_get_char_pointer(input);
+  const char* pe = utf8iterator_get_end_pointer(input);
+  const char* ts, te;
+  int cs, act;
+  %% write init;
+  %% write exec;
 }
 
 static bool is_legal_attribute_char_next(Utf8Iterator* input) {
