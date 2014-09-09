@@ -2464,12 +2464,40 @@ static bool consume_numeric_ref(
   return status;
 }
 
+static bool is_legal_attribute_char_next(Utf8Iterator* input) {
+  int c = utf8iterator_current(input);
+  return c == '=' || isalnum(c);
+}
 
-#line 2474 "char_ref.rl"
+static bool maybe_add_invalid_named_reference(
+    struct GumboInternalParser* parser, Utf8Iterator* input) {
+  // The iterator will always be reset in this code path, so we don't need to
+  // worry about consuming characters.
+  const char* start = utf8iterator_get_char_pointer(input);
+  int c = utf8iterator_current(input);
+  while ((c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
+         (c >= '0' && c <= '9')) {
+    utf8iterator_next(input);
+    c = utf8iterator_current(input);
+  }
+  if (c == ';') {
+    GumboStringPiece bad_ref;
+    bad_ref.data = start;
+    bad_ref.length = utf8iterator_get_char_pointer(input) - start;
+    add_named_reference_error(
+        parser, input, GUMBO_ERR_NAMED_CHAR_REF_INVALID, bad_ref);
+    return false;
+  }
+  return true;
+}
+
+
+#line 2502 "char_ref.rl"
 
 
 
-#line 2473 "char_ref.c"
+#line 2501 "char_ref.c"
 static const int char_ref_start = 12;
 static const int char_ref_first_final = 12;
 static const int char_ref_error = 0;
@@ -2477,15 +2505,21 @@ static const int char_ref_error = 0;
 static const int char_ref_en_valid_named_ref = 12;
 
 
-#line 2477 "char_ref.rl"
+#line 2505 "char_ref.rl"
 
-static const NamedCharRef* find_named_char_ref(Utf8Iterator* input) {
+static bool consume_named_ref(
+    struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
+    OneOrTwoCodepoints* output) {
+  assert(output->first == kGumboNoChar);
   const char* p = utf8iterator_get_char_pointer(input);
   const char* pe = utf8iterator_get_end_pointer(input);
-  const char* ts, te;
+  const char* eof = pe;
+  const char* te = 0;
+  const char* ts;
   int cs, act;
+
   
-#line 2489 "char_ref.c"
+#line 2523 "char_ref.c"
 	{
 	cs = char_ref_start;
 	ts = 0;
@@ -2493,29 +2527,29 @@ static const NamedCharRef* find_named_char_ref(Utf8Iterator* input) {
 	act = 0;
 	}
 
-#line 2484 "char_ref.rl"
+#line 2518 "char_ref.rl"
   
-#line 2499 "char_ref.c"
+#line 2533 "char_ref.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
 	switch ( cs )
 	{
 tr9:
-#line 2471 "char_ref.rl"
-	{te = p+1;{ output->first = 0xc2 }}
+#line 2499 "char_ref.rl"
+	{te = p+1;{ output->first = 0xc2; }}
 	goto st12;
 tr12:
-#line 2472 "char_ref.rl"
-	{te = p+1;{ output->first = 0x22d2 }}
+#line 2500 "char_ref.rl"
+	{te = p+1;{ output->first = 0x22d2; }}
 	goto st12;
 tr15:
-#line 2470 "char_ref.rl"
-	{te = p;p--;{ output->first = 0xc1 }}
+#line 2498 "char_ref.rl"
+	{te = p;p--;{ output->first = 0xc1; }}
 	goto st12;
 tr16:
-#line 2469 "char_ref.rl"
-	{te = p+1;{ output->first = 0xc1 }}
+#line 2497 "char_ref.rl"
+	{te = p+1;{ output->first = 0xc1; }}
 	goto st12;
 st12:
 #line 1 "NONE"
@@ -2525,7 +2559,7 @@ st12:
 case 12:
 #line 1 "NONE"
 	{ts = p;}
-#line 2529 "char_ref.c"
+#line 2563 "char_ref.c"
 	switch( (*p) ) {
 		case 65: goto st1;
 		case 67: goto st9;
@@ -2646,59 +2680,21 @@ case 11:
 	_out: {}
 	}
 
-#line 2485 "char_ref.rl"
-}
+#line 2519 "char_ref.rl"
 
-static bool is_legal_attribute_char_next(Utf8Iterator* input) {
-  int c = utf8iterator_current(input);
-  return c == '=' || isalnum(c);
-}
-
-static bool maybe_add_invalid_named_reference(
-    struct GumboInternalParser* parser, Utf8Iterator* input) {
-  // The iterator will always be reset in this code path, so we don't need to
-  // worry about consuming characters.
-  const char* start = utf8iterator_get_char_pointer(input);
-  int c = utf8iterator_current(input);
-  while ((c >= 'a' && c <= 'z') ||
-         (c >= 'A' && c <= 'Z') ||
-         (c >= '0' && c <= '9')) {
-    utf8iterator_next(input);
-    c = utf8iterator_current(input);
-  }
-  if (c == ';') {
-    GumboStringPiece bad_ref;
-    bad_ref.data = start;
-    bad_ref.length = utf8iterator_get_char_pointer(input) - start;
-    add_named_reference_error(
-        parser, input, GUMBO_ERR_NAMED_CHAR_REF_INVALID, bad_ref);
-    return false;
-  }
-  return true;
-}
-
-static bool consume_named_ref(
-    struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
-    OneOrTwoCodepoints* output) {
-  assert(output->first == kGumboNoChar);
-  const NamedCharRef* char_ref = find_named_char_ref(input);
-  if (char_ref) {
-    assert(char_ref->length == strlen(char_ref->name));
-    char last_char = char_ref->name[char_ref->length - 1];
+  if (output->first != kGumboNoChar) {
+    char last_char = *(te - 1);
     if (last_char == ';') {
-      *output = char_ref->codepoints;
-      assert(output->first != kGumboNoChar);
       return true;
     } else if (is_in_attribute && is_legal_attribute_char_next(input)) {
       utf8iterator_reset(input);
       return true;
     } else {
       GumboStringPiece bad_ref;
-      bad_ref.data = char_ref->name;
-      bad_ref.length = char_ref->length;
+      bad_ref.length = te - ts;
+      bad_ref.data = ts;
       add_named_reference_error(
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
-      *output = char_ref->codepoints;
       assert(output->first != kGumboNoChar);
       return false;
     }
