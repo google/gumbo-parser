@@ -496,13 +496,10 @@ class Options(ctypes.Structure):
       # function.  Right now these are treated as opaque void pointers.
       ('allocator', ctypes.c_void_p),
       ('deallocator', ctypes.c_void_p),
+      ('userdata', ctypes.c_void_p),
       ('tab_stop', ctypes.c_int),
       ('stop_on_first_error', ctypes.c_bool),
-      ('max_utf8_decode_errors', ctypes.c_int),
-      # The following two options will likely be removed from the C API, and
-      # should be removed from the Python API when that happens too.
-      ('verbatim_mode', ctypes.c_bool),
-      ('preserve_entities', ctypes.c_bool),
+      ('max_errors', ctypes.c_int),
       ]
 
 
