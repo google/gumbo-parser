@@ -98,6 +98,12 @@ void utf8iterator_get_position(
 // Retrieves a character pointer to the start of the current character.
 const char* utf8iterator_get_char_pointer(const Utf8Iterator* iter);
 
+// Retrieves a character pointer to 1 past the end of the buffer.  This is
+// necessary for certain state machines and string comparisons that would like
+// to look directly for ASCII text in the buffer without going through the
+// decoder.
+const char* utf8iterator_get_end_pointer(const Utf8Iterator* iter);
+
 // If the upcoming text in the buffer matches the specified prefix (which has
 // length 'length'), consume it and return true.  Otherwise, return false with
 // no other effects.  If the length of the string would overflow the buffer,
