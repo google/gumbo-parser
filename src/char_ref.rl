@@ -17,7 +17,7 @@
 // This is a Ragel state machine re-implementation of the original char_ref.c,
 // rewritten to improve efficiency.  To generate the .c file from it,
 //
-// $ ragel -G2 char_ref.rl
+// $ ragel -F1 char_ref.rl
 //
 // The generated source is also checked into source control so that most people
 // hacking on the parser do not need to install ragel.
