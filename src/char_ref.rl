@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>     // Only for debug assertions at present.
 
 #include "error.h"
@@ -4737,26 +4738,38 @@ static bool consume_named_ref(
   const char* pe = utf8iterator_get_end_pointer(input);
   const char* eof = pe;
   const char* te = 0;
-  const char* ts;
+  const char *ts, *start;
   int cs, act;
 
   %% write init;
+  // Avoid unused variable warnings.
+  (void) act;
+  (void) ts;
+
+  start = p;
   %% write exec;
 
   if (output->first != kGumboNoChar) {
     char last_char = *(te - 1);
+    int len = te - start;
     if (last_char == ';') {
+      bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
+      assert(matched);
       return true;
     } else if (is_in_attribute && is_legal_attribute_char_next(input)) {
+      output->first = kGumboNoChar;
+      output->second = kGumboNoChar;
       utf8iterator_reset(input);
       return true;
     } else {
       GumboStringPiece bad_ref;
-      bad_ref.length = te - ts;
-      bad_ref.data = ts;
+      bad_ref.length = te - start;
+      bad_ref.data = start;
       add_named_reference_error(
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
       assert(output->first != kGumboNoChar);
+      bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
+      assert(matched);
       return false;
     }
   } else {
