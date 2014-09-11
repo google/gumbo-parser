@@ -3830,11 +3830,14 @@ GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t length) {
   GumboParser parser;
   parser._options = options;
-  gumbo_tokenizer_state_init(&parser, buffer, length);
   parser_state_init(&parser);
   // Must come after parser_state_init, since creating the document node must
   // reference parser_state->_current_node.
   output_init(&parser);
+  // And this must come after output_init, because initializing the tokenizer
+  // reads the first character and that may cause a UTF-8 decode error
+  // (inserting into output->errors) if that's invalid.
+  gumbo_tokenizer_state_init(&parser, buffer, length);
 
   GumboParserState* state = parser._parser_state;
   gumbo_debug("Parsing %.*s.\n", length, buffer);
