@@ -205,11 +205,6 @@ static bool consume_numeric_ref(
   return status;
 }
 
-static bool is_legal_attribute_char_next(Utf8Iterator* input) {
-  int c = utf8iterator_current(input);
-  return c == '=' || isalnum(c);
-}
-
 static bool maybe_add_invalid_named_reference(
     struct GumboInternalParser* parser, Utf8Iterator* input) {
   // The iterator will always be reset in this code path, so we don't need to
@@ -234,11 +229,11 @@ static bool maybe_add_invalid_named_reference(
 }
 
 
-#line 2469 "char_ref.rl"
+#line 2464 "char_ref.rl"
 
 
 
-#line 242 "char_ref.c"
+#line 237 "char_ref.c"
 static const short _char_ref_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -13970,7 +13965,7 @@ static const int char_ref_error = 0;
 static const int char_ref_en_valid_named_ref = 7623;
 
 
-#line 2472 "char_ref.rl"
+#line 2467 "char_ref.rl"
 
 static bool consume_named_ref(
     struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
@@ -13984,7 +13979,7 @@ static bool consume_named_ref(
   int cs, act;
 
   
-#line 13988 "char_ref.c"
+#line 13983 "char_ref.c"
 	{
 	cs = char_ref_start;
 	ts = 0;
@@ -13992,14 +13987,18 @@ static bool consume_named_ref(
 	act = 0;
 	}
 
-#line 2485 "char_ref.rl"
+#line 2480 "char_ref.rl"
   // Avoid unused variable warnings.
   (void) act;
   (void) ts;
 
   start = p;
+  // Note that the state machine operates on raw character buffers, so it's not
+  // consuming any characters.  As a result, we don't need to do any mark/reset
+  // calls, but we do need to call utf8iterator_maybe_consume_match on success
+  // to consume the characters we just looked at.
   
-#line 14003 "char_ref.c"
+#line 14002 "char_ref.c"
 	{
 	int _slen;
 	int _trans;
@@ -14021,7 +14020,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 14025 "char_ref.c"
+#line 14024 "char_ref.c"
 		}
 	}
 
@@ -14049,8958 +14048,8958 @@ _eof_trans:
 	{te = p+1;}
 	break;
 	case 3:
-#line 238 "char_ref.rl"
+#line 233 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc6; }}
 	break;
 	case 4:
-#line 239 "char_ref.rl"
+#line 234 "char_ref.rl"
 	{te = p+1;{ output->first = 0x26; }}
 	break;
 	case 5:
-#line 241 "char_ref.rl"
+#line 236 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc1; }}
 	break;
 	case 6:
-#line 243 "char_ref.rl"
+#line 238 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0102; }}
 	break;
 	case 7:
-#line 244 "char_ref.rl"
+#line 239 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc2; }}
 	break;
 	case 8:
-#line 246 "char_ref.rl"
+#line 241 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0410; }}
 	break;
 	case 9:
-#line 247 "char_ref.rl"
+#line 242 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d504; }}
 	break;
 	case 10:
-#line 248 "char_ref.rl"
+#line 243 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc0; }}
 	break;
 	case 11:
-#line 250 "char_ref.rl"
+#line 245 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0391; }}
 	break;
 	case 12:
-#line 251 "char_ref.rl"
+#line 246 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0100; }}
 	break;
 	case 13:
-#line 252 "char_ref.rl"
+#line 247 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a53; }}
 	break;
 	case 14:
-#line 253 "char_ref.rl"
+#line 248 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0104; }}
 	break;
 	case 15:
-#line 254 "char_ref.rl"
+#line 249 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d538; }}
 	break;
 	case 16:
-#line 255 "char_ref.rl"
+#line 250 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2061; }}
 	break;
 	case 17:
-#line 256 "char_ref.rl"
+#line 251 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc5; }}
 	break;
 	case 18:
-#line 258 "char_ref.rl"
+#line 253 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d49c; }}
 	break;
 	case 19:
-#line 259 "char_ref.rl"
+#line 254 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2254; }}
 	break;
 	case 20:
-#line 260 "char_ref.rl"
+#line 255 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc3; }}
 	break;
 	case 21:
-#line 262 "char_ref.rl"
+#line 257 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc4; }}
 	break;
 	case 22:
-#line 264 "char_ref.rl"
+#line 259 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2216; }}
 	break;
 	case 23:
-#line 265 "char_ref.rl"
+#line 260 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae7; }}
 	break;
 	case 24:
-#line 266 "char_ref.rl"
+#line 261 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2306; }}
 	break;
 	case 25:
-#line 267 "char_ref.rl"
+#line 262 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0411; }}
 	break;
 	case 26:
-#line 268 "char_ref.rl"
+#line 263 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2235; }}
 	break;
 	case 27:
-#line 269 "char_ref.rl"
+#line 264 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212c; }}
 	break;
 	case 28:
-#line 270 "char_ref.rl"
+#line 265 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0392; }}
 	break;
 	case 29:
-#line 271 "char_ref.rl"
+#line 266 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d505; }}
 	break;
 	case 30:
-#line 272 "char_ref.rl"
+#line 267 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d539; }}
 	break;
 	case 31:
-#line 273 "char_ref.rl"
+#line 268 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02d8; }}
 	break;
 	case 32:
-#line 274 "char_ref.rl"
+#line 269 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212c; }}
 	break;
 	case 33:
-#line 275 "char_ref.rl"
+#line 270 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224e; }}
 	break;
 	case 34:
-#line 276 "char_ref.rl"
+#line 271 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0427; }}
 	break;
 	case 35:
-#line 277 "char_ref.rl"
+#line 272 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa9; }}
 	break;
 	case 36:
-#line 279 "char_ref.rl"
+#line 274 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0106; }}
 	break;
 	case 37:
-#line 280 "char_ref.rl"
+#line 275 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d2; }}
 	break;
 	case 38:
-#line 281 "char_ref.rl"
+#line 276 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2145; }}
 	break;
 	case 39:
-#line 282 "char_ref.rl"
+#line 277 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212d; }}
 	break;
 	case 40:
-#line 283 "char_ref.rl"
+#line 278 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010c; }}
 	break;
 	case 41:
-#line 284 "char_ref.rl"
+#line 279 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc7; }}
 	break;
 	case 42:
-#line 286 "char_ref.rl"
+#line 281 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0108; }}
 	break;
 	case 43:
-#line 287 "char_ref.rl"
+#line 282 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2230; }}
 	break;
 	case 44:
-#line 288 "char_ref.rl"
+#line 283 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010a; }}
 	break;
 	case 45:
-#line 289 "char_ref.rl"
+#line 284 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb8; }}
 	break;
 	case 46:
-#line 290 "char_ref.rl"
+#line 285 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb7; }}
 	break;
 	case 47:
-#line 291 "char_ref.rl"
+#line 286 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212d; }}
 	break;
 	case 48:
-#line 292 "char_ref.rl"
+#line 287 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a7; }}
 	break;
 	case 49:
-#line 293 "char_ref.rl"
+#line 288 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2299; }}
 	break;
 	case 50:
-#line 294 "char_ref.rl"
+#line 289 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2296; }}
 	break;
 	case 51:
-#line 295 "char_ref.rl"
+#line 290 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2295; }}
 	break;
 	case 52:
-#line 296 "char_ref.rl"
+#line 291 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2297; }}
 	break;
 	case 53:
-#line 297 "char_ref.rl"
+#line 292 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2232; }}
 	break;
 	case 54:
-#line 298 "char_ref.rl"
+#line 293 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201d; }}
 	break;
 	case 55:
-#line 299 "char_ref.rl"
+#line 294 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2019; }}
 	break;
 	case 56:
-#line 300 "char_ref.rl"
+#line 295 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2237; }}
 	break;
 	case 57:
-#line 301 "char_ref.rl"
+#line 296 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a74; }}
 	break;
 	case 58:
-#line 302 "char_ref.rl"
+#line 297 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2261; }}
 	break;
 	case 59:
-#line 303 "char_ref.rl"
+#line 298 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222f; }}
 	break;
 	case 60:
-#line 304 "char_ref.rl"
+#line 299 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222e; }}
 	break;
 	case 61:
-#line 305 "char_ref.rl"
+#line 300 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2102; }}
 	break;
 	case 62:
-#line 306 "char_ref.rl"
+#line 301 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2210; }}
 	break;
 	case 63:
-#line 307 "char_ref.rl"
+#line 302 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2233; }}
 	break;
 	case 64:
-#line 308 "char_ref.rl"
+#line 303 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a2f; }}
 	break;
 	case 65:
-#line 309 "char_ref.rl"
+#line 304 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d49e; }}
 	break;
 	case 66:
-#line 310 "char_ref.rl"
+#line 305 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d3; }}
 	break;
 	case 67:
-#line 311 "char_ref.rl"
+#line 306 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224d; }}
 	break;
 	case 68:
-#line 312 "char_ref.rl"
+#line 307 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2145; }}
 	break;
 	case 69:
-#line 313 "char_ref.rl"
+#line 308 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2911; }}
 	break;
 	case 70:
-#line 314 "char_ref.rl"
+#line 309 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0402; }}
 	break;
 	case 71:
-#line 315 "char_ref.rl"
+#line 310 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0405; }}
 	break;
 	case 72:
-#line 316 "char_ref.rl"
+#line 311 "char_ref.rl"
 	{te = p+1;{ output->first = 0x040f; }}
 	break;
 	case 73:
-#line 317 "char_ref.rl"
+#line 312 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2021; }}
 	break;
 	case 74:
-#line 318 "char_ref.rl"
+#line 313 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a1; }}
 	break;
 	case 75:
-#line 319 "char_ref.rl"
+#line 314 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae4; }}
 	break;
 	case 76:
-#line 320 "char_ref.rl"
+#line 315 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010e; }}
 	break;
 	case 77:
-#line 321 "char_ref.rl"
+#line 316 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0414; }}
 	break;
 	case 78:
-#line 322 "char_ref.rl"
+#line 317 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2207; }}
 	break;
 	case 79:
-#line 323 "char_ref.rl"
+#line 318 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0394; }}
 	break;
 	case 80:
-#line 324 "char_ref.rl"
+#line 319 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d507; }}
 	break;
 	case 81:
-#line 325 "char_ref.rl"
+#line 320 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb4; }}
 	break;
 	case 82:
-#line 326 "char_ref.rl"
+#line 321 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02d9; }}
 	break;
 	case 83:
-#line 327 "char_ref.rl"
+#line 322 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02dd; }}
 	break;
 	case 84:
-#line 328 "char_ref.rl"
+#line 323 "char_ref.rl"
 	{te = p+1;{ output->first = 0x60; }}
 	break;
 	case 85:
-#line 329 "char_ref.rl"
+#line 324 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02dc; }}
 	break;
 	case 86:
-#line 330 "char_ref.rl"
+#line 325 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c4; }}
 	break;
 	case 87:
-#line 331 "char_ref.rl"
+#line 326 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2146; }}
 	break;
 	case 88:
-#line 332 "char_ref.rl"
+#line 327 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d53b; }}
 	break;
 	case 89:
-#line 333 "char_ref.rl"
+#line 328 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa8; }}
 	break;
 	case 90:
-#line 334 "char_ref.rl"
+#line 329 "char_ref.rl"
 	{te = p+1;{ output->first = 0x20dc; }}
 	break;
 	case 91:
-#line 335 "char_ref.rl"
+#line 330 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2250; }}
 	break;
 	case 92:
-#line 336 "char_ref.rl"
+#line 331 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222f; }}
 	break;
 	case 93:
-#line 337 "char_ref.rl"
+#line 332 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa8; }}
 	break;
 	case 94:
-#line 338 "char_ref.rl"
+#line 333 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d3; }}
 	break;
 	case 95:
-#line 339 "char_ref.rl"
+#line 334 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d0; }}
 	break;
 	case 96:
-#line 340 "char_ref.rl"
+#line 335 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d4; }}
 	break;
 	case 97:
-#line 341 "char_ref.rl"
+#line 336 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae4; }}
 	break;
 	case 98:
-#line 342 "char_ref.rl"
+#line 337 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f8; }}
 	break;
 	case 99:
-#line 343 "char_ref.rl"
+#line 338 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27fa; }}
 	break;
 	case 100:
-#line 344 "char_ref.rl"
+#line 339 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f9; }}
 	break;
 	case 101:
-#line 345 "char_ref.rl"
+#line 340 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d2; }}
 	break;
 	case 102:
-#line 346 "char_ref.rl"
+#line 341 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a8; }}
 	break;
 	case 103:
-#line 347 "char_ref.rl"
+#line 342 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d1; }}
 	break;
 	case 104:
-#line 348 "char_ref.rl"
+#line 343 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d5; }}
 	break;
 	case 105:
-#line 349 "char_ref.rl"
+#line 344 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2225; }}
 	break;
 	case 106:
-#line 350 "char_ref.rl"
+#line 345 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2193; }}
 	break;
 	case 107:
-#line 351 "char_ref.rl"
+#line 346 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2913; }}
 	break;
 	case 108:
-#line 352 "char_ref.rl"
+#line 347 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21f5; }}
 	break;
 	case 109:
-#line 353 "char_ref.rl"
+#line 348 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0311; }}
 	break;
 	case 110:
-#line 354 "char_ref.rl"
+#line 349 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2950; }}
 	break;
 	case 111:
-#line 355 "char_ref.rl"
+#line 350 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295e; }}
 	break;
 	case 112:
-#line 356 "char_ref.rl"
+#line 351 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bd; }}
 	break;
 	case 113:
-#line 357 "char_ref.rl"
+#line 352 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2956; }}
 	break;
 	case 114:
-#line 358 "char_ref.rl"
+#line 353 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295f; }}
 	break;
 	case 115:
-#line 359 "char_ref.rl"
+#line 354 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c1; }}
 	break;
 	case 116:
-#line 360 "char_ref.rl"
+#line 355 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2957; }}
 	break;
 	case 117:
-#line 361 "char_ref.rl"
+#line 356 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a4; }}
 	break;
 	case 118:
-#line 362 "char_ref.rl"
+#line 357 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a7; }}
 	break;
 	case 119:
-#line 363 "char_ref.rl"
+#line 358 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d3; }}
 	break;
 	case 120:
-#line 364 "char_ref.rl"
+#line 359 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d49f; }}
 	break;
 	case 121:
-#line 365 "char_ref.rl"
+#line 360 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0110; }}
 	break;
 	case 122:
-#line 366 "char_ref.rl"
+#line 361 "char_ref.rl"
 	{te = p+1;{ output->first = 0x014a; }}
 	break;
 	case 123:
-#line 367 "char_ref.rl"
+#line 362 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd0; }}
 	break;
 	case 124:
-#line 369 "char_ref.rl"
+#line 364 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc9; }}
 	break;
 	case 125:
-#line 371 "char_ref.rl"
+#line 366 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011a; }}
 	break;
 	case 126:
-#line 372 "char_ref.rl"
+#line 367 "char_ref.rl"
 	{te = p+1;{ output->first = 0xca; }}
 	break;
 	case 127:
-#line 374 "char_ref.rl"
+#line 369 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042d; }}
 	break;
 	case 128:
-#line 375 "char_ref.rl"
+#line 370 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0116; }}
 	break;
 	case 129:
-#line 376 "char_ref.rl"
+#line 371 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d508; }}
 	break;
 	case 130:
-#line 377 "char_ref.rl"
+#line 372 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc8; }}
 	break;
 	case 131:
-#line 379 "char_ref.rl"
+#line 374 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2208; }}
 	break;
 	case 132:
-#line 380 "char_ref.rl"
+#line 375 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0112; }}
 	break;
 	case 133:
-#line 381 "char_ref.rl"
+#line 376 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25fb; }}
 	break;
 	case 134:
-#line 382 "char_ref.rl"
+#line 377 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ab; }}
 	break;
 	case 135:
-#line 383 "char_ref.rl"
+#line 378 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0118; }}
 	break;
 	case 136:
-#line 384 "char_ref.rl"
+#line 379 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d53c; }}
 	break;
 	case 137:
-#line 385 "char_ref.rl"
+#line 380 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0395; }}
 	break;
 	case 138:
-#line 386 "char_ref.rl"
+#line 381 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a75; }}
 	break;
 	case 139:
-#line 387 "char_ref.rl"
+#line 382 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2242; }}
 	break;
 	case 140:
-#line 388 "char_ref.rl"
+#line 383 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cc; }}
 	break;
 	case 141:
-#line 389 "char_ref.rl"
+#line 384 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2130; }}
 	break;
 	case 142:
-#line 390 "char_ref.rl"
+#line 385 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a73; }}
 	break;
 	case 143:
-#line 391 "char_ref.rl"
+#line 386 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0397; }}
 	break;
 	case 144:
-#line 392 "char_ref.rl"
+#line 387 "char_ref.rl"
 	{te = p+1;{ output->first = 0xcb; }}
 	break;
 	case 145:
-#line 394 "char_ref.rl"
+#line 389 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2203; }}
 	break;
 	case 146:
-#line 395 "char_ref.rl"
+#line 390 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2147; }}
 	break;
 	case 147:
-#line 396 "char_ref.rl"
+#line 391 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0424; }}
 	break;
 	case 148:
-#line 397 "char_ref.rl"
+#line 392 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d509; }}
 	break;
 	case 149:
-#line 398 "char_ref.rl"
+#line 393 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25fc; }}
 	break;
 	case 150:
-#line 399 "char_ref.rl"
+#line 394 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25aa; }}
 	break;
 	case 151:
-#line 400 "char_ref.rl"
+#line 395 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d53d; }}
 	break;
 	case 152:
-#line 401 "char_ref.rl"
+#line 396 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2200; }}
 	break;
 	case 153:
-#line 402 "char_ref.rl"
+#line 397 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2131; }}
 	break;
 	case 154:
-#line 403 "char_ref.rl"
+#line 398 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2131; }}
 	break;
 	case 155:
-#line 404 "char_ref.rl"
+#line 399 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0403; }}
 	break;
 	case 156:
-#line 405 "char_ref.rl"
+#line 400 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3e; }}
 	break;
 	case 157:
-#line 407 "char_ref.rl"
+#line 402 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0393; }}
 	break;
 	case 158:
-#line 408 "char_ref.rl"
+#line 403 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03dc; }}
 	break;
 	case 159:
-#line 409 "char_ref.rl"
+#line 404 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011e; }}
 	break;
 	case 160:
-#line 410 "char_ref.rl"
+#line 405 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0122; }}
 	break;
 	case 161:
-#line 411 "char_ref.rl"
+#line 406 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011c; }}
 	break;
 	case 162:
-#line 412 "char_ref.rl"
+#line 407 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0413; }}
 	break;
 	case 163:
-#line 413 "char_ref.rl"
+#line 408 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0120; }}
 	break;
 	case 164:
-#line 414 "char_ref.rl"
+#line 409 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d50a; }}
 	break;
 	case 165:
-#line 415 "char_ref.rl"
+#line 410 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d9; }}
 	break;
 	case 166:
-#line 416 "char_ref.rl"
+#line 411 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d53e; }}
 	break;
 	case 167:
-#line 417 "char_ref.rl"
+#line 412 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2265; }}
 	break;
 	case 168:
-#line 418 "char_ref.rl"
+#line 413 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22db; }}
 	break;
 	case 169:
-#line 419 "char_ref.rl"
+#line 414 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; }}
 	break;
 	case 170:
-#line 420 "char_ref.rl"
+#line 415 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa2; }}
 	break;
 	case 171:
-#line 421 "char_ref.rl"
+#line 416 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2277; }}
 	break;
 	case 172:
-#line 422 "char_ref.rl"
+#line 417 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; }}
 	break;
 	case 173:
-#line 423 "char_ref.rl"
+#line 418 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2273; }}
 	break;
 	case 174:
-#line 424 "char_ref.rl"
+#line 419 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4a2; }}
 	break;
 	case 175:
-#line 425 "char_ref.rl"
+#line 420 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; }}
 	break;
 	case 176:
-#line 426 "char_ref.rl"
+#line 421 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042a; }}
 	break;
 	case 177:
-#line 427 "char_ref.rl"
+#line 422 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02c7; }}
 	break;
 	case 178:
-#line 428 "char_ref.rl"
+#line 423 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5e; }}
 	break;
 	case 179:
-#line 429 "char_ref.rl"
+#line 424 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0124; }}
 	break;
 	case 180:
-#line 430 "char_ref.rl"
+#line 425 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210c; }}
 	break;
 	case 181:
-#line 431 "char_ref.rl"
+#line 426 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210b; }}
 	break;
 	case 182:
-#line 432 "char_ref.rl"
+#line 427 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210d; }}
 	break;
 	case 183:
-#line 433 "char_ref.rl"
+#line 428 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2500; }}
 	break;
 	case 184:
-#line 434 "char_ref.rl"
+#line 429 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210b; }}
 	break;
 	case 185:
-#line 435 "char_ref.rl"
+#line 430 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0126; }}
 	break;
 	case 186:
-#line 436 "char_ref.rl"
+#line 431 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224e; }}
 	break;
 	case 187:
-#line 437 "char_ref.rl"
+#line 432 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224f; }}
 	break;
 	case 188:
-#line 438 "char_ref.rl"
+#line 433 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0415; }}
 	break;
 	case 189:
-#line 439 "char_ref.rl"
+#line 434 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0132; }}
 	break;
 	case 190:
-#line 440 "char_ref.rl"
+#line 435 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0401; }}
 	break;
 	case 191:
-#line 441 "char_ref.rl"
+#line 436 "char_ref.rl"
 	{te = p+1;{ output->first = 0xcd; }}
 	break;
 	case 192:
-#line 443 "char_ref.rl"
+#line 438 "char_ref.rl"
 	{te = p+1;{ output->first = 0xce; }}
 	break;
 	case 193:
-#line 445 "char_ref.rl"
+#line 440 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0418; }}
 	break;
 	case 194:
-#line 446 "char_ref.rl"
+#line 441 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0130; }}
 	break;
 	case 195:
-#line 447 "char_ref.rl"
+#line 442 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2111; }}
 	break;
 	case 196:
-#line 448 "char_ref.rl"
+#line 443 "char_ref.rl"
 	{te = p+1;{ output->first = 0xcc; }}
 	break;
 	case 197:
-#line 450 "char_ref.rl"
+#line 445 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2111; }}
 	break;
 	case 198:
-#line 451 "char_ref.rl"
+#line 446 "char_ref.rl"
 	{te = p+1;{ output->first = 0x012a; }}
 	break;
 	case 199:
-#line 452 "char_ref.rl"
+#line 447 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2148; }}
 	break;
 	case 200:
-#line 453 "char_ref.rl"
+#line 448 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d2; }}
 	break;
 	case 201:
-#line 454 "char_ref.rl"
+#line 449 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222c; }}
 	break;
 	case 202:
-#line 455 "char_ref.rl"
+#line 450 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222b; }}
 	break;
 	case 203:
-#line 456 "char_ref.rl"
+#line 451 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c2; }}
 	break;
 	case 204:
-#line 457 "char_ref.rl"
+#line 452 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2063; }}
 	break;
 	case 205:
-#line 458 "char_ref.rl"
+#line 453 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2062; }}
 	break;
 	case 206:
-#line 459 "char_ref.rl"
+#line 454 "char_ref.rl"
 	{te = p+1;{ output->first = 0x012e; }}
 	break;
 	case 207:
-#line 460 "char_ref.rl"
+#line 455 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d540; }}
 	break;
 	case 208:
-#line 461 "char_ref.rl"
+#line 456 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0399; }}
 	break;
 	case 209:
-#line 462 "char_ref.rl"
+#line 457 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2110; }}
 	break;
 	case 210:
-#line 463 "char_ref.rl"
+#line 458 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0128; }}
 	break;
 	case 211:
-#line 464 "char_ref.rl"
+#line 459 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0406; }}
 	break;
 	case 212:
-#line 465 "char_ref.rl"
+#line 460 "char_ref.rl"
 	{te = p+1;{ output->first = 0xcf; }}
 	break;
 	case 213:
-#line 467 "char_ref.rl"
+#line 462 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0134; }}
 	break;
 	case 214:
-#line 468 "char_ref.rl"
+#line 463 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0419; }}
 	break;
 	case 215:
-#line 469 "char_ref.rl"
+#line 464 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d50d; }}
 	break;
 	case 216:
-#line 470 "char_ref.rl"
+#line 465 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d541; }}
 	break;
 	case 217:
-#line 471 "char_ref.rl"
+#line 466 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4a5; }}
 	break;
 	case 218:
-#line 472 "char_ref.rl"
+#line 467 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0408; }}
 	break;
 	case 219:
-#line 473 "char_ref.rl"
+#line 468 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0404; }}
 	break;
 	case 220:
-#line 474 "char_ref.rl"
+#line 469 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0425; }}
 	break;
 	case 221:
-#line 475 "char_ref.rl"
+#line 470 "char_ref.rl"
 	{te = p+1;{ output->first = 0x040c; }}
 	break;
 	case 222:
-#line 476 "char_ref.rl"
+#line 471 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039a; }}
 	break;
 	case 223:
-#line 477 "char_ref.rl"
+#line 472 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0136; }}
 	break;
 	case 224:
-#line 478 "char_ref.rl"
+#line 473 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041a; }}
 	break;
 	case 225:
-#line 479 "char_ref.rl"
+#line 474 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d50e; }}
 	break;
 	case 226:
-#line 480 "char_ref.rl"
+#line 475 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d542; }}
 	break;
 	case 227:
-#line 481 "char_ref.rl"
+#line 476 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4a6; }}
 	break;
 	case 228:
-#line 482 "char_ref.rl"
+#line 477 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0409; }}
 	break;
 	case 229:
-#line 483 "char_ref.rl"
+#line 478 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3c; }}
 	break;
 	case 230:
-#line 485 "char_ref.rl"
+#line 480 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0139; }}
 	break;
 	case 231:
-#line 486 "char_ref.rl"
+#line 481 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039b; }}
 	break;
 	case 232:
-#line 487 "char_ref.rl"
+#line 482 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27ea; }}
 	break;
 	case 233:
-#line 488 "char_ref.rl"
+#line 483 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2112; }}
 	break;
 	case 234:
-#line 489 "char_ref.rl"
+#line 484 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219e; }}
 	break;
 	case 235:
-#line 490 "char_ref.rl"
+#line 485 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013d; }}
 	break;
 	case 236:
-#line 491 "char_ref.rl"
+#line 486 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013b; }}
 	break;
 	case 237:
-#line 492 "char_ref.rl"
+#line 487 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041b; }}
 	break;
 	case 238:
-#line 493 "char_ref.rl"
+#line 488 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e8; }}
 	break;
 	case 239:
-#line 494 "char_ref.rl"
+#line 489 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2190; }}
 	break;
 	case 240:
-#line 495 "char_ref.rl"
+#line 490 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21e4; }}
 	break;
 	case 241:
-#line 496 "char_ref.rl"
+#line 491 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c6; }}
 	break;
 	case 242:
-#line 497 "char_ref.rl"
+#line 492 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2308; }}
 	break;
 	case 243:
-#line 498 "char_ref.rl"
+#line 493 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e6; }}
 	break;
 	case 244:
-#line 499 "char_ref.rl"
+#line 494 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2961; }}
 	break;
 	case 245:
-#line 500 "char_ref.rl"
+#line 495 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c3; }}
 	break;
 	case 246:
-#line 501 "char_ref.rl"
+#line 496 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2959; }}
 	break;
 	case 247:
-#line 502 "char_ref.rl"
+#line 497 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230a; }}
 	break;
 	case 248:
-#line 503 "char_ref.rl"
+#line 498 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2194; }}
 	break;
 	case 249:
-#line 504 "char_ref.rl"
+#line 499 "char_ref.rl"
 	{te = p+1;{ output->first = 0x294e; }}
 	break;
 	case 250:
-#line 505 "char_ref.rl"
+#line 500 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a3; }}
 	break;
 	case 251:
-#line 506 "char_ref.rl"
+#line 501 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a4; }}
 	break;
 	case 252:
-#line 507 "char_ref.rl"
+#line 502 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295a; }}
 	break;
 	case 253:
-#line 508 "char_ref.rl"
+#line 503 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b2; }}
 	break;
 	case 254:
-#line 509 "char_ref.rl"
+#line 504 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29cf; }}
 	break;
 	case 255:
-#line 510 "char_ref.rl"
+#line 505 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b4; }}
 	break;
 	case 256:
-#line 511 "char_ref.rl"
+#line 506 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2951; }}
 	break;
 	case 257:
-#line 512 "char_ref.rl"
+#line 507 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2960; }}
 	break;
 	case 258:
-#line 513 "char_ref.rl"
+#line 508 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bf; }}
 	break;
 	case 259:
-#line 514 "char_ref.rl"
+#line 509 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2958; }}
 	break;
 	case 260:
-#line 515 "char_ref.rl"
+#line 510 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bc; }}
 	break;
 	case 261:
-#line 516 "char_ref.rl"
+#line 511 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2952; }}
 	break;
 	case 262:
-#line 517 "char_ref.rl"
+#line 512 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d0; }}
 	break;
 	case 263:
-#line 518 "char_ref.rl"
+#line 513 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d4; }}
 	break;
 	case 264:
-#line 519 "char_ref.rl"
+#line 514 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22da; }}
 	break;
 	case 265:
-#line 520 "char_ref.rl"
+#line 515 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2266; }}
 	break;
 	case 266:
-#line 521 "char_ref.rl"
+#line 516 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2276; }}
 	break;
 	case 267:
-#line 522 "char_ref.rl"
+#line 517 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa1; }}
 	break;
 	case 268:
-#line 523 "char_ref.rl"
+#line 518 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; }}
 	break;
 	case 269:
-#line 524 "char_ref.rl"
+#line 519 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2272; }}
 	break;
 	case 270:
-#line 525 "char_ref.rl"
+#line 520 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d50f; }}
 	break;
 	case 271:
-#line 526 "char_ref.rl"
+#line 521 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d8; }}
 	break;
 	case 272:
-#line 527 "char_ref.rl"
+#line 522 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21da; }}
 	break;
 	case 273:
-#line 528 "char_ref.rl"
+#line 523 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013f; }}
 	break;
 	case 274:
-#line 529 "char_ref.rl"
+#line 524 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f5; }}
 	break;
 	case 275:
-#line 530 "char_ref.rl"
+#line 525 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f7; }}
 	break;
 	case 276:
-#line 531 "char_ref.rl"
+#line 526 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f6; }}
 	break;
 	case 277:
-#line 532 "char_ref.rl"
+#line 527 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f8; }}
 	break;
 	case 278:
-#line 533 "char_ref.rl"
+#line 528 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27fa; }}
 	break;
 	case 279:
-#line 534 "char_ref.rl"
+#line 529 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f9; }}
 	break;
 	case 280:
-#line 535 "char_ref.rl"
+#line 530 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d543; }}
 	break;
 	case 281:
-#line 536 "char_ref.rl"
+#line 531 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2199; }}
 	break;
 	case 282:
-#line 537 "char_ref.rl"
+#line 532 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2198; }}
 	break;
 	case 283:
-#line 538 "char_ref.rl"
+#line 533 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2112; }}
 	break;
 	case 284:
-#line 539 "char_ref.rl"
+#line 534 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b0; }}
 	break;
 	case 285:
-#line 540 "char_ref.rl"
+#line 535 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0141; }}
 	break;
 	case 286:
-#line 541 "char_ref.rl"
+#line 536 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; }}
 	break;
 	case 287:
-#line 542 "char_ref.rl"
+#line 537 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2905; }}
 	break;
 	case 288:
-#line 543 "char_ref.rl"
+#line 538 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041c; }}
 	break;
 	case 289:
-#line 544 "char_ref.rl"
+#line 539 "char_ref.rl"
 	{te = p+1;{ output->first = 0x205f; }}
 	break;
 	case 290:
-#line 545 "char_ref.rl"
+#line 540 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2133; }}
 	break;
 	case 291:
-#line 546 "char_ref.rl"
+#line 541 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d510; }}
 	break;
 	case 292:
-#line 547 "char_ref.rl"
+#line 542 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2213; }}
 	break;
 	case 293:
-#line 548 "char_ref.rl"
+#line 543 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d544; }}
 	break;
 	case 294:
-#line 549 "char_ref.rl"
+#line 544 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2133; }}
 	break;
 	case 295:
-#line 550 "char_ref.rl"
+#line 545 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039c; }}
 	break;
 	case 296:
-#line 551 "char_ref.rl"
+#line 546 "char_ref.rl"
 	{te = p+1;{ output->first = 0x040a; }}
 	break;
 	case 297:
-#line 552 "char_ref.rl"
+#line 547 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0143; }}
 	break;
 	case 298:
-#line 553 "char_ref.rl"
+#line 548 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0147; }}
 	break;
 	case 299:
-#line 554 "char_ref.rl"
+#line 549 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0145; }}
 	break;
 	case 300:
-#line 555 "char_ref.rl"
+#line 550 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041d; }}
 	break;
 	case 301:
-#line 556 "char_ref.rl"
+#line 551 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200b; }}
 	break;
 	case 302:
-#line 557 "char_ref.rl"
+#line 552 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200b; }}
 	break;
 	case 303:
-#line 558 "char_ref.rl"
+#line 553 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200b; }}
 	break;
 	case 304:
-#line 559 "char_ref.rl"
+#line 554 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200b; }}
 	break;
 	case 305:
-#line 560 "char_ref.rl"
+#line 555 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; }}
 	break;
 	case 306:
-#line 561 "char_ref.rl"
+#line 556 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; }}
 	break;
 	case 307:
-#line 562 "char_ref.rl"
+#line 557 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0a; }}
 	break;
 	case 308:
-#line 563 "char_ref.rl"
+#line 558 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d511; }}
 	break;
 	case 309:
-#line 564 "char_ref.rl"
+#line 559 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2060; }}
 	break;
 	case 310:
-#line 565 "char_ref.rl"
+#line 560 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa0; }}
 	break;
 	case 311:
-#line 566 "char_ref.rl"
+#line 561 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2115; }}
 	break;
 	case 312:
-#line 567 "char_ref.rl"
+#line 562 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aec; }}
 	break;
 	case 313:
-#line 568 "char_ref.rl"
+#line 563 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2262; }}
 	break;
 	case 314:
-#line 569 "char_ref.rl"
+#line 564 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226d; }}
 	break;
 	case 315:
-#line 570 "char_ref.rl"
+#line 565 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2226; }}
 	break;
 	case 316:
-#line 571 "char_ref.rl"
+#line 566 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2209; }}
 	break;
 	case 317:
-#line 572 "char_ref.rl"
+#line 567 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2260; }}
 	break;
 	case 318:
-#line 573 "char_ref.rl"
+#line 568 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2242; output->second = 0x0338; }}
 	break;
 	case 319:
-#line 574 "char_ref.rl"
+#line 569 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2204; }}
 	break;
 	case 320:
-#line 575 "char_ref.rl"
+#line 570 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226f; }}
 	break;
 	case 321:
-#line 576 "char_ref.rl"
+#line 571 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2271; }}
 	break;
 	case 322:
-#line 577 "char_ref.rl"
+#line 572 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; output->second = 0x0338; }}
 	break;
 	case 323:
-#line 578 "char_ref.rl"
+#line 573 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; output->second = 0x0338; }}
 	break;
 	case 324:
-#line 579 "char_ref.rl"
+#line 574 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2279; }}
 	break;
 	case 325:
-#line 580 "char_ref.rl"
+#line 575 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; output->second = 0x0338; }}
 	break;
 	case 326:
-#line 581 "char_ref.rl"
+#line 576 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2275; }}
 	break;
 	case 327:
-#line 582 "char_ref.rl"
+#line 577 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224e; output->second = 0x0338; }}
 	break;
 	case 328:
-#line 583 "char_ref.rl"
+#line 578 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224f; output->second = 0x0338; }}
 	break;
 	case 329:
-#line 584 "char_ref.rl"
+#line 579 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ea; }}
 	break;
 	case 330:
-#line 585 "char_ref.rl"
+#line 580 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29cf; output->second = 0x0338; }}
 	break;
 	case 331:
-#line 586 "char_ref.rl"
+#line 581 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ec; }}
 	break;
 	case 332:
-#line 587 "char_ref.rl"
+#line 582 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226e; }}
 	break;
 	case 333:
-#line 588 "char_ref.rl"
+#line 583 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2270; }}
 	break;
 	case 334:
-#line 589 "char_ref.rl"
+#line 584 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2278; }}
 	break;
 	case 335:
-#line 590 "char_ref.rl"
+#line 585 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; output->second = 0x0338; }}
 	break;
 	case 336:
-#line 591 "char_ref.rl"
+#line 586 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; output->second = 0x0338; }}
 	break;
 	case 337:
-#line 592 "char_ref.rl"
+#line 587 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2274; }}
 	break;
 	case 338:
-#line 593 "char_ref.rl"
+#line 588 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa2; output->second = 0x0338; }}
 	break;
 	case 339:
-#line 594 "char_ref.rl"
+#line 589 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa1; output->second = 0x0338; }}
 	break;
 	case 340:
-#line 595 "char_ref.rl"
+#line 590 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2280; }}
 	break;
 	case 341:
-#line 596 "char_ref.rl"
+#line 591 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; output->second = 0x0338; }}
 	break;
 	case 342:
-#line 597 "char_ref.rl"
+#line 592 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e0; }}
 	break;
 	case 343:
-#line 598 "char_ref.rl"
+#line 593 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220c; }}
 	break;
 	case 344:
-#line 599 "char_ref.rl"
+#line 594 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22eb; }}
 	break;
 	case 345:
-#line 600 "char_ref.rl"
+#line 595 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29d0; output->second = 0x0338; }}
 	break;
 	case 346:
-#line 601 "char_ref.rl"
+#line 596 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ed; }}
 	break;
 	case 347:
-#line 602 "char_ref.rl"
+#line 597 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228f; output->second = 0x0338; }}
 	break;
 	case 348:
-#line 603 "char_ref.rl"
+#line 598 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e2; }}
 	break;
 	case 349:
-#line 604 "char_ref.rl"
+#line 599 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2290; output->second = 0x0338; }}
 	break;
 	case 350:
-#line 605 "char_ref.rl"
+#line 600 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e3; }}
 	break;
 	case 351:
-#line 606 "char_ref.rl"
+#line 601 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2282; output->second = 0x20d2; }}
 	break;
 	case 352:
-#line 607 "char_ref.rl"
+#line 602 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2288; }}
 	break;
 	case 353:
-#line 608 "char_ref.rl"
+#line 603 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2281; }}
 	break;
 	case 354:
-#line 609 "char_ref.rl"
+#line 604 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; output->second = 0x0338; }}
 	break;
 	case 355:
-#line 610 "char_ref.rl"
+#line 605 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e1; }}
 	break;
 	case 356:
-#line 611 "char_ref.rl"
+#line 606 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227f; output->second = 0x0338; }}
 	break;
 	case 357:
-#line 612 "char_ref.rl"
+#line 607 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; output->second = 0x20d2; }}
 	break;
 	case 358:
-#line 613 "char_ref.rl"
+#line 608 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2289; }}
 	break;
 	case 359:
-#line 614 "char_ref.rl"
+#line 609 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2241; }}
 	break;
 	case 360:
-#line 615 "char_ref.rl"
+#line 610 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2244; }}
 	break;
 	case 361:
-#line 616 "char_ref.rl"
+#line 611 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2247; }}
 	break;
 	case 362:
-#line 617 "char_ref.rl"
+#line 612 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2249; }}
 	break;
 	case 363:
-#line 618 "char_ref.rl"
+#line 613 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2224; }}
 	break;
 	case 364:
-#line 619 "char_ref.rl"
+#line 614 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4a9; }}
 	break;
 	case 365:
-#line 620 "char_ref.rl"
+#line 615 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd1; }}
 	break;
 	case 366:
-#line 622 "char_ref.rl"
+#line 617 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039d; }}
 	break;
 	case 367:
-#line 623 "char_ref.rl"
+#line 618 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0152; }}
 	break;
 	case 368:
-#line 624 "char_ref.rl"
+#line 619 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd3; }}
 	break;
 	case 369:
-#line 626 "char_ref.rl"
+#line 621 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd4; }}
 	break;
 	case 370:
-#line 628 "char_ref.rl"
+#line 623 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041e; }}
 	break;
 	case 371:
-#line 629 "char_ref.rl"
+#line 624 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0150; }}
 	break;
 	case 372:
-#line 630 "char_ref.rl"
+#line 625 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d512; }}
 	break;
 	case 373:
-#line 631 "char_ref.rl"
+#line 626 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd2; }}
 	break;
 	case 374:
-#line 633 "char_ref.rl"
+#line 628 "char_ref.rl"
 	{te = p+1;{ output->first = 0x014c; }}
 	break;
 	case 375:
-#line 634 "char_ref.rl"
+#line 629 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a9; }}
 	break;
 	case 376:
-#line 635 "char_ref.rl"
+#line 630 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039f; }}
 	break;
 	case 377:
-#line 636 "char_ref.rl"
+#line 631 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d546; }}
 	break;
 	case 378:
-#line 637 "char_ref.rl"
+#line 632 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201c; }}
 	break;
 	case 379:
-#line 638 "char_ref.rl"
+#line 633 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2018; }}
 	break;
 	case 380:
-#line 639 "char_ref.rl"
+#line 634 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a54; }}
 	break;
 	case 381:
-#line 640 "char_ref.rl"
+#line 635 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4aa; }}
 	break;
 	case 382:
-#line 641 "char_ref.rl"
+#line 636 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd8; }}
 	break;
 	case 383:
-#line 643 "char_ref.rl"
+#line 638 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd5; }}
 	break;
 	case 384:
-#line 645 "char_ref.rl"
+#line 640 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a37; }}
 	break;
 	case 385:
-#line 646 "char_ref.rl"
+#line 641 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd6; }}
 	break;
 	case 386:
-#line 648 "char_ref.rl"
+#line 643 "char_ref.rl"
 	{te = p+1;{ output->first = 0x203e; }}
 	break;
 	case 387:
-#line 649 "char_ref.rl"
+#line 644 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23de; }}
 	break;
 	case 388:
-#line 650 "char_ref.rl"
+#line 645 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b4; }}
 	break;
 	case 389:
-#line 651 "char_ref.rl"
+#line 646 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23dc; }}
 	break;
 	case 390:
-#line 652 "char_ref.rl"
+#line 647 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2202; }}
 	break;
 	case 391:
-#line 653 "char_ref.rl"
+#line 648 "char_ref.rl"
 	{te = p+1;{ output->first = 0x041f; }}
 	break;
 	case 392:
-#line 654 "char_ref.rl"
+#line 649 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d513; }}
 	break;
 	case 393:
-#line 655 "char_ref.rl"
+#line 650 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a6; }}
 	break;
 	case 394:
-#line 656 "char_ref.rl"
+#line 651 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a0; }}
 	break;
 	case 395:
-#line 657 "char_ref.rl"
+#line 652 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb1; }}
 	break;
 	case 396:
-#line 658 "char_ref.rl"
+#line 653 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210c; }}
 	break;
 	case 397:
-#line 659 "char_ref.rl"
+#line 654 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2119; }}
 	break;
 	case 398:
-#line 660 "char_ref.rl"
+#line 655 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2abb; }}
 	break;
 	case 399:
-#line 661 "char_ref.rl"
+#line 656 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227a; }}
 	break;
 	case 400:
-#line 662 "char_ref.rl"
+#line 657 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; }}
 	break;
 	case 401:
-#line 663 "char_ref.rl"
+#line 658 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227c; }}
 	break;
 	case 402:
-#line 664 "char_ref.rl"
+#line 659 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227e; }}
 	break;
 	case 403:
-#line 665 "char_ref.rl"
+#line 660 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2033; }}
 	break;
 	case 404:
-#line 666 "char_ref.rl"
+#line 661 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220f; }}
 	break;
 	case 405:
-#line 667 "char_ref.rl"
+#line 662 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2237; }}
 	break;
 	case 406:
-#line 668 "char_ref.rl"
+#line 663 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221d; }}
 	break;
 	case 407:
-#line 669 "char_ref.rl"
+#line 664 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4ab; }}
 	break;
 	case 408:
-#line 670 "char_ref.rl"
+#line 665 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a8; }}
 	break;
 	case 409:
-#line 671 "char_ref.rl"
+#line 666 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22; }}
 	break;
 	case 410:
-#line 673 "char_ref.rl"
+#line 668 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d514; }}
 	break;
 	case 411:
-#line 674 "char_ref.rl"
+#line 669 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211a; }}
 	break;
 	case 412:
-#line 675 "char_ref.rl"
+#line 670 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4ac; }}
 	break;
 	case 413:
-#line 676 "char_ref.rl"
+#line 671 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2910; }}
 	break;
 	case 414:
-#line 677 "char_ref.rl"
+#line 672 "char_ref.rl"
 	{te = p+1;{ output->first = 0xae; }}
 	break;
 	case 415:
-#line 679 "char_ref.rl"
+#line 674 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0154; }}
 	break;
 	case 416:
-#line 680 "char_ref.rl"
+#line 675 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27eb; }}
 	break;
 	case 417:
-#line 681 "char_ref.rl"
+#line 676 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a0; }}
 	break;
 	case 418:
-#line 682 "char_ref.rl"
+#line 677 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2916; }}
 	break;
 	case 419:
-#line 683 "char_ref.rl"
+#line 678 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0158; }}
 	break;
 	case 420:
-#line 684 "char_ref.rl"
+#line 679 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0156; }}
 	break;
 	case 421:
-#line 685 "char_ref.rl"
+#line 680 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0420; }}
 	break;
 	case 422:
-#line 686 "char_ref.rl"
+#line 681 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211c; }}
 	break;
 	case 423:
-#line 687 "char_ref.rl"
+#line 682 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220b; }}
 	break;
 	case 424:
-#line 688 "char_ref.rl"
+#line 683 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cb; }}
 	break;
 	case 425:
-#line 689 "char_ref.rl"
+#line 684 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296f; }}
 	break;
 	case 426:
-#line 690 "char_ref.rl"
+#line 685 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211c; }}
 	break;
 	case 427:
-#line 691 "char_ref.rl"
+#line 686 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a1; }}
 	break;
 	case 428:
-#line 692 "char_ref.rl"
+#line 687 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e9; }}
 	break;
 	case 429:
-#line 693 "char_ref.rl"
+#line 688 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2192; }}
 	break;
 	case 430:
-#line 694 "char_ref.rl"
+#line 689 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21e5; }}
 	break;
 	case 431:
-#line 695 "char_ref.rl"
+#line 690 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c4; }}
 	break;
 	case 432:
-#line 696 "char_ref.rl"
+#line 691 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2309; }}
 	break;
 	case 433:
-#line 697 "char_ref.rl"
+#line 692 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e7; }}
 	break;
 	case 434:
-#line 698 "char_ref.rl"
+#line 693 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295d; }}
 	break;
 	case 435:
-#line 699 "char_ref.rl"
+#line 694 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c2; }}
 	break;
 	case 436:
-#line 700 "char_ref.rl"
+#line 695 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2955; }}
 	break;
 	case 437:
-#line 701 "char_ref.rl"
+#line 696 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230b; }}
 	break;
 	case 438:
-#line 702 "char_ref.rl"
+#line 697 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a2; }}
 	break;
 	case 439:
-#line 703 "char_ref.rl"
+#line 698 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a6; }}
 	break;
 	case 440:
-#line 704 "char_ref.rl"
+#line 699 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295b; }}
 	break;
 	case 441:
-#line 705 "char_ref.rl"
+#line 700 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b3; }}
 	break;
 	case 442:
-#line 706 "char_ref.rl"
+#line 701 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29d0; }}
 	break;
 	case 443:
-#line 707 "char_ref.rl"
+#line 702 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b5; }}
 	break;
 	case 444:
-#line 708 "char_ref.rl"
+#line 703 "char_ref.rl"
 	{te = p+1;{ output->first = 0x294f; }}
 	break;
 	case 445:
-#line 709 "char_ref.rl"
+#line 704 "char_ref.rl"
 	{te = p+1;{ output->first = 0x295c; }}
 	break;
 	case 446:
-#line 710 "char_ref.rl"
+#line 705 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21be; }}
 	break;
 	case 447:
-#line 711 "char_ref.rl"
+#line 706 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2954; }}
 	break;
 	case 448:
-#line 712 "char_ref.rl"
+#line 707 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c0; }}
 	break;
 	case 449:
-#line 713 "char_ref.rl"
+#line 708 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2953; }}
 	break;
 	case 450:
-#line 714 "char_ref.rl"
+#line 709 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d2; }}
 	break;
 	case 451:
-#line 715 "char_ref.rl"
+#line 710 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211d; }}
 	break;
 	case 452:
-#line 716 "char_ref.rl"
+#line 711 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2970; }}
 	break;
 	case 453:
-#line 717 "char_ref.rl"
+#line 712 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21db; }}
 	break;
 	case 454:
-#line 718 "char_ref.rl"
+#line 713 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211b; }}
 	break;
 	case 455:
-#line 719 "char_ref.rl"
+#line 714 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b1; }}
 	break;
 	case 456:
-#line 720 "char_ref.rl"
+#line 715 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29f4; }}
 	break;
 	case 457:
-#line 721 "char_ref.rl"
+#line 716 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0429; }}
 	break;
 	case 458:
-#line 722 "char_ref.rl"
+#line 717 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0428; }}
 	break;
 	case 459:
-#line 723 "char_ref.rl"
+#line 718 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042c; }}
 	break;
 	case 460:
-#line 724 "char_ref.rl"
+#line 719 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015a; }}
 	break;
 	case 461:
-#line 725 "char_ref.rl"
+#line 720 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2abc; }}
 	break;
 	case 462:
-#line 726 "char_ref.rl"
+#line 721 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0160; }}
 	break;
 	case 463:
-#line 727 "char_ref.rl"
+#line 722 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015e; }}
 	break;
 	case 464:
-#line 728 "char_ref.rl"
+#line 723 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015c; }}
 	break;
 	case 465:
-#line 729 "char_ref.rl"
+#line 724 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0421; }}
 	break;
 	case 466:
-#line 730 "char_ref.rl"
+#line 725 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d516; }}
 	break;
 	case 467:
-#line 731 "char_ref.rl"
+#line 726 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2193; }}
 	break;
 	case 468:
-#line 732 "char_ref.rl"
+#line 727 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2190; }}
 	break;
 	case 469:
-#line 733 "char_ref.rl"
+#line 728 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2192; }}
 	break;
 	case 470:
-#line 734 "char_ref.rl"
+#line 729 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2191; }}
 	break;
 	case 471:
-#line 735 "char_ref.rl"
+#line 730 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a3; }}
 	break;
 	case 472:
-#line 736 "char_ref.rl"
+#line 731 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2218; }}
 	break;
 	case 473:
-#line 737 "char_ref.rl"
+#line 732 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54a; }}
 	break;
 	case 474:
-#line 738 "char_ref.rl"
+#line 733 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221a; }}
 	break;
 	case 475:
-#line 739 "char_ref.rl"
+#line 734 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25a1; }}
 	break;
 	case 476:
-#line 740 "char_ref.rl"
+#line 735 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2293; }}
 	break;
 	case 477:
-#line 741 "char_ref.rl"
+#line 736 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228f; }}
 	break;
 	case 478:
-#line 742 "char_ref.rl"
+#line 737 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2291; }}
 	break;
 	case 479:
-#line 743 "char_ref.rl"
+#line 738 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2290; }}
 	break;
 	case 480:
-#line 744 "char_ref.rl"
+#line 739 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2292; }}
 	break;
 	case 481:
-#line 745 "char_ref.rl"
+#line 740 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2294; }}
 	break;
 	case 482:
-#line 746 "char_ref.rl"
+#line 741 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4ae; }}
 	break;
 	case 483:
-#line 747 "char_ref.rl"
+#line 742 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c6; }}
 	break;
 	case 484:
-#line 748 "char_ref.rl"
+#line 743 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d0; }}
 	break;
 	case 485:
-#line 749 "char_ref.rl"
+#line 744 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d0; }}
 	break;
 	case 486:
-#line 750 "char_ref.rl"
+#line 745 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2286; }}
 	break;
 	case 487:
-#line 751 "char_ref.rl"
+#line 746 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227b; }}
 	break;
 	case 488:
-#line 752 "char_ref.rl"
+#line 747 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; }}
 	break;
 	case 489:
-#line 753 "char_ref.rl"
+#line 748 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227d; }}
 	break;
 	case 490:
-#line 754 "char_ref.rl"
+#line 749 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227f; }}
 	break;
 	case 491:
-#line 755 "char_ref.rl"
+#line 750 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220b; }}
 	break;
 	case 492:
-#line 756 "char_ref.rl"
+#line 751 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2211; }}
 	break;
 	case 493:
-#line 757 "char_ref.rl"
+#line 752 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d1; }}
 	break;
 	case 494:
-#line 758 "char_ref.rl"
+#line 753 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; }}
 	break;
 	case 495:
-#line 759 "char_ref.rl"
+#line 754 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2287; }}
 	break;
 	case 496:
-#line 760 "char_ref.rl"
+#line 755 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d1; }}
 	break;
 	case 497:
-#line 761 "char_ref.rl"
+#line 756 "char_ref.rl"
 	{te = p+1;{ output->first = 0xde; }}
 	break;
 	case 498:
-#line 763 "char_ref.rl"
+#line 758 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2122; }}
 	break;
 	case 499:
-#line 764 "char_ref.rl"
+#line 759 "char_ref.rl"
 	{te = p+1;{ output->first = 0x040b; }}
 	break;
 	case 500:
-#line 765 "char_ref.rl"
+#line 760 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0426; }}
 	break;
 	case 501:
-#line 766 "char_ref.rl"
+#line 761 "char_ref.rl"
 	{te = p+1;{ output->first = 0x09; }}
 	break;
 	case 502:
-#line 767 "char_ref.rl"
+#line 762 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a4; }}
 	break;
 	case 503:
-#line 768 "char_ref.rl"
+#line 763 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0164; }}
 	break;
 	case 504:
-#line 769 "char_ref.rl"
+#line 764 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0162; }}
 	break;
 	case 505:
-#line 770 "char_ref.rl"
+#line 765 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0422; }}
 	break;
 	case 506:
-#line 771 "char_ref.rl"
+#line 766 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d517; }}
 	break;
 	case 507:
-#line 772 "char_ref.rl"
+#line 767 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2234; }}
 	break;
 	case 508:
-#line 773 "char_ref.rl"
+#line 768 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0398; }}
 	break;
 	case 509:
-#line 774 "char_ref.rl"
+#line 769 "char_ref.rl"
 	{te = p+1;{ output->first = 0x205f; output->second = 0x200a; }}
 	break;
 	case 510:
-#line 775 "char_ref.rl"
+#line 770 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2009; }}
 	break;
 	case 511:
-#line 776 "char_ref.rl"
+#line 771 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223c; }}
 	break;
 	case 512:
-#line 777 "char_ref.rl"
+#line 772 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2243; }}
 	break;
 	case 513:
-#line 778 "char_ref.rl"
+#line 773 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2245; }}
 	break;
 	case 514:
-#line 779 "char_ref.rl"
+#line 774 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 515:
-#line 780 "char_ref.rl"
+#line 775 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54b; }}
 	break;
 	case 516:
-#line 781 "char_ref.rl"
+#line 776 "char_ref.rl"
 	{te = p+1;{ output->first = 0x20db; }}
 	break;
 	case 517:
-#line 782 "char_ref.rl"
+#line 777 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4af; }}
 	break;
 	case 518:
-#line 783 "char_ref.rl"
+#line 778 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0166; }}
 	break;
 	case 519:
-#line 784 "char_ref.rl"
+#line 779 "char_ref.rl"
 	{te = p+1;{ output->first = 0xda; }}
 	break;
 	case 520:
-#line 786 "char_ref.rl"
+#line 781 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219f; }}
 	break;
 	case 521:
-#line 787 "char_ref.rl"
+#line 782 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2949; }}
 	break;
 	case 522:
-#line 788 "char_ref.rl"
+#line 783 "char_ref.rl"
 	{te = p+1;{ output->first = 0x040e; }}
 	break;
 	case 523:
-#line 789 "char_ref.rl"
+#line 784 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016c; }}
 	break;
 	case 524:
-#line 790 "char_ref.rl"
+#line 785 "char_ref.rl"
 	{te = p+1;{ output->first = 0xdb; }}
 	break;
 	case 525:
-#line 792 "char_ref.rl"
+#line 787 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0423; }}
 	break;
 	case 526:
-#line 793 "char_ref.rl"
+#line 788 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0170; }}
 	break;
 	case 527:
-#line 794 "char_ref.rl"
+#line 789 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d518; }}
 	break;
 	case 528:
-#line 795 "char_ref.rl"
+#line 790 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd9; }}
 	break;
 	case 529:
-#line 797 "char_ref.rl"
+#line 792 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016a; }}
 	break;
 	case 530:
-#line 798 "char_ref.rl"
+#line 793 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5f; }}
 	break;
 	case 531:
-#line 799 "char_ref.rl"
+#line 794 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23df; }}
 	break;
 	case 532:
-#line 800 "char_ref.rl"
+#line 795 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b5; }}
 	break;
 	case 533:
-#line 801 "char_ref.rl"
+#line 796 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23dd; }}
 	break;
 	case 534:
-#line 802 "char_ref.rl"
+#line 797 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c3; }}
 	break;
 	case 535:
-#line 803 "char_ref.rl"
+#line 798 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228e; }}
 	break;
 	case 536:
-#line 804 "char_ref.rl"
+#line 799 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0172; }}
 	break;
 	case 537:
-#line 805 "char_ref.rl"
+#line 800 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54c; }}
 	break;
 	case 538:
-#line 806 "char_ref.rl"
+#line 801 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2191; }}
 	break;
 	case 539:
-#line 807 "char_ref.rl"
+#line 802 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2912; }}
 	break;
 	case 540:
-#line 808 "char_ref.rl"
+#line 803 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c5; }}
 	break;
 	case 541:
-#line 809 "char_ref.rl"
+#line 804 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2195; }}
 	break;
 	case 542:
-#line 810 "char_ref.rl"
+#line 805 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296e; }}
 	break;
 	case 543:
-#line 811 "char_ref.rl"
+#line 806 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a5; }}
 	break;
 	case 544:
-#line 812 "char_ref.rl"
+#line 807 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a5; }}
 	break;
 	case 545:
-#line 813 "char_ref.rl"
+#line 808 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d1; }}
 	break;
 	case 546:
-#line 814 "char_ref.rl"
+#line 809 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d5; }}
 	break;
 	case 547:
-#line 815 "char_ref.rl"
+#line 810 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2196; }}
 	break;
 	case 548:
-#line 816 "char_ref.rl"
+#line 811 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2197; }}
 	break;
 	case 549:
-#line 817 "char_ref.rl"
+#line 812 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d2; }}
 	break;
 	case 550:
-#line 818 "char_ref.rl"
+#line 813 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a5; }}
 	break;
 	case 551:
-#line 819 "char_ref.rl"
+#line 814 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016e; }}
 	break;
 	case 552:
-#line 820 "char_ref.rl"
+#line 815 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b0; }}
 	break;
 	case 553:
-#line 821 "char_ref.rl"
+#line 816 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0168; }}
 	break;
 	case 554:
-#line 822 "char_ref.rl"
+#line 817 "char_ref.rl"
 	{te = p+1;{ output->first = 0xdc; }}
 	break;
 	case 555:
-#line 824 "char_ref.rl"
+#line 819 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ab; }}
 	break;
 	case 556:
-#line 825 "char_ref.rl"
+#line 820 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aeb; }}
 	break;
 	case 557:
-#line 826 "char_ref.rl"
+#line 821 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0412; }}
 	break;
 	case 558:
-#line 827 "char_ref.rl"
+#line 822 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a9; }}
 	break;
 	case 559:
-#line 828 "char_ref.rl"
+#line 823 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae6; }}
 	break;
 	case 560:
-#line 829 "char_ref.rl"
+#line 824 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c1; }}
 	break;
 	case 561:
-#line 830 "char_ref.rl"
+#line 825 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2016; }}
 	break;
 	case 562:
-#line 831 "char_ref.rl"
+#line 826 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2016; }}
 	break;
 	case 563:
-#line 832 "char_ref.rl"
+#line 827 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2223; }}
 	break;
 	case 564:
-#line 833 "char_ref.rl"
+#line 828 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7c; }}
 	break;
 	case 565:
-#line 834 "char_ref.rl"
+#line 829 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2758; }}
 	break;
 	case 566:
-#line 835 "char_ref.rl"
+#line 830 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2240; }}
 	break;
 	case 567:
-#line 836 "char_ref.rl"
+#line 831 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200a; }}
 	break;
 	case 568:
-#line 837 "char_ref.rl"
+#line 832 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d519; }}
 	break;
 	case 569:
-#line 838 "char_ref.rl"
+#line 833 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54d; }}
 	break;
 	case 570:
-#line 839 "char_ref.rl"
+#line 834 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b1; }}
 	break;
 	case 571:
-#line 840 "char_ref.rl"
+#line 835 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22aa; }}
 	break;
 	case 572:
-#line 841 "char_ref.rl"
+#line 836 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0174; }}
 	break;
 	case 573:
-#line 842 "char_ref.rl"
+#line 837 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c0; }}
 	break;
 	case 574:
-#line 843 "char_ref.rl"
+#line 838 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d51a; }}
 	break;
 	case 575:
-#line 844 "char_ref.rl"
+#line 839 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54e; }}
 	break;
 	case 576:
-#line 845 "char_ref.rl"
+#line 840 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b2; }}
 	break;
 	case 577:
-#line 846 "char_ref.rl"
+#line 841 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d51b; }}
 	break;
 	case 578:
-#line 847 "char_ref.rl"
+#line 842 "char_ref.rl"
 	{te = p+1;{ output->first = 0x039e; }}
 	break;
 	case 579:
-#line 848 "char_ref.rl"
+#line 843 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d54f; }}
 	break;
 	case 580:
-#line 849 "char_ref.rl"
+#line 844 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b3; }}
 	break;
 	case 581:
-#line 850 "char_ref.rl"
+#line 845 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042f; }}
 	break;
 	case 582:
-#line 851 "char_ref.rl"
+#line 846 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0407; }}
 	break;
 	case 583:
-#line 852 "char_ref.rl"
+#line 847 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042e; }}
 	break;
 	case 584:
-#line 853 "char_ref.rl"
+#line 848 "char_ref.rl"
 	{te = p+1;{ output->first = 0xdd; }}
 	break;
 	case 585:
-#line 855 "char_ref.rl"
+#line 850 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0176; }}
 	break;
 	case 586:
-#line 856 "char_ref.rl"
+#line 851 "char_ref.rl"
 	{te = p+1;{ output->first = 0x042b; }}
 	break;
 	case 587:
-#line 857 "char_ref.rl"
+#line 852 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d51c; }}
 	break;
 	case 588:
-#line 858 "char_ref.rl"
+#line 853 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d550; }}
 	break;
 	case 589:
-#line 859 "char_ref.rl"
+#line 854 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b4; }}
 	break;
 	case 590:
-#line 860 "char_ref.rl"
+#line 855 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0178; }}
 	break;
 	case 591:
-#line 861 "char_ref.rl"
+#line 856 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0416; }}
 	break;
 	case 592:
-#line 862 "char_ref.rl"
+#line 857 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0179; }}
 	break;
 	case 593:
-#line 863 "char_ref.rl"
+#line 858 "char_ref.rl"
 	{te = p+1;{ output->first = 0x017d; }}
 	break;
 	case 594:
-#line 864 "char_ref.rl"
+#line 859 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0417; }}
 	break;
 	case 595:
-#line 865 "char_ref.rl"
+#line 860 "char_ref.rl"
 	{te = p+1;{ output->first = 0x017b; }}
 	break;
 	case 596:
-#line 866 "char_ref.rl"
+#line 861 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200b; }}
 	break;
 	case 597:
-#line 867 "char_ref.rl"
+#line 862 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0396; }}
 	break;
 	case 598:
-#line 868 "char_ref.rl"
+#line 863 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2128; }}
 	break;
 	case 599:
-#line 869 "char_ref.rl"
+#line 864 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2124; }}
 	break;
 	case 600:
-#line 870 "char_ref.rl"
+#line 865 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b5; }}
 	break;
 	case 601:
-#line 871 "char_ref.rl"
+#line 866 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe1; }}
 	break;
 	case 602:
-#line 873 "char_ref.rl"
+#line 868 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0103; }}
 	break;
 	case 603:
-#line 874 "char_ref.rl"
+#line 869 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223e; }}
 	break;
 	case 604:
-#line 875 "char_ref.rl"
+#line 870 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223e; output->second = 0x0333; }}
 	break;
 	case 605:
-#line 876 "char_ref.rl"
+#line 871 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223f; }}
 	break;
 	case 606:
-#line 877 "char_ref.rl"
+#line 872 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe2; }}
 	break;
 	case 607:
-#line 879 "char_ref.rl"
+#line 874 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb4; }}
 	break;
 	case 608:
-#line 881 "char_ref.rl"
+#line 876 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0430; }}
 	break;
 	case 609:
-#line 882 "char_ref.rl"
+#line 877 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe6; }}
 	break;
 	case 610:
-#line 884 "char_ref.rl"
+#line 879 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2061; }}
 	break;
 	case 611:
-#line 885 "char_ref.rl"
+#line 880 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d51e; }}
 	break;
 	case 612:
-#line 886 "char_ref.rl"
+#line 881 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe0; }}
 	break;
 	case 613:
-#line 888 "char_ref.rl"
+#line 883 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2135; }}
 	break;
 	case 614:
-#line 889 "char_ref.rl"
+#line 884 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2135; }}
 	break;
 	case 615:
-#line 890 "char_ref.rl"
+#line 885 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b1; }}
 	break;
 	case 616:
-#line 891 "char_ref.rl"
+#line 886 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0101; }}
 	break;
 	case 617:
-#line 892 "char_ref.rl"
+#line 887 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a3f; }}
 	break;
 	case 618:
-#line 893 "char_ref.rl"
+#line 888 "char_ref.rl"
 	{te = p+1;{ output->first = 0x26; }}
 	break;
 	case 619:
-#line 895 "char_ref.rl"
+#line 890 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2227; }}
 	break;
 	case 620:
-#line 896 "char_ref.rl"
+#line 891 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a55; }}
 	break;
 	case 621:
-#line 897 "char_ref.rl"
+#line 892 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a5c; }}
 	break;
 	case 622:
-#line 898 "char_ref.rl"
+#line 893 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a58; }}
 	break;
 	case 623:
-#line 899 "char_ref.rl"
+#line 894 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a5a; }}
 	break;
 	case 624:
-#line 900 "char_ref.rl"
+#line 895 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2220; }}
 	break;
 	case 625:
-#line 901 "char_ref.rl"
+#line 896 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a4; }}
 	break;
 	case 626:
-#line 902 "char_ref.rl"
+#line 897 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2220; }}
 	break;
 	case 627:
-#line 903 "char_ref.rl"
+#line 898 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2221; }}
 	break;
 	case 628:
-#line 904 "char_ref.rl"
+#line 899 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a8; }}
 	break;
 	case 629:
-#line 905 "char_ref.rl"
+#line 900 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a9; }}
 	break;
 	case 630:
-#line 906 "char_ref.rl"
+#line 901 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29aa; }}
 	break;
 	case 631:
-#line 907 "char_ref.rl"
+#line 902 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29ab; }}
 	break;
 	case 632:
-#line 908 "char_ref.rl"
+#line 903 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29ac; }}
 	break;
 	case 633:
-#line 909 "char_ref.rl"
+#line 904 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29ad; }}
 	break;
 	case 634:
-#line 910 "char_ref.rl"
+#line 905 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29ae; }}
 	break;
 	case 635:
-#line 911 "char_ref.rl"
+#line 906 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29af; }}
 	break;
 	case 636:
-#line 912 "char_ref.rl"
+#line 907 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221f; }}
 	break;
 	case 637:
-#line 913 "char_ref.rl"
+#line 908 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22be; }}
 	break;
 	case 638:
-#line 914 "char_ref.rl"
+#line 909 "char_ref.rl"
 	{te = p+1;{ output->first = 0x299d; }}
 	break;
 	case 639:
-#line 915 "char_ref.rl"
+#line 910 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2222; }}
 	break;
 	case 640:
-#line 916 "char_ref.rl"
+#line 911 "char_ref.rl"
 	{te = p+1;{ output->first = 0xc5; }}
 	break;
 	case 641:
-#line 917 "char_ref.rl"
+#line 912 "char_ref.rl"
 	{te = p+1;{ output->first = 0x237c; }}
 	break;
 	case 642:
-#line 918 "char_ref.rl"
+#line 913 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0105; }}
 	break;
 	case 643:
-#line 919 "char_ref.rl"
+#line 914 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d552; }}
 	break;
 	case 644:
-#line 920 "char_ref.rl"
+#line 915 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 645:
-#line 921 "char_ref.rl"
+#line 916 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a70; }}
 	break;
 	case 646:
-#line 922 "char_ref.rl"
+#line 917 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a6f; }}
 	break;
 	case 647:
-#line 923 "char_ref.rl"
+#line 918 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224a; }}
 	break;
 	case 648:
-#line 924 "char_ref.rl"
+#line 919 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224b; }}
 	break;
 	case 649:
-#line 925 "char_ref.rl"
+#line 920 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27; }}
 	break;
 	case 650:
-#line 926 "char_ref.rl"
+#line 921 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 651:
-#line 927 "char_ref.rl"
+#line 922 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224a; }}
 	break;
 	case 652:
-#line 928 "char_ref.rl"
+#line 923 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe5; }}
 	break;
 	case 653:
-#line 930 "char_ref.rl"
+#line 925 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b6; }}
 	break;
 	case 654:
-#line 931 "char_ref.rl"
+#line 926 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a; }}
 	break;
 	case 655:
-#line 932 "char_ref.rl"
+#line 927 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 656:
-#line 933 "char_ref.rl"
+#line 928 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224d; }}
 	break;
 	case 657:
-#line 934 "char_ref.rl"
+#line 929 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe3; }}
 	break;
 	case 658:
-#line 936 "char_ref.rl"
+#line 931 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe4; }}
 	break;
 	case 659:
-#line 938 "char_ref.rl"
+#line 933 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2233; }}
 	break;
 	case 660:
-#line 939 "char_ref.rl"
+#line 934 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a11; }}
 	break;
 	case 661:
-#line 940 "char_ref.rl"
+#line 935 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aed; }}
 	break;
 	case 662:
-#line 941 "char_ref.rl"
+#line 936 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224c; }}
 	break;
 	case 663:
-#line 942 "char_ref.rl"
+#line 937 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f6; }}
 	break;
 	case 664:
-#line 943 "char_ref.rl"
+#line 938 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2035; }}
 	break;
 	case 665:
-#line 944 "char_ref.rl"
+#line 939 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223d; }}
 	break;
 	case 666:
-#line 945 "char_ref.rl"
+#line 940 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cd; }}
 	break;
 	case 667:
-#line 946 "char_ref.rl"
+#line 941 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22bd; }}
 	break;
 	case 668:
-#line 947 "char_ref.rl"
+#line 942 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2305; }}
 	break;
 	case 669:
-#line 948 "char_ref.rl"
+#line 943 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2305; }}
 	break;
 	case 670:
-#line 949 "char_ref.rl"
+#line 944 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b5; }}
 	break;
 	case 671:
-#line 950 "char_ref.rl"
+#line 945 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b6; }}
 	break;
 	case 672:
-#line 951 "char_ref.rl"
+#line 946 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224c; }}
 	break;
 	case 673:
-#line 952 "char_ref.rl"
+#line 947 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0431; }}
 	break;
 	case 674:
-#line 953 "char_ref.rl"
+#line 948 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201e; }}
 	break;
 	case 675:
-#line 954 "char_ref.rl"
+#line 949 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2235; }}
 	break;
 	case 676:
-#line 955 "char_ref.rl"
+#line 950 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2235; }}
 	break;
 	case 677:
-#line 956 "char_ref.rl"
+#line 951 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b0; }}
 	break;
 	case 678:
-#line 957 "char_ref.rl"
+#line 952 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f6; }}
 	break;
 	case 679:
-#line 958 "char_ref.rl"
+#line 953 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212c; }}
 	break;
 	case 680:
-#line 959 "char_ref.rl"
+#line 954 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b2; }}
 	break;
 	case 681:
-#line 960 "char_ref.rl"
+#line 955 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2136; }}
 	break;
 	case 682:
-#line 961 "char_ref.rl"
+#line 956 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226c; }}
 	break;
 	case 683:
-#line 962 "char_ref.rl"
+#line 957 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d51f; }}
 	break;
 	case 684:
-#line 963 "char_ref.rl"
+#line 958 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c2; }}
 	break;
 	case 685:
-#line 964 "char_ref.rl"
+#line 959 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ef; }}
 	break;
 	case 686:
-#line 965 "char_ref.rl"
+#line 960 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c3; }}
 	break;
 	case 687:
-#line 966 "char_ref.rl"
+#line 961 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a00; }}
 	break;
 	case 688:
-#line 967 "char_ref.rl"
+#line 962 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a01; }}
 	break;
 	case 689:
-#line 968 "char_ref.rl"
+#line 963 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a02; }}
 	break;
 	case 690:
-#line 969 "char_ref.rl"
+#line 964 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a06; }}
 	break;
 	case 691:
-#line 970 "char_ref.rl"
+#line 965 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2605; }}
 	break;
 	case 692:
-#line 971 "char_ref.rl"
+#line 966 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25bd; }}
 	break;
 	case 693:
-#line 972 "char_ref.rl"
+#line 967 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b3; }}
 	break;
 	case 694:
-#line 973 "char_ref.rl"
+#line 968 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a04; }}
 	break;
 	case 695:
-#line 974 "char_ref.rl"
+#line 969 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c1; }}
 	break;
 	case 696:
-#line 975 "char_ref.rl"
+#line 970 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c0; }}
 	break;
 	case 697:
-#line 976 "char_ref.rl"
+#line 971 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290d; }}
 	break;
 	case 698:
-#line 977 "char_ref.rl"
+#line 972 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29eb; }}
 	break;
 	case 699:
-#line 978 "char_ref.rl"
+#line 973 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25aa; }}
 	break;
 	case 700:
-#line 979 "char_ref.rl"
+#line 974 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b4; }}
 	break;
 	case 701:
-#line 980 "char_ref.rl"
+#line 975 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25be; }}
 	break;
 	case 702:
-#line 981 "char_ref.rl"
+#line 976 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25c2; }}
 	break;
 	case 703:
-#line 982 "char_ref.rl"
+#line 977 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b8; }}
 	break;
 	case 704:
-#line 983 "char_ref.rl"
+#line 978 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2423; }}
 	break;
 	case 705:
-#line 984 "char_ref.rl"
+#line 979 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2592; }}
 	break;
 	case 706:
-#line 985 "char_ref.rl"
+#line 980 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2591; }}
 	break;
 	case 707:
-#line 986 "char_ref.rl"
+#line 981 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2593; }}
 	break;
 	case 708:
-#line 987 "char_ref.rl"
+#line 982 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2588; }}
 	break;
 	case 709:
-#line 988 "char_ref.rl"
+#line 983 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3d; output->second = 0x20e5; }}
 	break;
 	case 710:
-#line 989 "char_ref.rl"
+#line 984 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2261; output->second = 0x20e5; }}
 	break;
 	case 711:
-#line 990 "char_ref.rl"
+#line 985 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2310; }}
 	break;
 	case 712:
-#line 991 "char_ref.rl"
+#line 986 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d553; }}
 	break;
 	case 713:
-#line 992 "char_ref.rl"
+#line 987 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a5; }}
 	break;
 	case 714:
-#line 993 "char_ref.rl"
+#line 988 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a5; }}
 	break;
 	case 715:
-#line 994 "char_ref.rl"
+#line 989 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c8; }}
 	break;
 	case 716:
-#line 995 "char_ref.rl"
+#line 990 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2557; }}
 	break;
 	case 717:
-#line 996 "char_ref.rl"
+#line 991 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2554; }}
 	break;
 	case 718:
-#line 997 "char_ref.rl"
+#line 992 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2556; }}
 	break;
 	case 719:
-#line 998 "char_ref.rl"
+#line 993 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2553; }}
 	break;
 	case 720:
-#line 999 "char_ref.rl"
+#line 994 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2550; }}
 	break;
 	case 721:
-#line 1000 "char_ref.rl"
+#line 995 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2566; }}
 	break;
 	case 722:
-#line 1001 "char_ref.rl"
+#line 996 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2569; }}
 	break;
 	case 723:
-#line 1002 "char_ref.rl"
+#line 997 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2564; }}
 	break;
 	case 724:
-#line 1003 "char_ref.rl"
+#line 998 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2567; }}
 	break;
 	case 725:
-#line 1004 "char_ref.rl"
+#line 999 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255d; }}
 	break;
 	case 726:
-#line 1005 "char_ref.rl"
+#line 1000 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255a; }}
 	break;
 	case 727:
-#line 1006 "char_ref.rl"
+#line 1001 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255c; }}
 	break;
 	case 728:
-#line 1007 "char_ref.rl"
+#line 1002 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2559; }}
 	break;
 	case 729:
-#line 1008 "char_ref.rl"
+#line 1003 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2551; }}
 	break;
 	case 730:
-#line 1009 "char_ref.rl"
+#line 1004 "char_ref.rl"
 	{te = p+1;{ output->first = 0x256c; }}
 	break;
 	case 731:
-#line 1010 "char_ref.rl"
+#line 1005 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2563; }}
 	break;
 	case 732:
-#line 1011 "char_ref.rl"
+#line 1006 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2560; }}
 	break;
 	case 733:
-#line 1012 "char_ref.rl"
+#line 1007 "char_ref.rl"
 	{te = p+1;{ output->first = 0x256b; }}
 	break;
 	case 734:
-#line 1013 "char_ref.rl"
+#line 1008 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2562; }}
 	break;
 	case 735:
-#line 1014 "char_ref.rl"
+#line 1009 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255f; }}
 	break;
 	case 736:
-#line 1015 "char_ref.rl"
+#line 1010 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c9; }}
 	break;
 	case 737:
-#line 1016 "char_ref.rl"
+#line 1011 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2555; }}
 	break;
 	case 738:
-#line 1017 "char_ref.rl"
+#line 1012 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2552; }}
 	break;
 	case 739:
-#line 1018 "char_ref.rl"
+#line 1013 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2510; }}
 	break;
 	case 740:
-#line 1019 "char_ref.rl"
+#line 1014 "char_ref.rl"
 	{te = p+1;{ output->first = 0x250c; }}
 	break;
 	case 741:
-#line 1020 "char_ref.rl"
+#line 1015 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2500; }}
 	break;
 	case 742:
-#line 1021 "char_ref.rl"
+#line 1016 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2565; }}
 	break;
 	case 743:
-#line 1022 "char_ref.rl"
+#line 1017 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2568; }}
 	break;
 	case 744:
-#line 1023 "char_ref.rl"
+#line 1018 "char_ref.rl"
 	{te = p+1;{ output->first = 0x252c; }}
 	break;
 	case 745:
-#line 1024 "char_ref.rl"
+#line 1019 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2534; }}
 	break;
 	case 746:
-#line 1025 "char_ref.rl"
+#line 1020 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229f; }}
 	break;
 	case 747:
-#line 1026 "char_ref.rl"
+#line 1021 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229e; }}
 	break;
 	case 748:
-#line 1027 "char_ref.rl"
+#line 1022 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a0; }}
 	break;
 	case 749:
-#line 1028 "char_ref.rl"
+#line 1023 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255b; }}
 	break;
 	case 750:
-#line 1029 "char_ref.rl"
+#line 1024 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2558; }}
 	break;
 	case 751:
-#line 1030 "char_ref.rl"
+#line 1025 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2518; }}
 	break;
 	case 752:
-#line 1031 "char_ref.rl"
+#line 1026 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2514; }}
 	break;
 	case 753:
-#line 1032 "char_ref.rl"
+#line 1027 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2502; }}
 	break;
 	case 754:
-#line 1033 "char_ref.rl"
+#line 1028 "char_ref.rl"
 	{te = p+1;{ output->first = 0x256a; }}
 	break;
 	case 755:
-#line 1034 "char_ref.rl"
+#line 1029 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2561; }}
 	break;
 	case 756:
-#line 1035 "char_ref.rl"
+#line 1030 "char_ref.rl"
 	{te = p+1;{ output->first = 0x255e; }}
 	break;
 	case 757:
-#line 1036 "char_ref.rl"
+#line 1031 "char_ref.rl"
 	{te = p+1;{ output->first = 0x253c; }}
 	break;
 	case 758:
-#line 1037 "char_ref.rl"
+#line 1032 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2524; }}
 	break;
 	case 759:
-#line 1038 "char_ref.rl"
+#line 1033 "char_ref.rl"
 	{te = p+1;{ output->first = 0x251c; }}
 	break;
 	case 760:
-#line 1039 "char_ref.rl"
+#line 1034 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2035; }}
 	break;
 	case 761:
-#line 1040 "char_ref.rl"
+#line 1035 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02d8; }}
 	break;
 	case 762:
-#line 1041 "char_ref.rl"
+#line 1036 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa6; }}
 	break;
 	case 763:
-#line 1043 "char_ref.rl"
+#line 1038 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b7; }}
 	break;
 	case 764:
-#line 1044 "char_ref.rl"
+#line 1039 "char_ref.rl"
 	{te = p+1;{ output->first = 0x204f; }}
 	break;
 	case 765:
-#line 1045 "char_ref.rl"
+#line 1040 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223d; }}
 	break;
 	case 766:
-#line 1046 "char_ref.rl"
+#line 1041 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cd; }}
 	break;
 	case 767:
-#line 1047 "char_ref.rl"
+#line 1042 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5c; }}
 	break;
 	case 768:
-#line 1048 "char_ref.rl"
+#line 1043 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c5; }}
 	break;
 	case 769:
-#line 1049 "char_ref.rl"
+#line 1044 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27c8; }}
 	break;
 	case 770:
-#line 1050 "char_ref.rl"
+#line 1045 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2022; }}
 	break;
 	case 771:
-#line 1051 "char_ref.rl"
+#line 1046 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2022; }}
 	break;
 	case 772:
-#line 1052 "char_ref.rl"
+#line 1047 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224e; }}
 	break;
 	case 773:
-#line 1053 "char_ref.rl"
+#line 1048 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aae; }}
 	break;
 	case 774:
-#line 1054 "char_ref.rl"
+#line 1049 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224f; }}
 	break;
 	case 775:
-#line 1055 "char_ref.rl"
+#line 1050 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224f; }}
 	break;
 	case 776:
-#line 1056 "char_ref.rl"
+#line 1051 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0107; }}
 	break;
 	case 777:
-#line 1057 "char_ref.rl"
+#line 1052 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2229; }}
 	break;
 	case 778:
-#line 1058 "char_ref.rl"
+#line 1053 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a44; }}
 	break;
 	case 779:
-#line 1059 "char_ref.rl"
+#line 1054 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a49; }}
 	break;
 	case 780:
-#line 1060 "char_ref.rl"
+#line 1055 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a4b; }}
 	break;
 	case 781:
-#line 1061 "char_ref.rl"
+#line 1056 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a47; }}
 	break;
 	case 782:
-#line 1062 "char_ref.rl"
+#line 1057 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a40; }}
 	break;
 	case 783:
-#line 1063 "char_ref.rl"
+#line 1058 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2229; output->second = 0xfe00; }}
 	break;
 	case 784:
-#line 1064 "char_ref.rl"
+#line 1059 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2041; }}
 	break;
 	case 785:
-#line 1065 "char_ref.rl"
+#line 1060 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02c7; }}
 	break;
 	case 786:
-#line 1066 "char_ref.rl"
+#line 1061 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a4d; }}
 	break;
 	case 787:
-#line 1067 "char_ref.rl"
+#line 1062 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010d; }}
 	break;
 	case 788:
-#line 1068 "char_ref.rl"
+#line 1063 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe7; }}
 	break;
 	case 789:
-#line 1070 "char_ref.rl"
+#line 1065 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0109; }}
 	break;
 	case 790:
-#line 1071 "char_ref.rl"
+#line 1066 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a4c; }}
 	break;
 	case 791:
-#line 1072 "char_ref.rl"
+#line 1067 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a50; }}
 	break;
 	case 792:
-#line 1073 "char_ref.rl"
+#line 1068 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010b; }}
 	break;
 	case 793:
-#line 1074 "char_ref.rl"
+#line 1069 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb8; }}
 	break;
 	case 794:
-#line 1076 "char_ref.rl"
+#line 1071 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b2; }}
 	break;
 	case 795:
-#line 1077 "char_ref.rl"
+#line 1072 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa2; }}
 	break;
 	case 796:
-#line 1079 "char_ref.rl"
+#line 1074 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb7; }}
 	break;
 	case 797:
-#line 1080 "char_ref.rl"
+#line 1075 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d520; }}
 	break;
 	case 798:
-#line 1081 "char_ref.rl"
+#line 1076 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0447; }}
 	break;
 	case 799:
-#line 1082 "char_ref.rl"
+#line 1077 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2713; }}
 	break;
 	case 800:
-#line 1083 "char_ref.rl"
+#line 1078 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2713; }}
 	break;
 	case 801:
-#line 1084 "char_ref.rl"
+#line 1079 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c7; }}
 	break;
 	case 802:
-#line 1085 "char_ref.rl"
+#line 1080 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25cb; }}
 	break;
 	case 803:
-#line 1086 "char_ref.rl"
+#line 1081 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c3; }}
 	break;
 	case 804:
-#line 1087 "char_ref.rl"
+#line 1082 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02c6; }}
 	break;
 	case 805:
-#line 1088 "char_ref.rl"
+#line 1083 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2257; }}
 	break;
 	case 806:
-#line 1089 "char_ref.rl"
+#line 1084 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ba; }}
 	break;
 	case 807:
-#line 1090 "char_ref.rl"
+#line 1085 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bb; }}
 	break;
 	case 808:
-#line 1091 "char_ref.rl"
+#line 1086 "char_ref.rl"
 	{te = p+1;{ output->first = 0xae; }}
 	break;
 	case 809:
-#line 1092 "char_ref.rl"
+#line 1087 "char_ref.rl"
 	{te = p+1;{ output->first = 0x24c8; }}
 	break;
 	case 810:
-#line 1093 "char_ref.rl"
+#line 1088 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229b; }}
 	break;
 	case 811:
-#line 1094 "char_ref.rl"
+#line 1089 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229a; }}
 	break;
 	case 812:
-#line 1095 "char_ref.rl"
+#line 1090 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229d; }}
 	break;
 	case 813:
-#line 1096 "char_ref.rl"
+#line 1091 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2257; }}
 	break;
 	case 814:
-#line 1097 "char_ref.rl"
+#line 1092 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a10; }}
 	break;
 	case 815:
-#line 1098 "char_ref.rl"
+#line 1093 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aef; }}
 	break;
 	case 816:
-#line 1099 "char_ref.rl"
+#line 1094 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c2; }}
 	break;
 	case 817:
-#line 1100 "char_ref.rl"
+#line 1095 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2663; }}
 	break;
 	case 818:
-#line 1101 "char_ref.rl"
+#line 1096 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2663; }}
 	break;
 	case 819:
-#line 1102 "char_ref.rl"
+#line 1097 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3a; }}
 	break;
 	case 820:
-#line 1103 "char_ref.rl"
+#line 1098 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2254; }}
 	break;
 	case 821:
-#line 1104 "char_ref.rl"
+#line 1099 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2254; }}
 	break;
 	case 822:
-#line 1105 "char_ref.rl"
+#line 1100 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2c; }}
 	break;
 	case 823:
-#line 1106 "char_ref.rl"
+#line 1101 "char_ref.rl"
 	{te = p+1;{ output->first = 0x40; }}
 	break;
 	case 824:
-#line 1107 "char_ref.rl"
+#line 1102 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2201; }}
 	break;
 	case 825:
-#line 1108 "char_ref.rl"
+#line 1103 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2218; }}
 	break;
 	case 826:
-#line 1109 "char_ref.rl"
+#line 1104 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2201; }}
 	break;
 	case 827:
-#line 1110 "char_ref.rl"
+#line 1105 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2102; }}
 	break;
 	case 828:
-#line 1111 "char_ref.rl"
+#line 1106 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2245; }}
 	break;
 	case 829:
-#line 1112 "char_ref.rl"
+#line 1107 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a6d; }}
 	break;
 	case 830:
-#line 1113 "char_ref.rl"
+#line 1108 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222e; }}
 	break;
 	case 831:
-#line 1114 "char_ref.rl"
+#line 1109 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d554; }}
 	break;
 	case 832:
-#line 1115 "char_ref.rl"
+#line 1110 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2210; }}
 	break;
 	case 833:
-#line 1116 "char_ref.rl"
+#line 1111 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa9; }}
 	break;
 	case 834:
-#line 1118 "char_ref.rl"
+#line 1113 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2117; }}
 	break;
 	case 835:
-#line 1119 "char_ref.rl"
+#line 1114 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b5; }}
 	break;
 	case 836:
-#line 1120 "char_ref.rl"
+#line 1115 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2717; }}
 	break;
 	case 837:
-#line 1121 "char_ref.rl"
+#line 1116 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b8; }}
 	break;
 	case 838:
-#line 1122 "char_ref.rl"
+#line 1117 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acf; }}
 	break;
 	case 839:
-#line 1123 "char_ref.rl"
+#line 1118 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad1; }}
 	break;
 	case 840:
-#line 1124 "char_ref.rl"
+#line 1119 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad0; }}
 	break;
 	case 841:
-#line 1125 "char_ref.rl"
+#line 1120 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad2; }}
 	break;
 	case 842:
-#line 1126 "char_ref.rl"
+#line 1121 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ef; }}
 	break;
 	case 843:
-#line 1127 "char_ref.rl"
+#line 1122 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2938; }}
 	break;
 	case 844:
-#line 1128 "char_ref.rl"
+#line 1123 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2935; }}
 	break;
 	case 845:
-#line 1129 "char_ref.rl"
+#line 1124 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22de; }}
 	break;
 	case 846:
-#line 1130 "char_ref.rl"
+#line 1125 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22df; }}
 	break;
 	case 847:
-#line 1131 "char_ref.rl"
+#line 1126 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b6; }}
 	break;
 	case 848:
-#line 1132 "char_ref.rl"
+#line 1127 "char_ref.rl"
 	{te = p+1;{ output->first = 0x293d; }}
 	break;
 	case 849:
-#line 1133 "char_ref.rl"
+#line 1128 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222a; }}
 	break;
 	case 850:
-#line 1134 "char_ref.rl"
+#line 1129 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a48; }}
 	break;
 	case 851:
-#line 1135 "char_ref.rl"
+#line 1130 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a46; }}
 	break;
 	case 852:
-#line 1136 "char_ref.rl"
+#line 1131 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a4a; }}
 	break;
 	case 853:
-#line 1137 "char_ref.rl"
+#line 1132 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228d; }}
 	break;
 	case 854:
-#line 1138 "char_ref.rl"
+#line 1133 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a45; }}
 	break;
 	case 855:
-#line 1139 "char_ref.rl"
+#line 1134 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222a; output->second = 0xfe00; }}
 	break;
 	case 856:
-#line 1140 "char_ref.rl"
+#line 1135 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b7; }}
 	break;
 	case 857:
-#line 1141 "char_ref.rl"
+#line 1136 "char_ref.rl"
 	{te = p+1;{ output->first = 0x293c; }}
 	break;
 	case 858:
-#line 1142 "char_ref.rl"
+#line 1137 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22de; }}
 	break;
 	case 859:
-#line 1143 "char_ref.rl"
+#line 1138 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22df; }}
 	break;
 	case 860:
-#line 1144 "char_ref.rl"
+#line 1139 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ce; }}
 	break;
 	case 861:
-#line 1145 "char_ref.rl"
+#line 1140 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cf; }}
 	break;
 	case 862:
-#line 1146 "char_ref.rl"
+#line 1141 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa4; }}
 	break;
 	case 863:
-#line 1148 "char_ref.rl"
+#line 1143 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b6; }}
 	break;
 	case 864:
-#line 1149 "char_ref.rl"
+#line 1144 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b7; }}
 	break;
 	case 865:
-#line 1150 "char_ref.rl"
+#line 1145 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ce; }}
 	break;
 	case 866:
-#line 1151 "char_ref.rl"
+#line 1146 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cf; }}
 	break;
 	case 867:
-#line 1152 "char_ref.rl"
+#line 1147 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2232; }}
 	break;
 	case 868:
-#line 1153 "char_ref.rl"
+#line 1148 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2231; }}
 	break;
 	case 869:
-#line 1154 "char_ref.rl"
+#line 1149 "char_ref.rl"
 	{te = p+1;{ output->first = 0x232d; }}
 	break;
 	case 870:
-#line 1155 "char_ref.rl"
+#line 1150 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d3; }}
 	break;
 	case 871:
-#line 1156 "char_ref.rl"
+#line 1151 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2965; }}
 	break;
 	case 872:
-#line 1157 "char_ref.rl"
+#line 1152 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2020; }}
 	break;
 	case 873:
-#line 1158 "char_ref.rl"
+#line 1153 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2138; }}
 	break;
 	case 874:
-#line 1159 "char_ref.rl"
+#line 1154 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2193; }}
 	break;
 	case 875:
-#line 1160 "char_ref.rl"
+#line 1155 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2010; }}
 	break;
 	case 876:
-#line 1161 "char_ref.rl"
+#line 1156 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a3; }}
 	break;
 	case 877:
-#line 1162 "char_ref.rl"
+#line 1157 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290f; }}
 	break;
 	case 878:
-#line 1163 "char_ref.rl"
+#line 1158 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02dd; }}
 	break;
 	case 879:
-#line 1164 "char_ref.rl"
+#line 1159 "char_ref.rl"
 	{te = p+1;{ output->first = 0x010f; }}
 	break;
 	case 880:
-#line 1165 "char_ref.rl"
+#line 1160 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0434; }}
 	break;
 	case 881:
-#line 1166 "char_ref.rl"
+#line 1161 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2146; }}
 	break;
 	case 882:
-#line 1167 "char_ref.rl"
+#line 1162 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2021; }}
 	break;
 	case 883:
-#line 1168 "char_ref.rl"
+#line 1163 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ca; }}
 	break;
 	case 884:
-#line 1169 "char_ref.rl"
+#line 1164 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a77; }}
 	break;
 	case 885:
-#line 1170 "char_ref.rl"
+#line 1165 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb0; }}
 	break;
 	case 886:
-#line 1172 "char_ref.rl"
+#line 1167 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b4; }}
 	break;
 	case 887:
-#line 1173 "char_ref.rl"
+#line 1168 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b1; }}
 	break;
 	case 888:
-#line 1174 "char_ref.rl"
+#line 1169 "char_ref.rl"
 	{te = p+1;{ output->first = 0x297f; }}
 	break;
 	case 889:
-#line 1175 "char_ref.rl"
+#line 1170 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d521; }}
 	break;
 	case 890:
-#line 1176 "char_ref.rl"
+#line 1171 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c3; }}
 	break;
 	case 891:
-#line 1177 "char_ref.rl"
+#line 1172 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c2; }}
 	break;
 	case 892:
-#line 1178 "char_ref.rl"
+#line 1173 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c4; }}
 	break;
 	case 893:
-#line 1179 "char_ref.rl"
+#line 1174 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c4; }}
 	break;
 	case 894:
-#line 1180 "char_ref.rl"
+#line 1175 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2666; }}
 	break;
 	case 895:
-#line 1181 "char_ref.rl"
+#line 1176 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2666; }}
 	break;
 	case 896:
-#line 1182 "char_ref.rl"
+#line 1177 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa8; }}
 	break;
 	case 897:
-#line 1183 "char_ref.rl"
+#line 1178 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03dd; }}
 	break;
 	case 898:
-#line 1184 "char_ref.rl"
+#line 1179 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f2; }}
 	break;
 	case 899:
-#line 1185 "char_ref.rl"
+#line 1180 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf7; }}
 	break;
 	case 900:
-#line 1186 "char_ref.rl"
+#line 1181 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf7; }}
 	break;
 	case 901:
-#line 1188 "char_ref.rl"
+#line 1183 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c7; }}
 	break;
 	case 902:
-#line 1189 "char_ref.rl"
+#line 1184 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c7; }}
 	break;
 	case 903:
-#line 1190 "char_ref.rl"
+#line 1185 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0452; }}
 	break;
 	case 904:
-#line 1191 "char_ref.rl"
+#line 1186 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231e; }}
 	break;
 	case 905:
-#line 1192 "char_ref.rl"
+#line 1187 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230d; }}
 	break;
 	case 906:
-#line 1193 "char_ref.rl"
+#line 1188 "char_ref.rl"
 	{te = p+1;{ output->first = 0x24; }}
 	break;
 	case 907:
-#line 1194 "char_ref.rl"
+#line 1189 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d555; }}
 	break;
 	case 908:
-#line 1195 "char_ref.rl"
+#line 1190 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02d9; }}
 	break;
 	case 909:
-#line 1196 "char_ref.rl"
+#line 1191 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2250; }}
 	break;
 	case 910:
-#line 1197 "char_ref.rl"
+#line 1192 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2251; }}
 	break;
 	case 911:
-#line 1198 "char_ref.rl"
+#line 1193 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2238; }}
 	break;
 	case 912:
-#line 1199 "char_ref.rl"
+#line 1194 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2214; }}
 	break;
 	case 913:
-#line 1200 "char_ref.rl"
+#line 1195 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a1; }}
 	break;
 	case 914:
-#line 1201 "char_ref.rl"
+#line 1196 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2306; }}
 	break;
 	case 915:
-#line 1202 "char_ref.rl"
+#line 1197 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2193; }}
 	break;
 	case 916:
-#line 1203 "char_ref.rl"
+#line 1198 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ca; }}
 	break;
 	case 917:
-#line 1204 "char_ref.rl"
+#line 1199 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c3; }}
 	break;
 	case 918:
-#line 1205 "char_ref.rl"
+#line 1200 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c2; }}
 	break;
 	case 919:
-#line 1206 "char_ref.rl"
+#line 1201 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2910; }}
 	break;
 	case 920:
-#line 1207 "char_ref.rl"
+#line 1202 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231f; }}
 	break;
 	case 921:
-#line 1208 "char_ref.rl"
+#line 1203 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230c; }}
 	break;
 	case 922:
-#line 1209 "char_ref.rl"
+#line 1204 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4b9; }}
 	break;
 	case 923:
-#line 1210 "char_ref.rl"
+#line 1205 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0455; }}
 	break;
 	case 924:
-#line 1211 "char_ref.rl"
+#line 1206 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29f6; }}
 	break;
 	case 925:
-#line 1212 "char_ref.rl"
+#line 1207 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0111; }}
 	break;
 	case 926:
-#line 1213 "char_ref.rl"
+#line 1208 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f1; }}
 	break;
 	case 927:
-#line 1214 "char_ref.rl"
+#line 1209 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25bf; }}
 	break;
 	case 928:
-#line 1215 "char_ref.rl"
+#line 1210 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25be; }}
 	break;
 	case 929:
-#line 1216 "char_ref.rl"
+#line 1211 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21f5; }}
 	break;
 	case 930:
-#line 1217 "char_ref.rl"
+#line 1212 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296f; }}
 	break;
 	case 931:
-#line 1218 "char_ref.rl"
+#line 1213 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a6; }}
 	break;
 	case 932:
-#line 1219 "char_ref.rl"
+#line 1214 "char_ref.rl"
 	{te = p+1;{ output->first = 0x045f; }}
 	break;
 	case 933:
-#line 1220 "char_ref.rl"
+#line 1215 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27ff; }}
 	break;
 	case 934:
-#line 1221 "char_ref.rl"
+#line 1216 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a77; }}
 	break;
 	case 935:
-#line 1222 "char_ref.rl"
+#line 1217 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2251; }}
 	break;
 	case 936:
-#line 1223 "char_ref.rl"
+#line 1218 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe9; }}
 	break;
 	case 937:
-#line 1225 "char_ref.rl"
+#line 1220 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a6e; }}
 	break;
 	case 938:
-#line 1226 "char_ref.rl"
+#line 1221 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011b; }}
 	break;
 	case 939:
-#line 1227 "char_ref.rl"
+#line 1222 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2256; }}
 	break;
 	case 940:
-#line 1228 "char_ref.rl"
+#line 1223 "char_ref.rl"
 	{te = p+1;{ output->first = 0xea; }}
 	break;
 	case 941:
-#line 1230 "char_ref.rl"
+#line 1225 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2255; }}
 	break;
 	case 942:
-#line 1231 "char_ref.rl"
+#line 1226 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044d; }}
 	break;
 	case 943:
-#line 1232 "char_ref.rl"
+#line 1227 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0117; }}
 	break;
 	case 944:
-#line 1233 "char_ref.rl"
+#line 1228 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2147; }}
 	break;
 	case 945:
-#line 1234 "char_ref.rl"
+#line 1229 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2252; }}
 	break;
 	case 946:
-#line 1235 "char_ref.rl"
+#line 1230 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d522; }}
 	break;
 	case 947:
-#line 1236 "char_ref.rl"
+#line 1231 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a9a; }}
 	break;
 	case 948:
-#line 1237 "char_ref.rl"
+#line 1232 "char_ref.rl"
 	{te = p+1;{ output->first = 0xe8; }}
 	break;
 	case 949:
-#line 1239 "char_ref.rl"
+#line 1234 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a96; }}
 	break;
 	case 950:
-#line 1240 "char_ref.rl"
+#line 1235 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a98; }}
 	break;
 	case 951:
-#line 1241 "char_ref.rl"
+#line 1236 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a99; }}
 	break;
 	case 952:
-#line 1242 "char_ref.rl"
+#line 1237 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23e7; }}
 	break;
 	case 953:
-#line 1243 "char_ref.rl"
+#line 1238 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2113; }}
 	break;
 	case 954:
-#line 1244 "char_ref.rl"
+#line 1239 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a95; }}
 	break;
 	case 955:
-#line 1245 "char_ref.rl"
+#line 1240 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a97; }}
 	break;
 	case 956:
-#line 1246 "char_ref.rl"
+#line 1241 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0113; }}
 	break;
 	case 957:
-#line 1247 "char_ref.rl"
+#line 1242 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2205; }}
 	break;
 	case 958:
-#line 1248 "char_ref.rl"
+#line 1243 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2205; }}
 	break;
 	case 959:
-#line 1249 "char_ref.rl"
+#line 1244 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2205; }}
 	break;
 	case 960:
-#line 1250 "char_ref.rl"
+#line 1245 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2004; }}
 	break;
 	case 961:
-#line 1251 "char_ref.rl"
+#line 1246 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2005; }}
 	break;
 	case 962:
-#line 1252 "char_ref.rl"
+#line 1247 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2003; }}
 	break;
 	case 963:
-#line 1253 "char_ref.rl"
+#line 1248 "char_ref.rl"
 	{te = p+1;{ output->first = 0x014b; }}
 	break;
 	case 964:
-#line 1254 "char_ref.rl"
+#line 1249 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2002; }}
 	break;
 	case 965:
-#line 1255 "char_ref.rl"
+#line 1250 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0119; }}
 	break;
 	case 966:
-#line 1256 "char_ref.rl"
+#line 1251 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d556; }}
 	break;
 	case 967:
-#line 1257 "char_ref.rl"
+#line 1252 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d5; }}
 	break;
 	case 968:
-#line 1258 "char_ref.rl"
+#line 1253 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29e3; }}
 	break;
 	case 969:
-#line 1259 "char_ref.rl"
+#line 1254 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a71; }}
 	break;
 	case 970:
-#line 1260 "char_ref.rl"
+#line 1255 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b5; }}
 	break;
 	case 971:
-#line 1261 "char_ref.rl"
+#line 1256 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b5; }}
 	break;
 	case 972:
-#line 1262 "char_ref.rl"
+#line 1257 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f5; }}
 	break;
 	case 973:
-#line 1263 "char_ref.rl"
+#line 1258 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2256; }}
 	break;
 	case 974:
-#line 1264 "char_ref.rl"
+#line 1259 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2255; }}
 	break;
 	case 975:
-#line 1265 "char_ref.rl"
+#line 1260 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2242; }}
 	break;
 	case 976:
-#line 1266 "char_ref.rl"
+#line 1261 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a96; }}
 	break;
 	case 977:
-#line 1267 "char_ref.rl"
+#line 1262 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a95; }}
 	break;
 	case 978:
-#line 1268 "char_ref.rl"
+#line 1263 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3d; }}
 	break;
 	case 979:
-#line 1269 "char_ref.rl"
+#line 1264 "char_ref.rl"
 	{te = p+1;{ output->first = 0x225f; }}
 	break;
 	case 980:
-#line 1270 "char_ref.rl"
+#line 1265 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2261; }}
 	break;
 	case 981:
-#line 1271 "char_ref.rl"
+#line 1266 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a78; }}
 	break;
 	case 982:
-#line 1272 "char_ref.rl"
+#line 1267 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29e5; }}
 	break;
 	case 983:
-#line 1273 "char_ref.rl"
+#line 1268 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2253; }}
 	break;
 	case 984:
-#line 1274 "char_ref.rl"
+#line 1269 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2971; }}
 	break;
 	case 985:
-#line 1275 "char_ref.rl"
+#line 1270 "char_ref.rl"
 	{te = p+1;{ output->first = 0x212f; }}
 	break;
 	case 986:
-#line 1276 "char_ref.rl"
+#line 1271 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2250; }}
 	break;
 	case 987:
-#line 1277 "char_ref.rl"
+#line 1272 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2242; }}
 	break;
 	case 988:
-#line 1278 "char_ref.rl"
+#line 1273 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b7; }}
 	break;
 	case 989:
-#line 1279 "char_ref.rl"
+#line 1274 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf0; }}
 	break;
 	case 990:
-#line 1281 "char_ref.rl"
+#line 1276 "char_ref.rl"
 	{te = p+1;{ output->first = 0xeb; }}
 	break;
 	case 991:
-#line 1283 "char_ref.rl"
+#line 1278 "char_ref.rl"
 	{te = p+1;{ output->first = 0x20ac; }}
 	break;
 	case 992:
-#line 1284 "char_ref.rl"
+#line 1279 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21; }}
 	break;
 	case 993:
-#line 1285 "char_ref.rl"
+#line 1280 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2203; }}
 	break;
 	case 994:
-#line 1286 "char_ref.rl"
+#line 1281 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2130; }}
 	break;
 	case 995:
-#line 1287 "char_ref.rl"
+#line 1282 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2147; }}
 	break;
 	case 996:
-#line 1288 "char_ref.rl"
+#line 1283 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2252; }}
 	break;
 	case 997:
-#line 1289 "char_ref.rl"
+#line 1284 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0444; }}
 	break;
 	case 998:
-#line 1290 "char_ref.rl"
+#line 1285 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2640; }}
 	break;
 	case 999:
-#line 1291 "char_ref.rl"
+#line 1286 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb03; }}
 	break;
 	case 1000:
-#line 1292 "char_ref.rl"
+#line 1287 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb00; }}
 	break;
 	case 1001:
-#line 1293 "char_ref.rl"
+#line 1288 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb04; }}
 	break;
 	case 1002:
-#line 1294 "char_ref.rl"
+#line 1289 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d523; }}
 	break;
 	case 1003:
-#line 1295 "char_ref.rl"
+#line 1290 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb01; }}
 	break;
 	case 1004:
-#line 1296 "char_ref.rl"
+#line 1291 "char_ref.rl"
 	{te = p+1;{ output->first = 0x66; output->second = 0x6a; }}
 	break;
 	case 1005:
-#line 1297 "char_ref.rl"
+#line 1292 "char_ref.rl"
 	{te = p+1;{ output->first = 0x266d; }}
 	break;
 	case 1006:
-#line 1298 "char_ref.rl"
+#line 1293 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb02; }}
 	break;
 	case 1007:
-#line 1299 "char_ref.rl"
+#line 1294 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b1; }}
 	break;
 	case 1008:
-#line 1300 "char_ref.rl"
+#line 1295 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0192; }}
 	break;
 	case 1009:
-#line 1301 "char_ref.rl"
+#line 1296 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d557; }}
 	break;
 	case 1010:
-#line 1302 "char_ref.rl"
+#line 1297 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2200; }}
 	break;
 	case 1011:
-#line 1303 "char_ref.rl"
+#line 1298 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d4; }}
 	break;
 	case 1012:
-#line 1304 "char_ref.rl"
+#line 1299 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad9; }}
 	break;
 	case 1013:
-#line 1305 "char_ref.rl"
+#line 1300 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a0d; }}
 	break;
 	case 1014:
-#line 1306 "char_ref.rl"
+#line 1301 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbd; }}
 	break;
 	case 1015:
-#line 1308 "char_ref.rl"
+#line 1303 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2153; }}
 	break;
 	case 1016:
-#line 1309 "char_ref.rl"
+#line 1304 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbc; }}
 	break;
 	case 1017:
-#line 1311 "char_ref.rl"
+#line 1306 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2155; }}
 	break;
 	case 1018:
-#line 1312 "char_ref.rl"
+#line 1307 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2159; }}
 	break;
 	case 1019:
-#line 1313 "char_ref.rl"
+#line 1308 "char_ref.rl"
 	{te = p+1;{ output->first = 0x215b; }}
 	break;
 	case 1020:
-#line 1314 "char_ref.rl"
+#line 1309 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2154; }}
 	break;
 	case 1021:
-#line 1315 "char_ref.rl"
+#line 1310 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2156; }}
 	break;
 	case 1022:
-#line 1316 "char_ref.rl"
+#line 1311 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbe; }}
 	break;
 	case 1023:
-#line 1318 "char_ref.rl"
+#line 1313 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2157; }}
 	break;
 	case 1024:
-#line 1319 "char_ref.rl"
+#line 1314 "char_ref.rl"
 	{te = p+1;{ output->first = 0x215c; }}
 	break;
 	case 1025:
-#line 1320 "char_ref.rl"
+#line 1315 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2158; }}
 	break;
 	case 1026:
-#line 1321 "char_ref.rl"
+#line 1316 "char_ref.rl"
 	{te = p+1;{ output->first = 0x215a; }}
 	break;
 	case 1027:
-#line 1322 "char_ref.rl"
+#line 1317 "char_ref.rl"
 	{te = p+1;{ output->first = 0x215d; }}
 	break;
 	case 1028:
-#line 1323 "char_ref.rl"
+#line 1318 "char_ref.rl"
 	{te = p+1;{ output->first = 0x215e; }}
 	break;
 	case 1029:
-#line 1324 "char_ref.rl"
+#line 1319 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2044; }}
 	break;
 	case 1030:
-#line 1325 "char_ref.rl"
+#line 1320 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2322; }}
 	break;
 	case 1031:
-#line 1326 "char_ref.rl"
+#line 1321 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4bb; }}
 	break;
 	case 1032:
-#line 1327 "char_ref.rl"
+#line 1322 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; }}
 	break;
 	case 1033:
-#line 1328 "char_ref.rl"
+#line 1323 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8c; }}
 	break;
 	case 1034:
-#line 1329 "char_ref.rl"
+#line 1324 "char_ref.rl"
 	{te = p+1;{ output->first = 0x01f5; }}
 	break;
 	case 1035:
-#line 1330 "char_ref.rl"
+#line 1325 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b3; }}
 	break;
 	case 1036:
-#line 1331 "char_ref.rl"
+#line 1326 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03dd; }}
 	break;
 	case 1037:
-#line 1332 "char_ref.rl"
+#line 1327 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a86; }}
 	break;
 	case 1038:
-#line 1333 "char_ref.rl"
+#line 1328 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011f; }}
 	break;
 	case 1039:
-#line 1334 "char_ref.rl"
+#line 1329 "char_ref.rl"
 	{te = p+1;{ output->first = 0x011d; }}
 	break;
 	case 1040:
-#line 1335 "char_ref.rl"
+#line 1330 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0433; }}
 	break;
 	case 1041:
-#line 1336 "char_ref.rl"
+#line 1331 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0121; }}
 	break;
 	case 1042:
-#line 1337 "char_ref.rl"
+#line 1332 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2265; }}
 	break;
 	case 1043:
-#line 1338 "char_ref.rl"
+#line 1333 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22db; }}
 	break;
 	case 1044:
-#line 1339 "char_ref.rl"
+#line 1334 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2265; }}
 	break;
 	case 1045:
-#line 1340 "char_ref.rl"
+#line 1335 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; }}
 	break;
 	case 1046:
-#line 1341 "char_ref.rl"
+#line 1336 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; }}
 	break;
 	case 1047:
-#line 1342 "char_ref.rl"
+#line 1337 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; }}
 	break;
 	case 1048:
-#line 1343 "char_ref.rl"
+#line 1338 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa9; }}
 	break;
 	case 1049:
-#line 1344 "char_ref.rl"
+#line 1339 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a80; }}
 	break;
 	case 1050:
-#line 1345 "char_ref.rl"
+#line 1340 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a82; }}
 	break;
 	case 1051:
-#line 1346 "char_ref.rl"
+#line 1341 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a84; }}
 	break;
 	case 1052:
-#line 1347 "char_ref.rl"
+#line 1342 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22db; output->second = 0xfe00; }}
 	break;
 	case 1053:
-#line 1348 "char_ref.rl"
+#line 1343 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a94; }}
 	break;
 	case 1054:
-#line 1349 "char_ref.rl"
+#line 1344 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d524; }}
 	break;
 	case 1055:
-#line 1350 "char_ref.rl"
+#line 1345 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; }}
 	break;
 	case 1056:
-#line 1351 "char_ref.rl"
+#line 1346 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d9; }}
 	break;
 	case 1057:
-#line 1352 "char_ref.rl"
+#line 1347 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2137; }}
 	break;
 	case 1058:
-#line 1353 "char_ref.rl"
+#line 1348 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0453; }}
 	break;
 	case 1059:
-#line 1354 "char_ref.rl"
+#line 1349 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2277; }}
 	break;
 	case 1060:
-#line 1355 "char_ref.rl"
+#line 1350 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a92; }}
 	break;
 	case 1061:
-#line 1356 "char_ref.rl"
+#line 1351 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa5; }}
 	break;
 	case 1062:
-#line 1357 "char_ref.rl"
+#line 1352 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa4; }}
 	break;
 	case 1063:
-#line 1358 "char_ref.rl"
+#line 1353 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2269; }}
 	break;
 	case 1064:
-#line 1359 "char_ref.rl"
+#line 1354 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8a; }}
 	break;
 	case 1065:
-#line 1360 "char_ref.rl"
+#line 1355 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8a; }}
 	break;
 	case 1066:
-#line 1361 "char_ref.rl"
+#line 1356 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a88; }}
 	break;
 	case 1067:
-#line 1362 "char_ref.rl"
+#line 1357 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a88; }}
 	break;
 	case 1068:
-#line 1363 "char_ref.rl"
+#line 1358 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2269; }}
 	break;
 	case 1069:
-#line 1364 "char_ref.rl"
+#line 1359 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e7; }}
 	break;
 	case 1070:
-#line 1365 "char_ref.rl"
+#line 1360 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d558; }}
 	break;
 	case 1071:
-#line 1366 "char_ref.rl"
+#line 1361 "char_ref.rl"
 	{te = p+1;{ output->first = 0x60; }}
 	break;
 	case 1072:
-#line 1367 "char_ref.rl"
+#line 1362 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210a; }}
 	break;
 	case 1073:
-#line 1368 "char_ref.rl"
+#line 1363 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2273; }}
 	break;
 	case 1074:
-#line 1369 "char_ref.rl"
+#line 1364 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8e; }}
 	break;
 	case 1075:
-#line 1370 "char_ref.rl"
+#line 1365 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a90; }}
 	break;
 	case 1076:
-#line 1371 "char_ref.rl"
+#line 1366 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3e; }}
 	break;
 	case 1077:
-#line 1373 "char_ref.rl"
+#line 1368 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa7; }}
 	break;
 	case 1078:
-#line 1374 "char_ref.rl"
+#line 1369 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7a; }}
 	break;
 	case 1079:
-#line 1375 "char_ref.rl"
+#line 1370 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d7; }}
 	break;
 	case 1080:
-#line 1376 "char_ref.rl"
+#line 1371 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2995; }}
 	break;
 	case 1081:
-#line 1377 "char_ref.rl"
+#line 1372 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7c; }}
 	break;
 	case 1082:
-#line 1378 "char_ref.rl"
+#line 1373 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a86; }}
 	break;
 	case 1083:
-#line 1379 "char_ref.rl"
+#line 1374 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2978; }}
 	break;
 	case 1084:
-#line 1380 "char_ref.rl"
+#line 1375 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d7; }}
 	break;
 	case 1085:
-#line 1381 "char_ref.rl"
+#line 1376 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22db; }}
 	break;
 	case 1086:
-#line 1382 "char_ref.rl"
+#line 1377 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8c; }}
 	break;
 	case 1087:
-#line 1383 "char_ref.rl"
+#line 1378 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2277; }}
 	break;
 	case 1088:
-#line 1384 "char_ref.rl"
+#line 1379 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2273; }}
 	break;
 	case 1089:
-#line 1385 "char_ref.rl"
+#line 1380 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2269; output->second = 0xfe00; }}
 	break;
 	case 1090:
-#line 1386 "char_ref.rl"
+#line 1381 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2269; output->second = 0xfe00; }}
 	break;
 	case 1091:
-#line 1387 "char_ref.rl"
+#line 1382 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d4; }}
 	break;
 	case 1092:
-#line 1388 "char_ref.rl"
+#line 1383 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200a; }}
 	break;
 	case 1093:
-#line 1389 "char_ref.rl"
+#line 1384 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbd; }}
 	break;
 	case 1094:
-#line 1390 "char_ref.rl"
+#line 1385 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210b; }}
 	break;
 	case 1095:
-#line 1391 "char_ref.rl"
+#line 1386 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044a; }}
 	break;
 	case 1096:
-#line 1392 "char_ref.rl"
+#line 1387 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2194; }}
 	break;
 	case 1097:
-#line 1393 "char_ref.rl"
+#line 1388 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2948; }}
 	break;
 	case 1098:
-#line 1394 "char_ref.rl"
+#line 1389 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ad; }}
 	break;
 	case 1099:
-#line 1395 "char_ref.rl"
+#line 1390 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210f; }}
 	break;
 	case 1100:
-#line 1396 "char_ref.rl"
+#line 1391 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0125; }}
 	break;
 	case 1101:
-#line 1397 "char_ref.rl"
+#line 1392 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2665; }}
 	break;
 	case 1102:
-#line 1398 "char_ref.rl"
+#line 1393 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2665; }}
 	break;
 	case 1103:
-#line 1399 "char_ref.rl"
+#line 1394 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2026; }}
 	break;
 	case 1104:
-#line 1400 "char_ref.rl"
+#line 1395 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b9; }}
 	break;
 	case 1105:
-#line 1401 "char_ref.rl"
+#line 1396 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d525; }}
 	break;
 	case 1106:
-#line 1402 "char_ref.rl"
+#line 1397 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2925; }}
 	break;
 	case 1107:
-#line 1403 "char_ref.rl"
+#line 1398 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2926; }}
 	break;
 	case 1108:
-#line 1404 "char_ref.rl"
+#line 1399 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ff; }}
 	break;
 	case 1109:
-#line 1405 "char_ref.rl"
+#line 1400 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223b; }}
 	break;
 	case 1110:
-#line 1406 "char_ref.rl"
+#line 1401 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a9; }}
 	break;
 	case 1111:
-#line 1407 "char_ref.rl"
+#line 1402 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21aa; }}
 	break;
 	case 1112:
-#line 1408 "char_ref.rl"
+#line 1403 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d559; }}
 	break;
 	case 1113:
-#line 1409 "char_ref.rl"
+#line 1404 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2015; }}
 	break;
 	case 1114:
-#line 1410 "char_ref.rl"
+#line 1405 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4bd; }}
 	break;
 	case 1115:
-#line 1411 "char_ref.rl"
+#line 1406 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210f; }}
 	break;
 	case 1116:
-#line 1412 "char_ref.rl"
+#line 1407 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0127; }}
 	break;
 	case 1117:
-#line 1413 "char_ref.rl"
+#line 1408 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2043; }}
 	break;
 	case 1118:
-#line 1414 "char_ref.rl"
+#line 1409 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2010; }}
 	break;
 	case 1119:
-#line 1415 "char_ref.rl"
+#line 1410 "char_ref.rl"
 	{te = p+1;{ output->first = 0xed; }}
 	break;
 	case 1120:
-#line 1417 "char_ref.rl"
+#line 1412 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2063; }}
 	break;
 	case 1121:
-#line 1418 "char_ref.rl"
+#line 1413 "char_ref.rl"
 	{te = p+1;{ output->first = 0xee; }}
 	break;
 	case 1122:
-#line 1420 "char_ref.rl"
+#line 1415 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0438; }}
 	break;
 	case 1123:
-#line 1421 "char_ref.rl"
+#line 1416 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0435; }}
 	break;
 	case 1124:
-#line 1422 "char_ref.rl"
+#line 1417 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa1; }}
 	break;
 	case 1125:
-#line 1424 "char_ref.rl"
+#line 1419 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d4; }}
 	break;
 	case 1126:
-#line 1425 "char_ref.rl"
+#line 1420 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d526; }}
 	break;
 	case 1127:
-#line 1426 "char_ref.rl"
+#line 1421 "char_ref.rl"
 	{te = p+1;{ output->first = 0xec; }}
 	break;
 	case 1128:
-#line 1428 "char_ref.rl"
+#line 1423 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2148; }}
 	break;
 	case 1129:
-#line 1429 "char_ref.rl"
+#line 1424 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a0c; }}
 	break;
 	case 1130:
-#line 1430 "char_ref.rl"
+#line 1425 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222d; }}
 	break;
 	case 1131:
-#line 1431 "char_ref.rl"
+#line 1426 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29dc; }}
 	break;
 	case 1132:
-#line 1432 "char_ref.rl"
+#line 1427 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2129; }}
 	break;
 	case 1133:
-#line 1433 "char_ref.rl"
+#line 1428 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0133; }}
 	break;
 	case 1134:
-#line 1434 "char_ref.rl"
+#line 1429 "char_ref.rl"
 	{te = p+1;{ output->first = 0x012b; }}
 	break;
 	case 1135:
-#line 1435 "char_ref.rl"
+#line 1430 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2111; }}
 	break;
 	case 1136:
-#line 1436 "char_ref.rl"
+#line 1431 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2110; }}
 	break;
 	case 1137:
-#line 1437 "char_ref.rl"
+#line 1432 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2111; }}
 	break;
 	case 1138:
-#line 1438 "char_ref.rl"
+#line 1433 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0131; }}
 	break;
 	case 1139:
-#line 1439 "char_ref.rl"
+#line 1434 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b7; }}
 	break;
 	case 1140:
-#line 1440 "char_ref.rl"
+#line 1435 "char_ref.rl"
 	{te = p+1;{ output->first = 0x01b5; }}
 	break;
 	case 1141:
-#line 1441 "char_ref.rl"
+#line 1436 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2208; }}
 	break;
 	case 1142:
-#line 1442 "char_ref.rl"
+#line 1437 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2105; }}
 	break;
 	case 1143:
-#line 1443 "char_ref.rl"
+#line 1438 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221e; }}
 	break;
 	case 1144:
-#line 1444 "char_ref.rl"
+#line 1439 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29dd; }}
 	break;
 	case 1145:
-#line 1445 "char_ref.rl"
+#line 1440 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0131; }}
 	break;
 	case 1146:
-#line 1446 "char_ref.rl"
+#line 1441 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222b; }}
 	break;
 	case 1147:
-#line 1447 "char_ref.rl"
+#line 1442 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ba; }}
 	break;
 	case 1148:
-#line 1448 "char_ref.rl"
+#line 1443 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2124; }}
 	break;
 	case 1149:
-#line 1449 "char_ref.rl"
+#line 1444 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ba; }}
 	break;
 	case 1150:
-#line 1450 "char_ref.rl"
+#line 1445 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a17; }}
 	break;
 	case 1151:
-#line 1451 "char_ref.rl"
+#line 1446 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a3c; }}
 	break;
 	case 1152:
-#line 1452 "char_ref.rl"
+#line 1447 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0451; }}
 	break;
 	case 1153:
-#line 1453 "char_ref.rl"
+#line 1448 "char_ref.rl"
 	{te = p+1;{ output->first = 0x012f; }}
 	break;
 	case 1154:
-#line 1454 "char_ref.rl"
+#line 1449 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55a; }}
 	break;
 	case 1155:
-#line 1455 "char_ref.rl"
+#line 1450 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b9; }}
 	break;
 	case 1156:
-#line 1456 "char_ref.rl"
+#line 1451 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a3c; }}
 	break;
 	case 1157:
-#line 1457 "char_ref.rl"
+#line 1452 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbf; }}
 	break;
 	case 1158:
-#line 1459 "char_ref.rl"
+#line 1454 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4be; }}
 	break;
 	case 1159:
-#line 1460 "char_ref.rl"
+#line 1455 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2208; }}
 	break;
 	case 1160:
-#line 1461 "char_ref.rl"
+#line 1456 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f9; }}
 	break;
 	case 1161:
-#line 1462 "char_ref.rl"
+#line 1457 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f5; }}
 	break;
 	case 1162:
-#line 1463 "char_ref.rl"
+#line 1458 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f4; }}
 	break;
 	case 1163:
-#line 1464 "char_ref.rl"
+#line 1459 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f3; }}
 	break;
 	case 1164:
-#line 1465 "char_ref.rl"
+#line 1460 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2208; }}
 	break;
 	case 1165:
-#line 1466 "char_ref.rl"
+#line 1461 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2062; }}
 	break;
 	case 1166:
-#line 1467 "char_ref.rl"
+#line 1462 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0129; }}
 	break;
 	case 1167:
-#line 1468 "char_ref.rl"
+#line 1463 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0456; }}
 	break;
 	case 1168:
-#line 1469 "char_ref.rl"
+#line 1464 "char_ref.rl"
 	{te = p+1;{ output->first = 0xef; }}
 	break;
 	case 1169:
-#line 1471 "char_ref.rl"
+#line 1466 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0135; }}
 	break;
 	case 1170:
-#line 1472 "char_ref.rl"
+#line 1467 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0439; }}
 	break;
 	case 1171:
-#line 1473 "char_ref.rl"
+#line 1468 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d527; }}
 	break;
 	case 1172:
-#line 1474 "char_ref.rl"
+#line 1469 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0237; }}
 	break;
 	case 1173:
-#line 1475 "char_ref.rl"
+#line 1470 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55b; }}
 	break;
 	case 1174:
-#line 1476 "char_ref.rl"
+#line 1471 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4bf; }}
 	break;
 	case 1175:
-#line 1477 "char_ref.rl"
+#line 1472 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0458; }}
 	break;
 	case 1176:
-#line 1478 "char_ref.rl"
+#line 1473 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0454; }}
 	break;
 	case 1177:
-#line 1479 "char_ref.rl"
+#line 1474 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03ba; }}
 	break;
 	case 1178:
-#line 1480 "char_ref.rl"
+#line 1475 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f0; }}
 	break;
 	case 1179:
-#line 1481 "char_ref.rl"
+#line 1476 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0137; }}
 	break;
 	case 1180:
-#line 1482 "char_ref.rl"
+#line 1477 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043a; }}
 	break;
 	case 1181:
-#line 1483 "char_ref.rl"
+#line 1478 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d528; }}
 	break;
 	case 1182:
-#line 1484 "char_ref.rl"
+#line 1479 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0138; }}
 	break;
 	case 1183:
-#line 1485 "char_ref.rl"
+#line 1480 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0445; }}
 	break;
 	case 1184:
-#line 1486 "char_ref.rl"
+#line 1481 "char_ref.rl"
 	{te = p+1;{ output->first = 0x045c; }}
 	break;
 	case 1185:
-#line 1487 "char_ref.rl"
+#line 1482 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55c; }}
 	break;
 	case 1186:
-#line 1488 "char_ref.rl"
+#line 1483 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c0; }}
 	break;
 	case 1187:
-#line 1489 "char_ref.rl"
+#line 1484 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21da; }}
 	break;
 	case 1188:
-#line 1490 "char_ref.rl"
+#line 1485 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d0; }}
 	break;
 	case 1189:
-#line 1491 "char_ref.rl"
+#line 1486 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291b; }}
 	break;
 	case 1190:
-#line 1492 "char_ref.rl"
+#line 1487 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290e; }}
 	break;
 	case 1191:
-#line 1493 "char_ref.rl"
+#line 1488 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2266; }}
 	break;
 	case 1192:
-#line 1494 "char_ref.rl"
+#line 1489 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8b; }}
 	break;
 	case 1193:
-#line 1495 "char_ref.rl"
+#line 1490 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2962; }}
 	break;
 	case 1194:
-#line 1496 "char_ref.rl"
+#line 1491 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013a; }}
 	break;
 	case 1195:
-#line 1497 "char_ref.rl"
+#line 1492 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b4; }}
 	break;
 	case 1196:
-#line 1498 "char_ref.rl"
+#line 1493 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2112; }}
 	break;
 	case 1197:
-#line 1499 "char_ref.rl"
+#line 1494 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03bb; }}
 	break;
 	case 1198:
-#line 1500 "char_ref.rl"
+#line 1495 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e8; }}
 	break;
 	case 1199:
-#line 1501 "char_ref.rl"
+#line 1496 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2991; }}
 	break;
 	case 1200:
-#line 1502 "char_ref.rl"
+#line 1497 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e8; }}
 	break;
 	case 1201:
-#line 1503 "char_ref.rl"
+#line 1498 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a85; }}
 	break;
 	case 1202:
-#line 1504 "char_ref.rl"
+#line 1499 "char_ref.rl"
 	{te = p+1;{ output->first = 0xab; }}
 	break;
 	case 1203:
-#line 1506 "char_ref.rl"
+#line 1501 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2190; }}
 	break;
 	case 1204:
-#line 1507 "char_ref.rl"
+#line 1502 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21e4; }}
 	break;
 	case 1205:
-#line 1508 "char_ref.rl"
+#line 1503 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291f; }}
 	break;
 	case 1206:
-#line 1509 "char_ref.rl"
+#line 1504 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291d; }}
 	break;
 	case 1207:
-#line 1510 "char_ref.rl"
+#line 1505 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a9; }}
 	break;
 	case 1208:
-#line 1511 "char_ref.rl"
+#line 1506 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ab; }}
 	break;
 	case 1209:
-#line 1512 "char_ref.rl"
+#line 1507 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2939; }}
 	break;
 	case 1210:
-#line 1513 "char_ref.rl"
+#line 1508 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2973; }}
 	break;
 	case 1211:
-#line 1514 "char_ref.rl"
+#line 1509 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a2; }}
 	break;
 	case 1212:
-#line 1515 "char_ref.rl"
+#line 1510 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aab; }}
 	break;
 	case 1213:
-#line 1516 "char_ref.rl"
+#line 1511 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2919; }}
 	break;
 	case 1214:
-#line 1517 "char_ref.rl"
+#line 1512 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aad; }}
 	break;
 	case 1215:
-#line 1518 "char_ref.rl"
+#line 1513 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aad; output->second = 0xfe00; }}
 	break;
 	case 1216:
-#line 1519 "char_ref.rl"
+#line 1514 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290c; }}
 	break;
 	case 1217:
-#line 1520 "char_ref.rl"
+#line 1515 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2772; }}
 	break;
 	case 1218:
-#line 1521 "char_ref.rl"
+#line 1516 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7b; }}
 	break;
 	case 1219:
-#line 1522 "char_ref.rl"
+#line 1517 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5b; }}
 	break;
 	case 1220:
-#line 1523 "char_ref.rl"
+#line 1518 "char_ref.rl"
 	{te = p+1;{ output->first = 0x298b; }}
 	break;
 	case 1221:
-#line 1524 "char_ref.rl"
+#line 1519 "char_ref.rl"
 	{te = p+1;{ output->first = 0x298f; }}
 	break;
 	case 1222:
-#line 1525 "char_ref.rl"
+#line 1520 "char_ref.rl"
 	{te = p+1;{ output->first = 0x298d; }}
 	break;
 	case 1223:
-#line 1526 "char_ref.rl"
+#line 1521 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013e; }}
 	break;
 	case 1224:
-#line 1527 "char_ref.rl"
+#line 1522 "char_ref.rl"
 	{te = p+1;{ output->first = 0x013c; }}
 	break;
 	case 1225:
-#line 1528 "char_ref.rl"
+#line 1523 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2308; }}
 	break;
 	case 1226:
-#line 1529 "char_ref.rl"
+#line 1524 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7b; }}
 	break;
 	case 1227:
-#line 1530 "char_ref.rl"
+#line 1525 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043b; }}
 	break;
 	case 1228:
-#line 1531 "char_ref.rl"
+#line 1526 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2936; }}
 	break;
 	case 1229:
-#line 1532 "char_ref.rl"
+#line 1527 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201c; }}
 	break;
 	case 1230:
-#line 1533 "char_ref.rl"
+#line 1528 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201e; }}
 	break;
 	case 1231:
-#line 1534 "char_ref.rl"
+#line 1529 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2967; }}
 	break;
 	case 1232:
-#line 1535 "char_ref.rl"
+#line 1530 "char_ref.rl"
 	{te = p+1;{ output->first = 0x294b; }}
 	break;
 	case 1233:
-#line 1536 "char_ref.rl"
+#line 1531 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b2; }}
 	break;
 	case 1234:
-#line 1537 "char_ref.rl"
+#line 1532 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2264; }}
 	break;
 	case 1235:
-#line 1538 "char_ref.rl"
+#line 1533 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2190; }}
 	break;
 	case 1236:
-#line 1539 "char_ref.rl"
+#line 1534 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a2; }}
 	break;
 	case 1237:
-#line 1540 "char_ref.rl"
+#line 1535 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bd; }}
 	break;
 	case 1238:
-#line 1541 "char_ref.rl"
+#line 1536 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bc; }}
 	break;
 	case 1239:
-#line 1542 "char_ref.rl"
+#line 1537 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c7; }}
 	break;
 	case 1240:
-#line 1543 "char_ref.rl"
+#line 1538 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2194; }}
 	break;
 	case 1241:
-#line 1544 "char_ref.rl"
+#line 1539 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c6; }}
 	break;
 	case 1242:
-#line 1545 "char_ref.rl"
+#line 1540 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cb; }}
 	break;
 	case 1243:
-#line 1546 "char_ref.rl"
+#line 1541 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ad; }}
 	break;
 	case 1244:
-#line 1547 "char_ref.rl"
+#line 1542 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cb; }}
 	break;
 	case 1245:
-#line 1548 "char_ref.rl"
+#line 1543 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22da; }}
 	break;
 	case 1246:
-#line 1549 "char_ref.rl"
+#line 1544 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2264; }}
 	break;
 	case 1247:
-#line 1550 "char_ref.rl"
+#line 1545 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2266; }}
 	break;
 	case 1248:
-#line 1551 "char_ref.rl"
+#line 1546 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; }}
 	break;
 	case 1249:
-#line 1552 "char_ref.rl"
+#line 1547 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; }}
 	break;
 	case 1250:
-#line 1553 "char_ref.rl"
+#line 1548 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa8; }}
 	break;
 	case 1251:
-#line 1554 "char_ref.rl"
+#line 1549 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7f; }}
 	break;
 	case 1252:
-#line 1555 "char_ref.rl"
+#line 1550 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a81; }}
 	break;
 	case 1253:
-#line 1556 "char_ref.rl"
+#line 1551 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a83; }}
 	break;
 	case 1254:
-#line 1557 "char_ref.rl"
+#line 1552 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22da; output->second = 0xfe00; }}
 	break;
 	case 1255:
-#line 1558 "char_ref.rl"
+#line 1553 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a93; }}
 	break;
 	case 1256:
-#line 1559 "char_ref.rl"
+#line 1554 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a85; }}
 	break;
 	case 1257:
-#line 1560 "char_ref.rl"
+#line 1555 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d6; }}
 	break;
 	case 1258:
-#line 1561 "char_ref.rl"
+#line 1556 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22da; }}
 	break;
 	case 1259:
-#line 1562 "char_ref.rl"
+#line 1557 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8b; }}
 	break;
 	case 1260:
-#line 1563 "char_ref.rl"
+#line 1558 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2276; }}
 	break;
 	case 1261:
-#line 1564 "char_ref.rl"
+#line 1559 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2272; }}
 	break;
 	case 1262:
-#line 1565 "char_ref.rl"
+#line 1560 "char_ref.rl"
 	{te = p+1;{ output->first = 0x297c; }}
 	break;
 	case 1263:
-#line 1566 "char_ref.rl"
+#line 1561 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230a; }}
 	break;
 	case 1264:
-#line 1567 "char_ref.rl"
+#line 1562 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d529; }}
 	break;
 	case 1265:
-#line 1568 "char_ref.rl"
+#line 1563 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2276; }}
 	break;
 	case 1266:
-#line 1569 "char_ref.rl"
+#line 1564 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a91; }}
 	break;
 	case 1267:
-#line 1570 "char_ref.rl"
+#line 1565 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bd; }}
 	break;
 	case 1268:
-#line 1571 "char_ref.rl"
+#line 1566 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bc; }}
 	break;
 	case 1269:
-#line 1572 "char_ref.rl"
+#line 1567 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296a; }}
 	break;
 	case 1270:
-#line 1573 "char_ref.rl"
+#line 1568 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2584; }}
 	break;
 	case 1271:
-#line 1574 "char_ref.rl"
+#line 1569 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0459; }}
 	break;
 	case 1272:
-#line 1575 "char_ref.rl"
+#line 1570 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; }}
 	break;
 	case 1273:
-#line 1576 "char_ref.rl"
+#line 1571 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c7; }}
 	break;
 	case 1274:
-#line 1577 "char_ref.rl"
+#line 1572 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231e; }}
 	break;
 	case 1275:
-#line 1578 "char_ref.rl"
+#line 1573 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296b; }}
 	break;
 	case 1276:
-#line 1579 "char_ref.rl"
+#line 1574 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25fa; }}
 	break;
 	case 1277:
-#line 1580 "char_ref.rl"
+#line 1575 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0140; }}
 	break;
 	case 1278:
-#line 1581 "char_ref.rl"
+#line 1576 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b0; }}
 	break;
 	case 1279:
-#line 1582 "char_ref.rl"
+#line 1577 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b0; }}
 	break;
 	case 1280:
-#line 1583 "char_ref.rl"
+#line 1578 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2268; }}
 	break;
 	case 1281:
-#line 1584 "char_ref.rl"
+#line 1579 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a89; }}
 	break;
 	case 1282:
-#line 1585 "char_ref.rl"
+#line 1580 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a89; }}
 	break;
 	case 1283:
-#line 1586 "char_ref.rl"
+#line 1581 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a87; }}
 	break;
 	case 1284:
-#line 1587 "char_ref.rl"
+#line 1582 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a87; }}
 	break;
 	case 1285:
-#line 1588 "char_ref.rl"
+#line 1583 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2268; }}
 	break;
 	case 1286:
-#line 1589 "char_ref.rl"
+#line 1584 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e6; }}
 	break;
 	case 1287:
-#line 1590 "char_ref.rl"
+#line 1585 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27ec; }}
 	break;
 	case 1288:
-#line 1591 "char_ref.rl"
+#line 1586 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21fd; }}
 	break;
 	case 1289:
-#line 1592 "char_ref.rl"
+#line 1587 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e6; }}
 	break;
 	case 1290:
-#line 1593 "char_ref.rl"
+#line 1588 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f5; }}
 	break;
 	case 1291:
-#line 1594 "char_ref.rl"
+#line 1589 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f7; }}
 	break;
 	case 1292:
-#line 1595 "char_ref.rl"
+#line 1590 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27fc; }}
 	break;
 	case 1293:
-#line 1596 "char_ref.rl"
+#line 1591 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f6; }}
 	break;
 	case 1294:
-#line 1597 "char_ref.rl"
+#line 1592 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ab; }}
 	break;
 	case 1295:
-#line 1598 "char_ref.rl"
+#line 1593 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ac; }}
 	break;
 	case 1296:
-#line 1599 "char_ref.rl"
+#line 1594 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2985; }}
 	break;
 	case 1297:
-#line 1600 "char_ref.rl"
+#line 1595 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55d; }}
 	break;
 	case 1298:
-#line 1601 "char_ref.rl"
+#line 1596 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a2d; }}
 	break;
 	case 1299:
-#line 1602 "char_ref.rl"
+#line 1597 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a34; }}
 	break;
 	case 1300:
-#line 1603 "char_ref.rl"
+#line 1598 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2217; }}
 	break;
 	case 1301:
-#line 1604 "char_ref.rl"
+#line 1599 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5f; }}
 	break;
 	case 1302:
-#line 1605 "char_ref.rl"
+#line 1600 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ca; }}
 	break;
 	case 1303:
-#line 1606 "char_ref.rl"
+#line 1601 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ca; }}
 	break;
 	case 1304:
-#line 1607 "char_ref.rl"
+#line 1602 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29eb; }}
 	break;
 	case 1305:
-#line 1608 "char_ref.rl"
+#line 1603 "char_ref.rl"
 	{te = p+1;{ output->first = 0x28; }}
 	break;
 	case 1306:
-#line 1609 "char_ref.rl"
+#line 1604 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2993; }}
 	break;
 	case 1307:
-#line 1610 "char_ref.rl"
+#line 1605 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c6; }}
 	break;
 	case 1308:
-#line 1611 "char_ref.rl"
+#line 1606 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231f; }}
 	break;
 	case 1309:
-#line 1612 "char_ref.rl"
+#line 1607 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cb; }}
 	break;
 	case 1310:
-#line 1613 "char_ref.rl"
+#line 1608 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296d; }}
 	break;
 	case 1311:
-#line 1614 "char_ref.rl"
+#line 1609 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200e; }}
 	break;
 	case 1312:
-#line 1615 "char_ref.rl"
+#line 1610 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22bf; }}
 	break;
 	case 1313:
-#line 1616 "char_ref.rl"
+#line 1611 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2039; }}
 	break;
 	case 1314:
-#line 1617 "char_ref.rl"
+#line 1612 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c1; }}
 	break;
 	case 1315:
-#line 1618 "char_ref.rl"
+#line 1613 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b0; }}
 	break;
 	case 1316:
-#line 1619 "char_ref.rl"
+#line 1614 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2272; }}
 	break;
 	case 1317:
-#line 1620 "char_ref.rl"
+#line 1615 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8d; }}
 	break;
 	case 1318:
-#line 1621 "char_ref.rl"
+#line 1616 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a8f; }}
 	break;
 	case 1319:
-#line 1622 "char_ref.rl"
+#line 1617 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5b; }}
 	break;
 	case 1320:
-#line 1623 "char_ref.rl"
+#line 1618 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2018; }}
 	break;
 	case 1321:
-#line 1624 "char_ref.rl"
+#line 1619 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201a; }}
 	break;
 	case 1322:
-#line 1625 "char_ref.rl"
+#line 1620 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0142; }}
 	break;
 	case 1323:
-#line 1626 "char_ref.rl"
+#line 1621 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3c; }}
 	break;
 	case 1324:
-#line 1628 "char_ref.rl"
+#line 1623 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa6; }}
 	break;
 	case 1325:
-#line 1629 "char_ref.rl"
+#line 1624 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a79; }}
 	break;
 	case 1326:
-#line 1630 "char_ref.rl"
+#line 1625 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d6; }}
 	break;
 	case 1327:
-#line 1631 "char_ref.rl"
+#line 1626 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cb; }}
 	break;
 	case 1328:
-#line 1632 "char_ref.rl"
+#line 1627 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c9; }}
 	break;
 	case 1329:
-#line 1633 "char_ref.rl"
+#line 1628 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2976; }}
 	break;
 	case 1330:
-#line 1634 "char_ref.rl"
+#line 1629 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7b; }}
 	break;
 	case 1331:
-#line 1635 "char_ref.rl"
+#line 1630 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2996; }}
 	break;
 	case 1332:
-#line 1636 "char_ref.rl"
+#line 1631 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25c3; }}
 	break;
 	case 1333:
-#line 1637 "char_ref.rl"
+#line 1632 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b4; }}
 	break;
 	case 1334:
-#line 1638 "char_ref.rl"
+#line 1633 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25c2; }}
 	break;
 	case 1335:
-#line 1639 "char_ref.rl"
+#line 1634 "char_ref.rl"
 	{te = p+1;{ output->first = 0x294a; }}
 	break;
 	case 1336:
-#line 1640 "char_ref.rl"
+#line 1635 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2966; }}
 	break;
 	case 1337:
-#line 1641 "char_ref.rl"
+#line 1636 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2268; output->second = 0xfe00; }}
 	break;
 	case 1338:
-#line 1642 "char_ref.rl"
+#line 1637 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2268; output->second = 0xfe00; }}
 	break;
 	case 1339:
-#line 1643 "char_ref.rl"
+#line 1638 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223a; }}
 	break;
 	case 1340:
-#line 1644 "char_ref.rl"
+#line 1639 "char_ref.rl"
 	{te = p+1;{ output->first = 0xaf; }}
 	break;
 	case 1341:
-#line 1646 "char_ref.rl"
+#line 1641 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2642; }}
 	break;
 	case 1342:
-#line 1647 "char_ref.rl"
+#line 1642 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2720; }}
 	break;
 	case 1343:
-#line 1648 "char_ref.rl"
+#line 1643 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2720; }}
 	break;
 	case 1344:
-#line 1649 "char_ref.rl"
+#line 1644 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a6; }}
 	break;
 	case 1345:
-#line 1650 "char_ref.rl"
+#line 1645 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a6; }}
 	break;
 	case 1346:
-#line 1651 "char_ref.rl"
+#line 1646 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a7; }}
 	break;
 	case 1347:
-#line 1652 "char_ref.rl"
+#line 1647 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a4; }}
 	break;
 	case 1348:
-#line 1653 "char_ref.rl"
+#line 1648 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a5; }}
 	break;
 	case 1349:
-#line 1654 "char_ref.rl"
+#line 1649 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ae; }}
 	break;
 	case 1350:
-#line 1655 "char_ref.rl"
+#line 1650 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a29; }}
 	break;
 	case 1351:
-#line 1656 "char_ref.rl"
+#line 1651 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043c; }}
 	break;
 	case 1352:
-#line 1657 "char_ref.rl"
+#line 1652 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2014; }}
 	break;
 	case 1353:
-#line 1658 "char_ref.rl"
+#line 1653 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2221; }}
 	break;
 	case 1354:
-#line 1659 "char_ref.rl"
+#line 1654 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52a; }}
 	break;
 	case 1355:
-#line 1660 "char_ref.rl"
+#line 1655 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2127; }}
 	break;
 	case 1356:
-#line 1661 "char_ref.rl"
+#line 1656 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb5; }}
 	break;
 	case 1357:
-#line 1663 "char_ref.rl"
+#line 1658 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2223; }}
 	break;
 	case 1358:
-#line 1664 "char_ref.rl"
+#line 1659 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a; }}
 	break;
 	case 1359:
-#line 1665 "char_ref.rl"
+#line 1660 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2af0; }}
 	break;
 	case 1360:
-#line 1666 "char_ref.rl"
+#line 1661 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb7; }}
 	break;
 	case 1361:
-#line 1668 "char_ref.rl"
+#line 1663 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2212; }}
 	break;
 	case 1362:
-#line 1669 "char_ref.rl"
+#line 1664 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229f; }}
 	break;
 	case 1363:
-#line 1670 "char_ref.rl"
+#line 1665 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2238; }}
 	break;
 	case 1364:
-#line 1671 "char_ref.rl"
+#line 1666 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a2a; }}
 	break;
 	case 1365:
-#line 1672 "char_ref.rl"
+#line 1667 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2adb; }}
 	break;
 	case 1366:
-#line 1673 "char_ref.rl"
+#line 1668 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2026; }}
 	break;
 	case 1367:
-#line 1674 "char_ref.rl"
+#line 1669 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2213; }}
 	break;
 	case 1368:
-#line 1675 "char_ref.rl"
+#line 1670 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a7; }}
 	break;
 	case 1369:
-#line 1676 "char_ref.rl"
+#line 1671 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55e; }}
 	break;
 	case 1370:
-#line 1677 "char_ref.rl"
+#line 1672 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2213; }}
 	break;
 	case 1371:
-#line 1678 "char_ref.rl"
+#line 1673 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c2; }}
 	break;
 	case 1372:
-#line 1679 "char_ref.rl"
+#line 1674 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223e; }}
 	break;
 	case 1373:
-#line 1680 "char_ref.rl"
+#line 1675 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03bc; }}
 	break;
 	case 1374:
-#line 1681 "char_ref.rl"
+#line 1676 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b8; }}
 	break;
 	case 1375:
-#line 1682 "char_ref.rl"
+#line 1677 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b8; }}
 	break;
 	case 1376:
-#line 1683 "char_ref.rl"
+#line 1678 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d9; output->second = 0x0338; }}
 	break;
 	case 1377:
-#line 1684 "char_ref.rl"
+#line 1679 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; output->second = 0x20d2; }}
 	break;
 	case 1378:
-#line 1685 "char_ref.rl"
+#line 1680 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226b; output->second = 0x0338; }}
 	break;
 	case 1379:
-#line 1686 "char_ref.rl"
+#line 1681 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cd; }}
 	break;
 	case 1380:
-#line 1687 "char_ref.rl"
+#line 1682 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ce; }}
 	break;
 	case 1381:
-#line 1688 "char_ref.rl"
+#line 1683 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d8; output->second = 0x0338; }}
 	break;
 	case 1382:
-#line 1689 "char_ref.rl"
+#line 1684 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; output->second = 0x20d2; }}
 	break;
 	case 1383:
-#line 1690 "char_ref.rl"
+#line 1685 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226a; output->second = 0x0338; }}
 	break;
 	case 1384:
-#line 1691 "char_ref.rl"
+#line 1686 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cf; }}
 	break;
 	case 1385:
-#line 1692 "char_ref.rl"
+#line 1687 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22af; }}
 	break;
 	case 1386:
-#line 1693 "char_ref.rl"
+#line 1688 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ae; }}
 	break;
 	case 1387:
-#line 1694 "char_ref.rl"
+#line 1689 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2207; }}
 	break;
 	case 1388:
-#line 1695 "char_ref.rl"
+#line 1690 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0144; }}
 	break;
 	case 1389:
-#line 1696 "char_ref.rl"
+#line 1691 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2220; output->second = 0x20d2; }}
 	break;
 	case 1390:
-#line 1697 "char_ref.rl"
+#line 1692 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2249; }}
 	break;
 	case 1391:
-#line 1698 "char_ref.rl"
+#line 1693 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a70; output->second = 0x0338; }}
 	break;
 	case 1392:
-#line 1699 "char_ref.rl"
+#line 1694 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224b; output->second = 0x0338; }}
 	break;
 	case 1393:
-#line 1700 "char_ref.rl"
+#line 1695 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0149; }}
 	break;
 	case 1394:
-#line 1701 "char_ref.rl"
+#line 1696 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2249; }}
 	break;
 	case 1395:
-#line 1702 "char_ref.rl"
+#line 1697 "char_ref.rl"
 	{te = p+1;{ output->first = 0x266e; }}
 	break;
 	case 1396:
-#line 1703 "char_ref.rl"
+#line 1698 "char_ref.rl"
 	{te = p+1;{ output->first = 0x266e; }}
 	break;
 	case 1397:
-#line 1704 "char_ref.rl"
+#line 1699 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2115; }}
 	break;
 	case 1398:
-#line 1705 "char_ref.rl"
+#line 1700 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa0; }}
 	break;
 	case 1399:
-#line 1707 "char_ref.rl"
+#line 1702 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224e; output->second = 0x0338; }}
 	break;
 	case 1400:
-#line 1708 "char_ref.rl"
+#line 1703 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224f; output->second = 0x0338; }}
 	break;
 	case 1401:
-#line 1709 "char_ref.rl"
+#line 1704 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a43; }}
 	break;
 	case 1402:
-#line 1710 "char_ref.rl"
+#line 1705 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0148; }}
 	break;
 	case 1403:
-#line 1711 "char_ref.rl"
+#line 1706 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0146; }}
 	break;
 	case 1404:
-#line 1712 "char_ref.rl"
+#line 1707 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2247; }}
 	break;
 	case 1405:
-#line 1713 "char_ref.rl"
+#line 1708 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a6d; output->second = 0x0338; }}
 	break;
 	case 1406:
-#line 1714 "char_ref.rl"
+#line 1709 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a42; }}
 	break;
 	case 1407:
-#line 1715 "char_ref.rl"
+#line 1710 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043d; }}
 	break;
 	case 1408:
-#line 1716 "char_ref.rl"
+#line 1711 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2013; }}
 	break;
 	case 1409:
-#line 1717 "char_ref.rl"
+#line 1712 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2260; }}
 	break;
 	case 1410:
-#line 1718 "char_ref.rl"
+#line 1713 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d7; }}
 	break;
 	case 1411:
-#line 1719 "char_ref.rl"
+#line 1714 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2924; }}
 	break;
 	case 1412:
-#line 1720 "char_ref.rl"
+#line 1715 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2197; }}
 	break;
 	case 1413:
-#line 1721 "char_ref.rl"
+#line 1716 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2197; }}
 	break;
 	case 1414:
-#line 1722 "char_ref.rl"
+#line 1717 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2250; output->second = 0x0338; }}
 	break;
 	case 1415:
-#line 1723 "char_ref.rl"
+#line 1718 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2262; }}
 	break;
 	case 1416:
-#line 1724 "char_ref.rl"
+#line 1719 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2928; }}
 	break;
 	case 1417:
-#line 1725 "char_ref.rl"
+#line 1720 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2242; output->second = 0x0338; }}
 	break;
 	case 1418:
-#line 1726 "char_ref.rl"
+#line 1721 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2204; }}
 	break;
 	case 1419:
-#line 1727 "char_ref.rl"
+#line 1722 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2204; }}
 	break;
 	case 1420:
-#line 1728 "char_ref.rl"
+#line 1723 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52b; }}
 	break;
 	case 1421:
-#line 1729 "char_ref.rl"
+#line 1724 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; output->second = 0x0338; }}
 	break;
 	case 1422:
-#line 1730 "char_ref.rl"
+#line 1725 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2271; }}
 	break;
 	case 1423:
-#line 1731 "char_ref.rl"
+#line 1726 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2271; }}
 	break;
 	case 1424:
-#line 1732 "char_ref.rl"
+#line 1727 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2267; output->second = 0x0338; }}
 	break;
 	case 1425:
-#line 1733 "char_ref.rl"
+#line 1728 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; output->second = 0x0338; }}
 	break;
 	case 1426:
-#line 1734 "char_ref.rl"
+#line 1729 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7e; output->second = 0x0338; }}
 	break;
 	case 1427:
-#line 1735 "char_ref.rl"
+#line 1730 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2275; }}
 	break;
 	case 1428:
-#line 1736 "char_ref.rl"
+#line 1731 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226f; }}
 	break;
 	case 1429:
-#line 1737 "char_ref.rl"
+#line 1732 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226f; }}
 	break;
 	case 1430:
-#line 1738 "char_ref.rl"
+#line 1733 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ce; }}
 	break;
 	case 1431:
-#line 1739 "char_ref.rl"
+#line 1734 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ae; }}
 	break;
 	case 1432:
-#line 1740 "char_ref.rl"
+#line 1735 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2af2; }}
 	break;
 	case 1433:
-#line 1741 "char_ref.rl"
+#line 1736 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220b; }}
 	break;
 	case 1434:
-#line 1742 "char_ref.rl"
+#line 1737 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22fc; }}
 	break;
 	case 1435:
-#line 1743 "char_ref.rl"
+#line 1738 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22fa; }}
 	break;
 	case 1436:
-#line 1744 "char_ref.rl"
+#line 1739 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220b; }}
 	break;
 	case 1437:
-#line 1745 "char_ref.rl"
+#line 1740 "char_ref.rl"
 	{te = p+1;{ output->first = 0x045a; }}
 	break;
 	case 1438:
-#line 1746 "char_ref.rl"
+#line 1741 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cd; }}
 	break;
 	case 1439:
-#line 1747 "char_ref.rl"
+#line 1742 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2266; output->second = 0x0338; }}
 	break;
 	case 1440:
-#line 1748 "char_ref.rl"
+#line 1743 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219a; }}
 	break;
 	case 1441:
-#line 1749 "char_ref.rl"
+#line 1744 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2025; }}
 	break;
 	case 1442:
-#line 1750 "char_ref.rl"
+#line 1745 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2270; }}
 	break;
 	case 1443:
-#line 1751 "char_ref.rl"
+#line 1746 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219a; }}
 	break;
 	case 1444:
-#line 1752 "char_ref.rl"
+#line 1747 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ae; }}
 	break;
 	case 1445:
-#line 1753 "char_ref.rl"
+#line 1748 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2270; }}
 	break;
 	case 1446:
-#line 1754 "char_ref.rl"
+#line 1749 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2266; output->second = 0x0338; }}
 	break;
 	case 1447:
-#line 1755 "char_ref.rl"
+#line 1750 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; output->second = 0x0338; }}
 	break;
 	case 1448:
-#line 1756 "char_ref.rl"
+#line 1751 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a7d; output->second = 0x0338; }}
 	break;
 	case 1449:
-#line 1757 "char_ref.rl"
+#line 1752 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226e; }}
 	break;
 	case 1450:
-#line 1758 "char_ref.rl"
+#line 1753 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2274; }}
 	break;
 	case 1451:
-#line 1759 "char_ref.rl"
+#line 1754 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226e; }}
 	break;
 	case 1452:
-#line 1760 "char_ref.rl"
+#line 1755 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ea; }}
 	break;
 	case 1453:
-#line 1761 "char_ref.rl"
+#line 1756 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ec; }}
 	break;
 	case 1454:
-#line 1762 "char_ref.rl"
+#line 1757 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2224; }}
 	break;
 	case 1455:
-#line 1763 "char_ref.rl"
+#line 1758 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d55f; }}
 	break;
 	case 1456:
-#line 1764 "char_ref.rl"
+#line 1759 "char_ref.rl"
 	{te = p+1;{ output->first = 0xac; }}
 	break;
 	case 1457:
-#line 1765 "char_ref.rl"
+#line 1760 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2209; }}
 	break;
 	case 1458:
-#line 1766 "char_ref.rl"
+#line 1761 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f9; output->second = 0x0338; }}
 	break;
 	case 1459:
-#line 1767 "char_ref.rl"
+#line 1762 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f5; output->second = 0x0338; }}
 	break;
 	case 1460:
-#line 1768 "char_ref.rl"
+#line 1763 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2209; }}
 	break;
 	case 1461:
-#line 1769 "char_ref.rl"
+#line 1764 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f7; }}
 	break;
 	case 1462:
-#line 1770 "char_ref.rl"
+#line 1765 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f6; }}
 	break;
 	case 1463:
-#line 1771 "char_ref.rl"
+#line 1766 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220c; }}
 	break;
 	case 1464:
-#line 1772 "char_ref.rl"
+#line 1767 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220c; }}
 	break;
 	case 1465:
-#line 1773 "char_ref.rl"
+#line 1768 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22fe; }}
 	break;
 	case 1466:
-#line 1774 "char_ref.rl"
+#line 1769 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22fd; }}
 	break;
 	case 1467:
-#line 1776 "char_ref.rl"
+#line 1771 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2226; }}
 	break;
 	case 1468:
-#line 1777 "char_ref.rl"
+#line 1772 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2226; }}
 	break;
 	case 1469:
-#line 1778 "char_ref.rl"
+#line 1773 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2afd; output->second = 0x20e5; }}
 	break;
 	case 1470:
-#line 1779 "char_ref.rl"
+#line 1774 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2202; output->second = 0x0338; }}
 	break;
 	case 1471:
-#line 1780 "char_ref.rl"
+#line 1775 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a14; }}
 	break;
 	case 1472:
-#line 1781 "char_ref.rl"
+#line 1776 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2280; }}
 	break;
 	case 1473:
-#line 1782 "char_ref.rl"
+#line 1777 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e0; }}
 	break;
 	case 1474:
-#line 1783 "char_ref.rl"
+#line 1778 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; output->second = 0x0338; }}
 	break;
 	case 1475:
-#line 1784 "char_ref.rl"
+#line 1779 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2280; }}
 	break;
 	case 1476:
-#line 1785 "char_ref.rl"
+#line 1780 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; output->second = 0x0338; }}
 	break;
 	case 1477:
-#line 1786 "char_ref.rl"
+#line 1781 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cf; }}
 	break;
 	case 1478:
-#line 1787 "char_ref.rl"
+#line 1782 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219b; }}
 	break;
 	case 1479:
-#line 1788 "char_ref.rl"
+#line 1783 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2933; output->second = 0x0338; }}
 	break;
 	case 1480:
-#line 1789 "char_ref.rl"
+#line 1784 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219d; output->second = 0x0338; }}
 	break;
 	case 1481:
-#line 1790 "char_ref.rl"
+#line 1785 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219b; }}
 	break;
 	case 1482:
-#line 1791 "char_ref.rl"
+#line 1786 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22eb; }}
 	break;
 	case 1483:
-#line 1792 "char_ref.rl"
+#line 1787 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ed; }}
 	break;
 	case 1484:
-#line 1793 "char_ref.rl"
+#line 1788 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2281; }}
 	break;
 	case 1485:
-#line 1794 "char_ref.rl"
+#line 1789 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e1; }}
 	break;
 	case 1486:
-#line 1795 "char_ref.rl"
+#line 1790 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; output->second = 0x0338; }}
 	break;
 	case 1487:
-#line 1796 "char_ref.rl"
+#line 1791 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c3; }}
 	break;
 	case 1488:
-#line 1797 "char_ref.rl"
+#line 1792 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2224; }}
 	break;
 	case 1489:
-#line 1798 "char_ref.rl"
+#line 1793 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2226; }}
 	break;
 	case 1490:
-#line 1799 "char_ref.rl"
+#line 1794 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2241; }}
 	break;
 	case 1491:
-#line 1800 "char_ref.rl"
+#line 1795 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2244; }}
 	break;
 	case 1492:
-#line 1801 "char_ref.rl"
+#line 1796 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2244; }}
 	break;
 	case 1493:
-#line 1802 "char_ref.rl"
+#line 1797 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2224; }}
 	break;
 	case 1494:
-#line 1803 "char_ref.rl"
+#line 1798 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2226; }}
 	break;
 	case 1495:
-#line 1804 "char_ref.rl"
+#line 1799 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e2; }}
 	break;
 	case 1496:
-#line 1805 "char_ref.rl"
+#line 1800 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e3; }}
 	break;
 	case 1497:
-#line 1806 "char_ref.rl"
+#line 1801 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2284; }}
 	break;
 	case 1498:
-#line 1807 "char_ref.rl"
+#line 1802 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac5; output->second = 0x0338; }}
 	break;
 	case 1499:
-#line 1808 "char_ref.rl"
+#line 1803 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2288; }}
 	break;
 	case 1500:
-#line 1809 "char_ref.rl"
+#line 1804 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2282; output->second = 0x20d2; }}
 	break;
 	case 1501:
-#line 1810 "char_ref.rl"
+#line 1805 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2288; }}
 	break;
 	case 1502:
-#line 1811 "char_ref.rl"
+#line 1806 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac5; output->second = 0x0338; }}
 	break;
 	case 1503:
-#line 1812 "char_ref.rl"
+#line 1807 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2281; }}
 	break;
 	case 1504:
-#line 1813 "char_ref.rl"
+#line 1808 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; output->second = 0x0338; }}
 	break;
 	case 1505:
-#line 1814 "char_ref.rl"
+#line 1809 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2285; }}
 	break;
 	case 1506:
-#line 1815 "char_ref.rl"
+#line 1810 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac6; output->second = 0x0338; }}
 	break;
 	case 1507:
-#line 1816 "char_ref.rl"
+#line 1811 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2289; }}
 	break;
 	case 1508:
-#line 1817 "char_ref.rl"
+#line 1812 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; output->second = 0x20d2; }}
 	break;
 	case 1509:
-#line 1818 "char_ref.rl"
+#line 1813 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2289; }}
 	break;
 	case 1510:
-#line 1819 "char_ref.rl"
+#line 1814 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac6; output->second = 0x0338; }}
 	break;
 	case 1511:
-#line 1820 "char_ref.rl"
+#line 1815 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2279; }}
 	break;
 	case 1512:
-#line 1821 "char_ref.rl"
+#line 1816 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf1; }}
 	break;
 	case 1513:
-#line 1823 "char_ref.rl"
+#line 1818 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2278; }}
 	break;
 	case 1514:
-#line 1824 "char_ref.rl"
+#line 1819 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ea; }}
 	break;
 	case 1515:
-#line 1825 "char_ref.rl"
+#line 1820 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ec; }}
 	break;
 	case 1516:
-#line 1826 "char_ref.rl"
+#line 1821 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22eb; }}
 	break;
 	case 1517:
-#line 1827 "char_ref.rl"
+#line 1822 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ed; }}
 	break;
 	case 1518:
-#line 1828 "char_ref.rl"
+#line 1823 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03bd; }}
 	break;
 	case 1519:
-#line 1829 "char_ref.rl"
+#line 1824 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23; }}
 	break;
 	case 1520:
-#line 1830 "char_ref.rl"
+#line 1825 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2116; }}
 	break;
 	case 1521:
-#line 1831 "char_ref.rl"
+#line 1826 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2007; }}
 	break;
 	case 1522:
-#line 1832 "char_ref.rl"
+#line 1827 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ad; }}
 	break;
 	case 1523:
-#line 1833 "char_ref.rl"
+#line 1828 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2904; }}
 	break;
 	case 1524:
-#line 1834 "char_ref.rl"
+#line 1829 "char_ref.rl"
 	{te = p+1;{ output->first = 0x224d; output->second = 0x20d2; }}
 	break;
 	case 1525:
-#line 1835 "char_ref.rl"
+#line 1830 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ac; }}
 	break;
 	case 1526:
-#line 1836 "char_ref.rl"
+#line 1831 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2265; output->second = 0x20d2; }}
 	break;
 	case 1527:
-#line 1837 "char_ref.rl"
+#line 1832 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3e; output->second = 0x20d2; }}
 	break;
 	case 1528:
-#line 1838 "char_ref.rl"
+#line 1833 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29de; }}
 	break;
 	case 1529:
-#line 1839 "char_ref.rl"
+#line 1834 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2902; }}
 	break;
 	case 1530:
-#line 1840 "char_ref.rl"
+#line 1835 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2264; output->second = 0x20d2; }}
 	break;
 	case 1531:
-#line 1841 "char_ref.rl"
+#line 1836 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3c; output->second = 0x20d2; }}
 	break;
 	case 1532:
-#line 1842 "char_ref.rl"
+#line 1837 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b4; output->second = 0x20d2; }}
 	break;
 	case 1533:
-#line 1843 "char_ref.rl"
+#line 1838 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2903; }}
 	break;
 	case 1534:
-#line 1844 "char_ref.rl"
+#line 1839 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b5; output->second = 0x20d2; }}
 	break;
 	case 1535:
-#line 1845 "char_ref.rl"
+#line 1840 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223c; output->second = 0x20d2; }}
 	break;
 	case 1536:
-#line 1846 "char_ref.rl"
+#line 1841 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d6; }}
 	break;
 	case 1537:
-#line 1847 "char_ref.rl"
+#line 1842 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2923; }}
 	break;
 	case 1538:
-#line 1848 "char_ref.rl"
+#line 1843 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2196; }}
 	break;
 	case 1539:
-#line 1849 "char_ref.rl"
+#line 1844 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2196; }}
 	break;
 	case 1540:
-#line 1850 "char_ref.rl"
+#line 1845 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2927; }}
 	break;
 	case 1541:
-#line 1851 "char_ref.rl"
+#line 1846 "char_ref.rl"
 	{te = p+1;{ output->first = 0x24c8; }}
 	break;
 	case 1542:
-#line 1852 "char_ref.rl"
+#line 1847 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf3; }}
 	break;
 	case 1543:
-#line 1854 "char_ref.rl"
+#line 1849 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229b; }}
 	break;
 	case 1544:
-#line 1855 "char_ref.rl"
+#line 1850 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229a; }}
 	break;
 	case 1545:
-#line 1856 "char_ref.rl"
+#line 1851 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf4; }}
 	break;
 	case 1546:
-#line 1858 "char_ref.rl"
+#line 1853 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043e; }}
 	break;
 	case 1547:
-#line 1859 "char_ref.rl"
+#line 1854 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229d; }}
 	break;
 	case 1548:
-#line 1860 "char_ref.rl"
+#line 1855 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0151; }}
 	break;
 	case 1549:
-#line 1861 "char_ref.rl"
+#line 1856 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a38; }}
 	break;
 	case 1550:
-#line 1862 "char_ref.rl"
+#line 1857 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2299; }}
 	break;
 	case 1551:
-#line 1863 "char_ref.rl"
+#line 1858 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29bc; }}
 	break;
 	case 1552:
-#line 1864 "char_ref.rl"
+#line 1859 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0153; }}
 	break;
 	case 1553:
-#line 1865 "char_ref.rl"
+#line 1860 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29bf; }}
 	break;
 	case 1554:
-#line 1866 "char_ref.rl"
+#line 1861 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52c; }}
 	break;
 	case 1555:
-#line 1867 "char_ref.rl"
+#line 1862 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02db; }}
 	break;
 	case 1556:
-#line 1868 "char_ref.rl"
+#line 1863 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf2; }}
 	break;
 	case 1557:
-#line 1870 "char_ref.rl"
+#line 1865 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c1; }}
 	break;
 	case 1558:
-#line 1871 "char_ref.rl"
+#line 1866 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b5; }}
 	break;
 	case 1559:
-#line 1872 "char_ref.rl"
+#line 1867 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03a9; }}
 	break;
 	case 1560:
-#line 1873 "char_ref.rl"
+#line 1868 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222e; }}
 	break;
 	case 1561:
-#line 1874 "char_ref.rl"
+#line 1869 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ba; }}
 	break;
 	case 1562:
-#line 1875 "char_ref.rl"
+#line 1870 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29be; }}
 	break;
 	case 1563:
-#line 1876 "char_ref.rl"
+#line 1871 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29bb; }}
 	break;
 	case 1564:
-#line 1877 "char_ref.rl"
+#line 1872 "char_ref.rl"
 	{te = p+1;{ output->first = 0x203e; }}
 	break;
 	case 1565:
-#line 1878 "char_ref.rl"
+#line 1873 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c0; }}
 	break;
 	case 1566:
-#line 1879 "char_ref.rl"
+#line 1874 "char_ref.rl"
 	{te = p+1;{ output->first = 0x014d; }}
 	break;
 	case 1567:
-#line 1880 "char_ref.rl"
+#line 1875 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c9; }}
 	break;
 	case 1568:
-#line 1881 "char_ref.rl"
+#line 1876 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03bf; }}
 	break;
 	case 1569:
-#line 1882 "char_ref.rl"
+#line 1877 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b6; }}
 	break;
 	case 1570:
-#line 1883 "char_ref.rl"
+#line 1878 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2296; }}
 	break;
 	case 1571:
-#line 1884 "char_ref.rl"
+#line 1879 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d560; }}
 	break;
 	case 1572:
-#line 1885 "char_ref.rl"
+#line 1880 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b7; }}
 	break;
 	case 1573:
-#line 1886 "char_ref.rl"
+#line 1881 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b9; }}
 	break;
 	case 1574:
-#line 1887 "char_ref.rl"
+#line 1882 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2295; }}
 	break;
 	case 1575:
-#line 1888 "char_ref.rl"
+#line 1883 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2228; }}
 	break;
 	case 1576:
-#line 1889 "char_ref.rl"
+#line 1884 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bb; }}
 	break;
 	case 1577:
-#line 1890 "char_ref.rl"
+#line 1885 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a5d; }}
 	break;
 	case 1578:
-#line 1891 "char_ref.rl"
+#line 1886 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2134; }}
 	break;
 	case 1579:
-#line 1892 "char_ref.rl"
+#line 1887 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2134; }}
 	break;
 	case 1580:
-#line 1893 "char_ref.rl"
+#line 1888 "char_ref.rl"
 	{te = p+1;{ output->first = 0xaa; }}
 	break;
 	case 1581:
-#line 1895 "char_ref.rl"
+#line 1890 "char_ref.rl"
 	{te = p+1;{ output->first = 0xba; }}
 	break;
 	case 1582:
-#line 1897 "char_ref.rl"
+#line 1892 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b6; }}
 	break;
 	case 1583:
-#line 1898 "char_ref.rl"
+#line 1893 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a56; }}
 	break;
 	case 1584:
-#line 1899 "char_ref.rl"
+#line 1894 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a57; }}
 	break;
 	case 1585:
-#line 1900 "char_ref.rl"
+#line 1895 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a5b; }}
 	break;
 	case 1586:
-#line 1901 "char_ref.rl"
+#line 1896 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2134; }}
 	break;
 	case 1587:
-#line 1902 "char_ref.rl"
+#line 1897 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf8; }}
 	break;
 	case 1588:
-#line 1904 "char_ref.rl"
+#line 1899 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2298; }}
 	break;
 	case 1589:
-#line 1905 "char_ref.rl"
+#line 1900 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf5; }}
 	break;
 	case 1590:
-#line 1907 "char_ref.rl"
+#line 1902 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2297; }}
 	break;
 	case 1591:
-#line 1908 "char_ref.rl"
+#line 1903 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a36; }}
 	break;
 	case 1592:
-#line 1909 "char_ref.rl"
+#line 1904 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf6; }}
 	break;
 	case 1593:
-#line 1911 "char_ref.rl"
+#line 1906 "char_ref.rl"
 	{te = p+1;{ output->first = 0x233d; }}
 	break;
 	case 1594:
-#line 1912 "char_ref.rl"
+#line 1907 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2225; }}
 	break;
 	case 1595:
-#line 1913 "char_ref.rl"
+#line 1908 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb6; }}
 	break;
 	case 1596:
-#line 1915 "char_ref.rl"
+#line 1910 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2225; }}
 	break;
 	case 1597:
-#line 1916 "char_ref.rl"
+#line 1911 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2af3; }}
 	break;
 	case 1598:
-#line 1917 "char_ref.rl"
+#line 1912 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2afd; }}
 	break;
 	case 1599:
-#line 1918 "char_ref.rl"
+#line 1913 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2202; }}
 	break;
 	case 1600:
-#line 1919 "char_ref.rl"
+#line 1914 "char_ref.rl"
 	{te = p+1;{ output->first = 0x043f; }}
 	break;
 	case 1601:
-#line 1920 "char_ref.rl"
+#line 1915 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25; }}
 	break;
 	case 1602:
-#line 1921 "char_ref.rl"
+#line 1916 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2e; }}
 	break;
 	case 1603:
-#line 1922 "char_ref.rl"
+#line 1917 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2030; }}
 	break;
 	case 1604:
-#line 1923 "char_ref.rl"
+#line 1918 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a5; }}
 	break;
 	case 1605:
-#line 1924 "char_ref.rl"
+#line 1919 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2031; }}
 	break;
 	case 1606:
-#line 1925 "char_ref.rl"
+#line 1920 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52d; }}
 	break;
 	case 1607:
-#line 1926 "char_ref.rl"
+#line 1921 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c6; }}
 	break;
 	case 1608:
-#line 1927 "char_ref.rl"
+#line 1922 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d5; }}
 	break;
 	case 1609:
-#line 1928 "char_ref.rl"
+#line 1923 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2133; }}
 	break;
 	case 1610:
-#line 1929 "char_ref.rl"
+#line 1924 "char_ref.rl"
 	{te = p+1;{ output->first = 0x260e; }}
 	break;
 	case 1611:
-#line 1930 "char_ref.rl"
+#line 1925 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c0; }}
 	break;
 	case 1612:
-#line 1931 "char_ref.rl"
+#line 1926 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22d4; }}
 	break;
 	case 1613:
-#line 1932 "char_ref.rl"
+#line 1927 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d6; }}
 	break;
 	case 1614:
-#line 1933 "char_ref.rl"
+#line 1928 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210f; }}
 	break;
 	case 1615:
-#line 1934 "char_ref.rl"
+#line 1929 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210e; }}
 	break;
 	case 1616:
-#line 1935 "char_ref.rl"
+#line 1930 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210f; }}
 	break;
 	case 1617:
-#line 1936 "char_ref.rl"
+#line 1931 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2b; }}
 	break;
 	case 1618:
-#line 1937 "char_ref.rl"
+#line 1932 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a23; }}
 	break;
 	case 1619:
-#line 1938 "char_ref.rl"
+#line 1933 "char_ref.rl"
 	{te = p+1;{ output->first = 0x229e; }}
 	break;
 	case 1620:
-#line 1939 "char_ref.rl"
+#line 1934 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a22; }}
 	break;
 	case 1621:
-#line 1940 "char_ref.rl"
+#line 1935 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2214; }}
 	break;
 	case 1622:
-#line 1941 "char_ref.rl"
+#line 1936 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a25; }}
 	break;
 	case 1623:
-#line 1942 "char_ref.rl"
+#line 1937 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a72; }}
 	break;
 	case 1624:
-#line 1943 "char_ref.rl"
+#line 1938 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb1; }}
 	break;
 	case 1625:
-#line 1945 "char_ref.rl"
+#line 1940 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a26; }}
 	break;
 	case 1626:
-#line 1946 "char_ref.rl"
+#line 1941 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a27; }}
 	break;
 	case 1627:
-#line 1947 "char_ref.rl"
+#line 1942 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb1; }}
 	break;
 	case 1628:
-#line 1948 "char_ref.rl"
+#line 1943 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a15; }}
 	break;
 	case 1629:
-#line 1949 "char_ref.rl"
+#line 1944 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d561; }}
 	break;
 	case 1630:
-#line 1950 "char_ref.rl"
+#line 1945 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa3; }}
 	break;
 	case 1631:
-#line 1952 "char_ref.rl"
+#line 1947 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227a; }}
 	break;
 	case 1632:
-#line 1953 "char_ref.rl"
+#line 1948 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab3; }}
 	break;
 	case 1633:
-#line 1954 "char_ref.rl"
+#line 1949 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab7; }}
 	break;
 	case 1634:
-#line 1955 "char_ref.rl"
+#line 1950 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227c; }}
 	break;
 	case 1635:
-#line 1956 "char_ref.rl"
+#line 1951 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; }}
 	break;
 	case 1636:
-#line 1957 "char_ref.rl"
+#line 1952 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227a; }}
 	break;
 	case 1637:
-#line 1958 "char_ref.rl"
+#line 1953 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab7; }}
 	break;
 	case 1638:
-#line 1959 "char_ref.rl"
+#line 1954 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227c; }}
 	break;
 	case 1639:
-#line 1960 "char_ref.rl"
+#line 1955 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaf; }}
 	break;
 	case 1640:
-#line 1961 "char_ref.rl"
+#line 1956 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab9; }}
 	break;
 	case 1641:
-#line 1962 "char_ref.rl"
+#line 1957 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab5; }}
 	break;
 	case 1642:
-#line 1963 "char_ref.rl"
+#line 1958 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e8; }}
 	break;
 	case 1643:
-#line 1964 "char_ref.rl"
+#line 1959 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227e; }}
 	break;
 	case 1644:
-#line 1965 "char_ref.rl"
+#line 1960 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2032; }}
 	break;
 	case 1645:
-#line 1966 "char_ref.rl"
+#line 1961 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2119; }}
 	break;
 	case 1646:
-#line 1967 "char_ref.rl"
+#line 1962 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab5; }}
 	break;
 	case 1647:
-#line 1968 "char_ref.rl"
+#line 1963 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab9; }}
 	break;
 	case 1648:
-#line 1969 "char_ref.rl"
+#line 1964 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e8; }}
 	break;
 	case 1649:
-#line 1970 "char_ref.rl"
+#line 1965 "char_ref.rl"
 	{te = p+1;{ output->first = 0x220f; }}
 	break;
 	case 1650:
-#line 1971 "char_ref.rl"
+#line 1966 "char_ref.rl"
 	{te = p+1;{ output->first = 0x232e; }}
 	break;
 	case 1651:
-#line 1972 "char_ref.rl"
+#line 1967 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2312; }}
 	break;
 	case 1652:
-#line 1973 "char_ref.rl"
+#line 1968 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2313; }}
 	break;
 	case 1653:
-#line 1974 "char_ref.rl"
+#line 1969 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221d; }}
 	break;
 	case 1654:
-#line 1975 "char_ref.rl"
+#line 1970 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221d; }}
 	break;
 	case 1655:
-#line 1976 "char_ref.rl"
+#line 1971 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227e; }}
 	break;
 	case 1656:
-#line 1977 "char_ref.rl"
+#line 1972 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b0; }}
 	break;
 	case 1657:
-#line 1978 "char_ref.rl"
+#line 1973 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c5; }}
 	break;
 	case 1658:
-#line 1979 "char_ref.rl"
+#line 1974 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c8; }}
 	break;
 	case 1659:
-#line 1980 "char_ref.rl"
+#line 1975 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2008; }}
 	break;
 	case 1660:
-#line 1981 "char_ref.rl"
+#line 1976 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52e; }}
 	break;
 	case 1661:
-#line 1982 "char_ref.rl"
+#line 1977 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a0c; }}
 	break;
 	case 1662:
-#line 1983 "char_ref.rl"
+#line 1978 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d562; }}
 	break;
 	case 1663:
-#line 1984 "char_ref.rl"
+#line 1979 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2057; }}
 	break;
 	case 1664:
-#line 1985 "char_ref.rl"
+#line 1980 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c6; }}
 	break;
 	case 1665:
-#line 1986 "char_ref.rl"
+#line 1981 "char_ref.rl"
 	{te = p+1;{ output->first = 0x210d; }}
 	break;
 	case 1666:
-#line 1987 "char_ref.rl"
+#line 1982 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a16; }}
 	break;
 	case 1667:
-#line 1988 "char_ref.rl"
+#line 1983 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3f; }}
 	break;
 	case 1668:
-#line 1989 "char_ref.rl"
+#line 1984 "char_ref.rl"
 	{te = p+1;{ output->first = 0x225f; }}
 	break;
 	case 1669:
-#line 1990 "char_ref.rl"
+#line 1985 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22; }}
 	break;
 	case 1670:
-#line 1992 "char_ref.rl"
+#line 1987 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21db; }}
 	break;
 	case 1671:
-#line 1993 "char_ref.rl"
+#line 1988 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d2; }}
 	break;
 	case 1672:
-#line 1994 "char_ref.rl"
+#line 1989 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291c; }}
 	break;
 	case 1673:
-#line 1995 "char_ref.rl"
+#line 1990 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290f; }}
 	break;
 	case 1674:
-#line 1996 "char_ref.rl"
+#line 1991 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2964; }}
 	break;
 	case 1675:
-#line 1997 "char_ref.rl"
+#line 1992 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223d; output->second = 0x0331; }}
 	break;
 	case 1676:
-#line 1998 "char_ref.rl"
+#line 1993 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0155; }}
 	break;
 	case 1677:
-#line 1999 "char_ref.rl"
+#line 1994 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221a; }}
 	break;
 	case 1678:
-#line 2000 "char_ref.rl"
+#line 1995 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29b3; }}
 	break;
 	case 1679:
-#line 2001 "char_ref.rl"
+#line 1996 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e9; }}
 	break;
 	case 1680:
-#line 2002 "char_ref.rl"
+#line 1997 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2992; }}
 	break;
 	case 1681:
-#line 2003 "char_ref.rl"
+#line 1998 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a5; }}
 	break;
 	case 1682:
-#line 2004 "char_ref.rl"
+#line 1999 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e9; }}
 	break;
 	case 1683:
-#line 2005 "char_ref.rl"
+#line 2000 "char_ref.rl"
 	{te = p+1;{ output->first = 0xbb; }}
 	break;
 	case 1684:
-#line 2007 "char_ref.rl"
+#line 2002 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2192; }}
 	break;
 	case 1685:
-#line 2008 "char_ref.rl"
+#line 2003 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2975; }}
 	break;
 	case 1686:
-#line 2009 "char_ref.rl"
+#line 2004 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21e5; }}
 	break;
 	case 1687:
-#line 2010 "char_ref.rl"
+#line 2005 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2920; }}
 	break;
 	case 1688:
-#line 2011 "char_ref.rl"
+#line 2006 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2933; }}
 	break;
 	case 1689:
-#line 2012 "char_ref.rl"
+#line 2007 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291e; }}
 	break;
 	case 1690:
-#line 2013 "char_ref.rl"
+#line 2008 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21aa; }}
 	break;
 	case 1691:
-#line 2014 "char_ref.rl"
+#line 2009 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21ac; }}
 	break;
 	case 1692:
-#line 2015 "char_ref.rl"
+#line 2010 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2945; }}
 	break;
 	case 1693:
-#line 2016 "char_ref.rl"
+#line 2011 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2974; }}
 	break;
 	case 1694:
-#line 2017 "char_ref.rl"
+#line 2012 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a3; }}
 	break;
 	case 1695:
-#line 2018 "char_ref.rl"
+#line 2013 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219d; }}
 	break;
 	case 1696:
-#line 2019 "char_ref.rl"
+#line 2014 "char_ref.rl"
 	{te = p+1;{ output->first = 0x291a; }}
 	break;
 	case 1697:
-#line 2020 "char_ref.rl"
+#line 2015 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2236; }}
 	break;
 	case 1698:
-#line 2021 "char_ref.rl"
+#line 2016 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211a; }}
 	break;
 	case 1699:
-#line 2022 "char_ref.rl"
+#line 2017 "char_ref.rl"
 	{te = p+1;{ output->first = 0x290d; }}
 	break;
 	case 1700:
-#line 2023 "char_ref.rl"
+#line 2018 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2773; }}
 	break;
 	case 1701:
-#line 2024 "char_ref.rl"
+#line 2019 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7d; }}
 	break;
 	case 1702:
-#line 2025 "char_ref.rl"
+#line 2020 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5d; }}
 	break;
 	case 1703:
-#line 2026 "char_ref.rl"
+#line 2021 "char_ref.rl"
 	{te = p+1;{ output->first = 0x298c; }}
 	break;
 	case 1704:
-#line 2027 "char_ref.rl"
+#line 2022 "char_ref.rl"
 	{te = p+1;{ output->first = 0x298e; }}
 	break;
 	case 1705:
-#line 2028 "char_ref.rl"
+#line 2023 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2990; }}
 	break;
 	case 1706:
-#line 2029 "char_ref.rl"
+#line 2024 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0159; }}
 	break;
 	case 1707:
-#line 2030 "char_ref.rl"
+#line 2025 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0157; }}
 	break;
 	case 1708:
-#line 2031 "char_ref.rl"
+#line 2026 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2309; }}
 	break;
 	case 1709:
-#line 2032 "char_ref.rl"
+#line 2027 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7d; }}
 	break;
 	case 1710:
-#line 2033 "char_ref.rl"
+#line 2028 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0440; }}
 	break;
 	case 1711:
-#line 2034 "char_ref.rl"
+#line 2029 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2937; }}
 	break;
 	case 1712:
-#line 2035 "char_ref.rl"
+#line 2030 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2969; }}
 	break;
 	case 1713:
-#line 2036 "char_ref.rl"
+#line 2031 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201d; }}
 	break;
 	case 1714:
-#line 2037 "char_ref.rl"
+#line 2032 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201d; }}
 	break;
 	case 1715:
-#line 2038 "char_ref.rl"
+#line 2033 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b3; }}
 	break;
 	case 1716:
-#line 2039 "char_ref.rl"
+#line 2034 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211c; }}
 	break;
 	case 1717:
-#line 2040 "char_ref.rl"
+#line 2035 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211b; }}
 	break;
 	case 1718:
-#line 2041 "char_ref.rl"
+#line 2036 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211c; }}
 	break;
 	case 1719:
-#line 2042 "char_ref.rl"
+#line 2037 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211d; }}
 	break;
 	case 1720:
-#line 2043 "char_ref.rl"
+#line 2038 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ad; }}
 	break;
 	case 1721:
-#line 2044 "char_ref.rl"
+#line 2039 "char_ref.rl"
 	{te = p+1;{ output->first = 0xae; }}
 	break;
 	case 1722:
-#line 2046 "char_ref.rl"
+#line 2041 "char_ref.rl"
 	{te = p+1;{ output->first = 0x297d; }}
 	break;
 	case 1723:
-#line 2047 "char_ref.rl"
+#line 2042 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230b; }}
 	break;
 	case 1724:
-#line 2048 "char_ref.rl"
+#line 2043 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d52f; }}
 	break;
 	case 1725:
-#line 2049 "char_ref.rl"
+#line 2044 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c1; }}
 	break;
 	case 1726:
-#line 2050 "char_ref.rl"
+#line 2045 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c0; }}
 	break;
 	case 1727:
-#line 2051 "char_ref.rl"
+#line 2046 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296c; }}
 	break;
 	case 1728:
-#line 2052 "char_ref.rl"
+#line 2047 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c1; }}
 	break;
 	case 1729:
-#line 2053 "char_ref.rl"
+#line 2048 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f1; }}
 	break;
 	case 1730:
-#line 2054 "char_ref.rl"
+#line 2049 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2192; }}
 	break;
 	case 1731:
-#line 2055 "char_ref.rl"
+#line 2050 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a3; }}
 	break;
 	case 1732:
-#line 2056 "char_ref.rl"
+#line 2051 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c1; }}
 	break;
 	case 1733:
-#line 2057 "char_ref.rl"
+#line 2052 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c0; }}
 	break;
 	case 1734:
-#line 2058 "char_ref.rl"
+#line 2053 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c4; }}
 	break;
 	case 1735:
-#line 2059 "char_ref.rl"
+#line 2054 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cc; }}
 	break;
 	case 1736:
-#line 2060 "char_ref.rl"
+#line 2055 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c9; }}
 	break;
 	case 1737:
-#line 2061 "char_ref.rl"
+#line 2056 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219d; }}
 	break;
 	case 1738:
-#line 2062 "char_ref.rl"
+#line 2057 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cc; }}
 	break;
 	case 1739:
-#line 2063 "char_ref.rl"
+#line 2058 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02da; }}
 	break;
 	case 1740:
-#line 2064 "char_ref.rl"
+#line 2059 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2253; }}
 	break;
 	case 1741:
-#line 2065 "char_ref.rl"
+#line 2060 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c4; }}
 	break;
 	case 1742:
-#line 2066 "char_ref.rl"
+#line 2061 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21cc; }}
 	break;
 	case 1743:
-#line 2067 "char_ref.rl"
+#line 2062 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200f; }}
 	break;
 	case 1744:
-#line 2068 "char_ref.rl"
+#line 2063 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b1; }}
 	break;
 	case 1745:
-#line 2069 "char_ref.rl"
+#line 2064 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b1; }}
 	break;
 	case 1746:
-#line 2070 "char_ref.rl"
+#line 2065 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aee; }}
 	break;
 	case 1747:
-#line 2071 "char_ref.rl"
+#line 2066 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27ed; }}
 	break;
 	case 1748:
-#line 2072 "char_ref.rl"
+#line 2067 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21fe; }}
 	break;
 	case 1749:
-#line 2073 "char_ref.rl"
+#line 2068 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27e7; }}
 	break;
 	case 1750:
-#line 2074 "char_ref.rl"
+#line 2069 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2986; }}
 	break;
 	case 1751:
-#line 2075 "char_ref.rl"
+#line 2070 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d563; }}
 	break;
 	case 1752:
-#line 2076 "char_ref.rl"
+#line 2071 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a2e; }}
 	break;
 	case 1753:
-#line 2077 "char_ref.rl"
+#line 2072 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a35; }}
 	break;
 	case 1754:
-#line 2078 "char_ref.rl"
+#line 2073 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29; }}
 	break;
 	case 1755:
-#line 2079 "char_ref.rl"
+#line 2074 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2994; }}
 	break;
 	case 1756:
-#line 2080 "char_ref.rl"
+#line 2075 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a12; }}
 	break;
 	case 1757:
-#line 2081 "char_ref.rl"
+#line 2076 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c9; }}
 	break;
 	case 1758:
-#line 2082 "char_ref.rl"
+#line 2077 "char_ref.rl"
 	{te = p+1;{ output->first = 0x203a; }}
 	break;
 	case 1759:
-#line 2083 "char_ref.rl"
+#line 2078 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c7; }}
 	break;
 	case 1760:
-#line 2084 "char_ref.rl"
+#line 2079 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21b1; }}
 	break;
 	case 1761:
-#line 2085 "char_ref.rl"
+#line 2080 "char_ref.rl"
 	{te = p+1;{ output->first = 0x5d; }}
 	break;
 	case 1762:
-#line 2086 "char_ref.rl"
+#line 2081 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2019; }}
 	break;
 	case 1763:
-#line 2087 "char_ref.rl"
+#line 2082 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2019; }}
 	break;
 	case 1764:
-#line 2088 "char_ref.rl"
+#line 2083 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22cc; }}
 	break;
 	case 1765:
-#line 2089 "char_ref.rl"
+#line 2084 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ca; }}
 	break;
 	case 1766:
-#line 2090 "char_ref.rl"
+#line 2085 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b9; }}
 	break;
 	case 1767:
-#line 2091 "char_ref.rl"
+#line 2086 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b5; }}
 	break;
 	case 1768:
-#line 2092 "char_ref.rl"
+#line 2087 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b8; }}
 	break;
 	case 1769:
-#line 2093 "char_ref.rl"
+#line 2088 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29ce; }}
 	break;
 	case 1770:
-#line 2094 "char_ref.rl"
+#line 2089 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2968; }}
 	break;
 	case 1771:
-#line 2095 "char_ref.rl"
+#line 2090 "char_ref.rl"
 	{te = p+1;{ output->first = 0x211e; }}
 	break;
 	case 1772:
-#line 2096 "char_ref.rl"
+#line 2091 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015b; }}
 	break;
 	case 1773:
-#line 2097 "char_ref.rl"
+#line 2092 "char_ref.rl"
 	{te = p+1;{ output->first = 0x201a; }}
 	break;
 	case 1774:
-#line 2098 "char_ref.rl"
+#line 2093 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227b; }}
 	break;
 	case 1775:
-#line 2099 "char_ref.rl"
+#line 2094 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab4; }}
 	break;
 	case 1776:
-#line 2100 "char_ref.rl"
+#line 2095 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab8; }}
 	break;
 	case 1777:
-#line 2101 "char_ref.rl"
+#line 2096 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0161; }}
 	break;
 	case 1778:
-#line 2102 "char_ref.rl"
+#line 2097 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227d; }}
 	break;
 	case 1779:
-#line 2103 "char_ref.rl"
+#line 2098 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; }}
 	break;
 	case 1780:
-#line 2104 "char_ref.rl"
+#line 2099 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015f; }}
 	break;
 	case 1781:
-#line 2105 "char_ref.rl"
+#line 2100 "char_ref.rl"
 	{te = p+1;{ output->first = 0x015d; }}
 	break;
 	case 1782:
-#line 2106 "char_ref.rl"
+#line 2101 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab6; }}
 	break;
 	case 1783:
-#line 2107 "char_ref.rl"
+#line 2102 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aba; }}
 	break;
 	case 1784:
-#line 2108 "char_ref.rl"
+#line 2103 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e9; }}
 	break;
 	case 1785:
-#line 2109 "char_ref.rl"
+#line 2104 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a13; }}
 	break;
 	case 1786:
-#line 2110 "char_ref.rl"
+#line 2105 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227f; }}
 	break;
 	case 1787:
-#line 2111 "char_ref.rl"
+#line 2106 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0441; }}
 	break;
 	case 1788:
-#line 2112 "char_ref.rl"
+#line 2107 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c5; }}
 	break;
 	case 1789:
-#line 2113 "char_ref.rl"
+#line 2108 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a1; }}
 	break;
 	case 1790:
-#line 2114 "char_ref.rl"
+#line 2109 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a66; }}
 	break;
 	case 1791:
-#line 2115 "char_ref.rl"
+#line 2110 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d8; }}
 	break;
 	case 1792:
-#line 2116 "char_ref.rl"
+#line 2111 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2925; }}
 	break;
 	case 1793:
-#line 2117 "char_ref.rl"
+#line 2112 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2198; }}
 	break;
 	case 1794:
-#line 2118 "char_ref.rl"
+#line 2113 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2198; }}
 	break;
 	case 1795:
-#line 2119 "char_ref.rl"
+#line 2114 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa7; }}
 	break;
 	case 1796:
-#line 2121 "char_ref.rl"
+#line 2116 "char_ref.rl"
 	{te = p+1;{ output->first = 0x3b; }}
 	break;
 	case 1797:
-#line 2122 "char_ref.rl"
+#line 2117 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2929; }}
 	break;
 	case 1798:
-#line 2123 "char_ref.rl"
+#line 2118 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2216; }}
 	break;
 	case 1799:
-#line 2124 "char_ref.rl"
+#line 2119 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2216; }}
 	break;
 	case 1800:
-#line 2125 "char_ref.rl"
+#line 2120 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2736; }}
 	break;
 	case 1801:
-#line 2126 "char_ref.rl"
+#line 2121 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d530; }}
 	break;
 	case 1802:
-#line 2127 "char_ref.rl"
+#line 2122 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2322; }}
 	break;
 	case 1803:
-#line 2128 "char_ref.rl"
+#line 2123 "char_ref.rl"
 	{te = p+1;{ output->first = 0x266f; }}
 	break;
 	case 1804:
-#line 2129 "char_ref.rl"
+#line 2124 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0449; }}
 	break;
 	case 1805:
-#line 2130 "char_ref.rl"
+#line 2125 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0448; }}
 	break;
 	case 1806:
-#line 2131 "char_ref.rl"
+#line 2126 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2223; }}
 	break;
 	case 1807:
-#line 2132 "char_ref.rl"
+#line 2127 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2225; }}
 	break;
 	case 1808:
-#line 2133 "char_ref.rl"
+#line 2128 "char_ref.rl"
 	{te = p+1;{ output->first = 0xad; }}
 	break;
 	case 1809:
-#line 2135 "char_ref.rl"
+#line 2130 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c3; }}
 	break;
 	case 1810:
-#line 2136 "char_ref.rl"
+#line 2131 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c2; }}
 	break;
 	case 1811:
-#line 2137 "char_ref.rl"
+#line 2132 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c2; }}
 	break;
 	case 1812:
-#line 2138 "char_ref.rl"
+#line 2133 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223c; }}
 	break;
 	case 1813:
-#line 2139 "char_ref.rl"
+#line 2134 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a6a; }}
 	break;
 	case 1814:
-#line 2140 "char_ref.rl"
+#line 2135 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2243; }}
 	break;
 	case 1815:
-#line 2141 "char_ref.rl"
+#line 2136 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2243; }}
 	break;
 	case 1816:
-#line 2142 "char_ref.rl"
+#line 2137 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a9e; }}
 	break;
 	case 1817:
-#line 2143 "char_ref.rl"
+#line 2138 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aa0; }}
 	break;
 	case 1818:
-#line 2144 "char_ref.rl"
+#line 2139 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a9d; }}
 	break;
 	case 1819:
-#line 2145 "char_ref.rl"
+#line 2140 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a9f; }}
 	break;
 	case 1820:
-#line 2146 "char_ref.rl"
+#line 2141 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2246; }}
 	break;
 	case 1821:
-#line 2147 "char_ref.rl"
+#line 2142 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a24; }}
 	break;
 	case 1822:
-#line 2148 "char_ref.rl"
+#line 2143 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2972; }}
 	break;
 	case 1823:
-#line 2149 "char_ref.rl"
+#line 2144 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2190; }}
 	break;
 	case 1824:
-#line 2150 "char_ref.rl"
+#line 2145 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2216; }}
 	break;
 	case 1825:
-#line 2151 "char_ref.rl"
+#line 2146 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a33; }}
 	break;
 	case 1826:
-#line 2152 "char_ref.rl"
+#line 2147 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29e4; }}
 	break;
 	case 1827:
-#line 2153 "char_ref.rl"
+#line 2148 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2223; }}
 	break;
 	case 1828:
-#line 2154 "char_ref.rl"
+#line 2149 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2323; }}
 	break;
 	case 1829:
-#line 2155 "char_ref.rl"
+#line 2150 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aaa; }}
 	break;
 	case 1830:
-#line 2156 "char_ref.rl"
+#line 2151 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aac; }}
 	break;
 	case 1831:
-#line 2157 "char_ref.rl"
+#line 2152 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aac; output->second = 0xfe00; }}
 	break;
 	case 1832:
-#line 2158 "char_ref.rl"
+#line 2153 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044c; }}
 	break;
 	case 1833:
-#line 2159 "char_ref.rl"
+#line 2154 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2f; }}
 	break;
 	case 1834:
-#line 2160 "char_ref.rl"
+#line 2155 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29c4; }}
 	break;
 	case 1835:
-#line 2161 "char_ref.rl"
+#line 2156 "char_ref.rl"
 	{te = p+1;{ output->first = 0x233f; }}
 	break;
 	case 1836:
-#line 2162 "char_ref.rl"
+#line 2157 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d564; }}
 	break;
 	case 1837:
-#line 2163 "char_ref.rl"
+#line 2158 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2660; }}
 	break;
 	case 1838:
-#line 2164 "char_ref.rl"
+#line 2159 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2660; }}
 	break;
 	case 1839:
-#line 2165 "char_ref.rl"
+#line 2160 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2225; }}
 	break;
 	case 1840:
-#line 2166 "char_ref.rl"
+#line 2161 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2293; }}
 	break;
 	case 1841:
-#line 2167 "char_ref.rl"
+#line 2162 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2293; output->second = 0xfe00; }}
 	break;
 	case 1842:
-#line 2168 "char_ref.rl"
+#line 2163 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2294; }}
 	break;
 	case 1843:
-#line 2169 "char_ref.rl"
+#line 2164 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2294; output->second = 0xfe00; }}
 	break;
 	case 1844:
-#line 2170 "char_ref.rl"
+#line 2165 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228f; }}
 	break;
 	case 1845:
-#line 2171 "char_ref.rl"
+#line 2166 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2291; }}
 	break;
 	case 1846:
-#line 2172 "char_ref.rl"
+#line 2167 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228f; }}
 	break;
 	case 1847:
-#line 2173 "char_ref.rl"
+#line 2168 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2291; }}
 	break;
 	case 1848:
-#line 2174 "char_ref.rl"
+#line 2169 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2290; }}
 	break;
 	case 1849:
-#line 2175 "char_ref.rl"
+#line 2170 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2292; }}
 	break;
 	case 1850:
-#line 2176 "char_ref.rl"
+#line 2171 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2290; }}
 	break;
 	case 1851:
-#line 2177 "char_ref.rl"
+#line 2172 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2292; }}
 	break;
 	case 1852:
-#line 2178 "char_ref.rl"
+#line 2173 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25a1; }}
 	break;
 	case 1853:
-#line 2179 "char_ref.rl"
+#line 2174 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25a1; }}
 	break;
 	case 1854:
-#line 2180 "char_ref.rl"
+#line 2175 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25aa; }}
 	break;
 	case 1855:
-#line 2181 "char_ref.rl"
+#line 2176 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25aa; }}
 	break;
 	case 1856:
-#line 2182 "char_ref.rl"
+#line 2177 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2192; }}
 	break;
 	case 1857:
-#line 2183 "char_ref.rl"
+#line 2178 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c8; }}
 	break;
 	case 1858:
-#line 2184 "char_ref.rl"
+#line 2179 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2216; }}
 	break;
 	case 1859:
-#line 2185 "char_ref.rl"
+#line 2180 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2323; }}
 	break;
 	case 1860:
-#line 2186 "char_ref.rl"
+#line 2181 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c6; }}
 	break;
 	case 1861:
-#line 2187 "char_ref.rl"
+#line 2182 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2606; }}
 	break;
 	case 1862:
-#line 2188 "char_ref.rl"
+#line 2183 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2605; }}
 	break;
 	case 1863:
-#line 2189 "char_ref.rl"
+#line 2184 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f5; }}
 	break;
 	case 1864:
-#line 2190 "char_ref.rl"
+#line 2185 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d5; }}
 	break;
 	case 1865:
-#line 2191 "char_ref.rl"
+#line 2186 "char_ref.rl"
 	{te = p+1;{ output->first = 0xaf; }}
 	break;
 	case 1866:
-#line 2192 "char_ref.rl"
+#line 2187 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2282; }}
 	break;
 	case 1867:
-#line 2193 "char_ref.rl"
+#line 2188 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac5; }}
 	break;
 	case 1868:
-#line 2194 "char_ref.rl"
+#line 2189 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2abd; }}
 	break;
 	case 1869:
-#line 2195 "char_ref.rl"
+#line 2190 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2286; }}
 	break;
 	case 1870:
-#line 2196 "char_ref.rl"
+#line 2191 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac3; }}
 	break;
 	case 1871:
-#line 2197 "char_ref.rl"
+#line 2192 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac1; }}
 	break;
 	case 1872:
-#line 2198 "char_ref.rl"
+#line 2193 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acb; }}
 	break;
 	case 1873:
-#line 2199 "char_ref.rl"
+#line 2194 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228a; }}
 	break;
 	case 1874:
-#line 2200 "char_ref.rl"
+#line 2195 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2abf; }}
 	break;
 	case 1875:
-#line 2201 "char_ref.rl"
+#line 2196 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2979; }}
 	break;
 	case 1876:
-#line 2202 "char_ref.rl"
+#line 2197 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2282; }}
 	break;
 	case 1877:
-#line 2203 "char_ref.rl"
+#line 2198 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2286; }}
 	break;
 	case 1878:
-#line 2204 "char_ref.rl"
+#line 2199 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac5; }}
 	break;
 	case 1879:
-#line 2205 "char_ref.rl"
+#line 2200 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228a; }}
 	break;
 	case 1880:
-#line 2206 "char_ref.rl"
+#line 2201 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acb; }}
 	break;
 	case 1881:
-#line 2207 "char_ref.rl"
+#line 2202 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac7; }}
 	break;
 	case 1882:
-#line 2208 "char_ref.rl"
+#line 2203 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad5; }}
 	break;
 	case 1883:
-#line 2209 "char_ref.rl"
+#line 2204 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad3; }}
 	break;
 	case 1884:
-#line 2210 "char_ref.rl"
+#line 2205 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227b; }}
 	break;
 	case 1885:
-#line 2211 "char_ref.rl"
+#line 2206 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab8; }}
 	break;
 	case 1886:
-#line 2212 "char_ref.rl"
+#line 2207 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227d; }}
 	break;
 	case 1887:
-#line 2213 "char_ref.rl"
+#line 2208 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab0; }}
 	break;
 	case 1888:
-#line 2214 "char_ref.rl"
+#line 2209 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2aba; }}
 	break;
 	case 1889:
-#line 2215 "char_ref.rl"
+#line 2210 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ab6; }}
 	break;
 	case 1890:
-#line 2216 "char_ref.rl"
+#line 2211 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22e9; }}
 	break;
 	case 1891:
-#line 2217 "char_ref.rl"
+#line 2212 "char_ref.rl"
 	{te = p+1;{ output->first = 0x227f; }}
 	break;
 	case 1892:
-#line 2218 "char_ref.rl"
+#line 2213 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2211; }}
 	break;
 	case 1893:
-#line 2219 "char_ref.rl"
+#line 2214 "char_ref.rl"
 	{te = p+1;{ output->first = 0x266a; }}
 	break;
 	case 1894:
-#line 2220 "char_ref.rl"
+#line 2215 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb9; }}
 	break;
 	case 1895:
-#line 2222 "char_ref.rl"
+#line 2217 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb2; }}
 	break;
 	case 1896:
-#line 2224 "char_ref.rl"
+#line 2219 "char_ref.rl"
 	{te = p+1;{ output->first = 0xb3; }}
 	break;
 	case 1897:
-#line 2226 "char_ref.rl"
+#line 2221 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; }}
 	break;
 	case 1898:
-#line 2227 "char_ref.rl"
+#line 2222 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac6; }}
 	break;
 	case 1899:
-#line 2228 "char_ref.rl"
+#line 2223 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2abe; }}
 	break;
 	case 1900:
-#line 2229 "char_ref.rl"
+#line 2224 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad8; }}
 	break;
 	case 1901:
-#line 2230 "char_ref.rl"
+#line 2225 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2287; }}
 	break;
 	case 1902:
-#line 2231 "char_ref.rl"
+#line 2226 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac4; }}
 	break;
 	case 1903:
-#line 2232 "char_ref.rl"
+#line 2227 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27c9; }}
 	break;
 	case 1904:
-#line 2233 "char_ref.rl"
+#line 2228 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad7; }}
 	break;
 	case 1905:
-#line 2234 "char_ref.rl"
+#line 2229 "char_ref.rl"
 	{te = p+1;{ output->first = 0x297b; }}
 	break;
 	case 1906:
-#line 2235 "char_ref.rl"
+#line 2230 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac2; }}
 	break;
 	case 1907:
-#line 2236 "char_ref.rl"
+#line 2231 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acc; }}
 	break;
 	case 1908:
-#line 2237 "char_ref.rl"
+#line 2232 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228b; }}
 	break;
 	case 1909:
-#line 2238 "char_ref.rl"
+#line 2233 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac0; }}
 	break;
 	case 1910:
-#line 2239 "char_ref.rl"
+#line 2234 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; }}
 	break;
 	case 1911:
-#line 2240 "char_ref.rl"
+#line 2235 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2287; }}
 	break;
 	case 1912:
-#line 2241 "char_ref.rl"
+#line 2236 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac6; }}
 	break;
 	case 1913:
-#line 2242 "char_ref.rl"
+#line 2237 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228b; }}
 	break;
 	case 1914:
-#line 2243 "char_ref.rl"
+#line 2238 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acc; }}
 	break;
 	case 1915:
-#line 2244 "char_ref.rl"
+#line 2239 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ac8; }}
 	break;
 	case 1916:
-#line 2245 "char_ref.rl"
+#line 2240 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad4; }}
 	break;
 	case 1917:
-#line 2246 "char_ref.rl"
+#line 2241 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ad6; }}
 	break;
 	case 1918:
-#line 2247 "char_ref.rl"
+#line 2242 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d9; }}
 	break;
 	case 1919:
-#line 2248 "char_ref.rl"
+#line 2243 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2926; }}
 	break;
 	case 1920:
-#line 2249 "char_ref.rl"
+#line 2244 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2199; }}
 	break;
 	case 1921:
-#line 2250 "char_ref.rl"
+#line 2245 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2199; }}
 	break;
 	case 1922:
-#line 2251 "char_ref.rl"
+#line 2246 "char_ref.rl"
 	{te = p+1;{ output->first = 0x292a; }}
 	break;
 	case 1923:
-#line 2252 "char_ref.rl"
+#line 2247 "char_ref.rl"
 	{te = p+1;{ output->first = 0xdf; }}
 	break;
 	case 1924:
-#line 2254 "char_ref.rl"
+#line 2249 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2316; }}
 	break;
 	case 1925:
-#line 2255 "char_ref.rl"
+#line 2250 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c4; }}
 	break;
 	case 1926:
-#line 2256 "char_ref.rl"
+#line 2251 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23b4; }}
 	break;
 	case 1927:
-#line 2257 "char_ref.rl"
+#line 2252 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0165; }}
 	break;
 	case 1928:
-#line 2258 "char_ref.rl"
+#line 2253 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0163; }}
 	break;
 	case 1929:
-#line 2259 "char_ref.rl"
+#line 2254 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0442; }}
 	break;
 	case 1930:
-#line 2260 "char_ref.rl"
+#line 2255 "char_ref.rl"
 	{te = p+1;{ output->first = 0x20db; }}
 	break;
 	case 1931:
-#line 2261 "char_ref.rl"
+#line 2256 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2315; }}
 	break;
 	case 1932:
-#line 2262 "char_ref.rl"
+#line 2257 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d531; }}
 	break;
 	case 1933:
-#line 2263 "char_ref.rl"
+#line 2258 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2234; }}
 	break;
 	case 1934:
-#line 2264 "char_ref.rl"
+#line 2259 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2234; }}
 	break;
 	case 1935:
-#line 2265 "char_ref.rl"
+#line 2260 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b8; }}
 	break;
 	case 1936:
-#line 2266 "char_ref.rl"
+#line 2261 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d1; }}
 	break;
 	case 1937:
-#line 2267 "char_ref.rl"
+#line 2262 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d1; }}
 	break;
 	case 1938:
-#line 2268 "char_ref.rl"
+#line 2263 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 1939:
-#line 2269 "char_ref.rl"
+#line 2264 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223c; }}
 	break;
 	case 1940:
-#line 2270 "char_ref.rl"
+#line 2265 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2009; }}
 	break;
 	case 1941:
-#line 2271 "char_ref.rl"
+#line 2266 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2248; }}
 	break;
 	case 1942:
-#line 2272 "char_ref.rl"
+#line 2267 "char_ref.rl"
 	{te = p+1;{ output->first = 0x223c; }}
 	break;
 	case 1943:
-#line 2273 "char_ref.rl"
+#line 2268 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfe; }}
 	break;
 	case 1944:
-#line 2275 "char_ref.rl"
+#line 2270 "char_ref.rl"
 	{te = p+1;{ output->first = 0x02dc; }}
 	break;
 	case 1945:
-#line 2276 "char_ref.rl"
+#line 2271 "char_ref.rl"
 	{te = p+1;{ output->first = 0xd7; }}
 	break;
 	case 1946:
-#line 2278 "char_ref.rl"
+#line 2273 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a0; }}
 	break;
 	case 1947:
-#line 2279 "char_ref.rl"
+#line 2274 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a31; }}
 	break;
 	case 1948:
-#line 2280 "char_ref.rl"
+#line 2275 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a30; }}
 	break;
 	case 1949:
-#line 2281 "char_ref.rl"
+#line 2276 "char_ref.rl"
 	{te = p+1;{ output->first = 0x222d; }}
 	break;
 	case 1950:
-#line 2282 "char_ref.rl"
+#line 2277 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2928; }}
 	break;
 	case 1951:
-#line 2283 "char_ref.rl"
+#line 2278 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a4; }}
 	break;
 	case 1952:
-#line 2284 "char_ref.rl"
+#line 2279 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2336; }}
 	break;
 	case 1953:
-#line 2285 "char_ref.rl"
+#line 2280 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2af1; }}
 	break;
 	case 1954:
-#line 2286 "char_ref.rl"
+#line 2281 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d565; }}
 	break;
 	case 1955:
-#line 2287 "char_ref.rl"
+#line 2282 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ada; }}
 	break;
 	case 1956:
-#line 2288 "char_ref.rl"
+#line 2283 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2929; }}
 	break;
 	case 1957:
-#line 2289 "char_ref.rl"
+#line 2284 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2034; }}
 	break;
 	case 1958:
-#line 2290 "char_ref.rl"
+#line 2285 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2122; }}
 	break;
 	case 1959:
-#line 2291 "char_ref.rl"
+#line 2286 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b5; }}
 	break;
 	case 1960:
-#line 2292 "char_ref.rl"
+#line 2287 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25bf; }}
 	break;
 	case 1961:
-#line 2293 "char_ref.rl"
+#line 2288 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25c3; }}
 	break;
 	case 1962:
-#line 2294 "char_ref.rl"
+#line 2289 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b4; }}
 	break;
 	case 1963:
-#line 2295 "char_ref.rl"
+#line 2290 "char_ref.rl"
 	{te = p+1;{ output->first = 0x225c; }}
 	break;
 	case 1964:
-#line 2296 "char_ref.rl"
+#line 2291 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b9; }}
 	break;
 	case 1965:
-#line 2297 "char_ref.rl"
+#line 2292 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b5; }}
 	break;
 	case 1966:
-#line 2298 "char_ref.rl"
+#line 2293 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ec; }}
 	break;
 	case 1967:
-#line 2299 "char_ref.rl"
+#line 2294 "char_ref.rl"
 	{te = p+1;{ output->first = 0x225c; }}
 	break;
 	case 1968:
-#line 2300 "char_ref.rl"
+#line 2295 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a3a; }}
 	break;
 	case 1969:
-#line 2301 "char_ref.rl"
+#line 2296 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a39; }}
 	break;
 	case 1970:
-#line 2302 "char_ref.rl"
+#line 2297 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29cd; }}
 	break;
 	case 1971:
-#line 2303 "char_ref.rl"
+#line 2298 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a3b; }}
 	break;
 	case 1972:
-#line 2304 "char_ref.rl"
+#line 2299 "char_ref.rl"
 	{te = p+1;{ output->first = 0x23e2; }}
 	break;
 	case 1973:
-#line 2305 "char_ref.rl"
+#line 2300 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4c9; }}
 	break;
 	case 1974:
-#line 2306 "char_ref.rl"
+#line 2301 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0446; }}
 	break;
 	case 1975:
-#line 2307 "char_ref.rl"
+#line 2302 "char_ref.rl"
 	{te = p+1;{ output->first = 0x045b; }}
 	break;
 	case 1976:
-#line 2308 "char_ref.rl"
+#line 2303 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0167; }}
 	break;
 	case 1977:
-#line 2309 "char_ref.rl"
+#line 2304 "char_ref.rl"
 	{te = p+1;{ output->first = 0x226c; }}
 	break;
 	case 1978:
-#line 2310 "char_ref.rl"
+#line 2305 "char_ref.rl"
 	{te = p+1;{ output->first = 0x219e; }}
 	break;
 	case 1979:
-#line 2311 "char_ref.rl"
+#line 2306 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21a0; }}
 	break;
 	case 1980:
-#line 2312 "char_ref.rl"
+#line 2307 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d1; }}
 	break;
 	case 1981:
-#line 2313 "char_ref.rl"
+#line 2308 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2963; }}
 	break;
 	case 1982:
-#line 2314 "char_ref.rl"
+#line 2309 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfa; }}
 	break;
 	case 1983:
-#line 2316 "char_ref.rl"
+#line 2311 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2191; }}
 	break;
 	case 1984:
-#line 2317 "char_ref.rl"
+#line 2312 "char_ref.rl"
 	{te = p+1;{ output->first = 0x045e; }}
 	break;
 	case 1985:
-#line 2318 "char_ref.rl"
+#line 2313 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016d; }}
 	break;
 	case 1986:
-#line 2319 "char_ref.rl"
+#line 2314 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfb; }}
 	break;
 	case 1987:
-#line 2321 "char_ref.rl"
+#line 2316 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0443; }}
 	break;
 	case 1988:
-#line 2322 "char_ref.rl"
+#line 2317 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c5; }}
 	break;
 	case 1989:
-#line 2323 "char_ref.rl"
+#line 2318 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0171; }}
 	break;
 	case 1990:
-#line 2324 "char_ref.rl"
+#line 2319 "char_ref.rl"
 	{te = p+1;{ output->first = 0x296e; }}
 	break;
 	case 1991:
-#line 2325 "char_ref.rl"
+#line 2320 "char_ref.rl"
 	{te = p+1;{ output->first = 0x297e; }}
 	break;
 	case 1992:
-#line 2326 "char_ref.rl"
+#line 2321 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d532; }}
 	break;
 	case 1993:
-#line 2327 "char_ref.rl"
+#line 2322 "char_ref.rl"
 	{te = p+1;{ output->first = 0xf9; }}
 	break;
 	case 1994:
-#line 2329 "char_ref.rl"
+#line 2324 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bf; }}
 	break;
 	case 1995:
-#line 2330 "char_ref.rl"
+#line 2325 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21be; }}
 	break;
 	case 1996:
-#line 2331 "char_ref.rl"
+#line 2326 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2580; }}
 	break;
 	case 1997:
-#line 2332 "char_ref.rl"
+#line 2327 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231c; }}
 	break;
 	case 1998:
-#line 2333 "char_ref.rl"
+#line 2328 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231c; }}
 	break;
 	case 1999:
-#line 2334 "char_ref.rl"
+#line 2329 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230f; }}
 	break;
 	case 2000:
-#line 2335 "char_ref.rl"
+#line 2330 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25f8; }}
 	break;
 	case 2001:
-#line 2336 "char_ref.rl"
+#line 2331 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016b; }}
 	break;
 	case 2002:
-#line 2337 "char_ref.rl"
+#line 2332 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa8; }}
 	break;
 	case 2003:
-#line 2339 "char_ref.rl"
+#line 2334 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0173; }}
 	break;
 	case 2004:
-#line 2340 "char_ref.rl"
+#line 2335 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d566; }}
 	break;
 	case 2005:
-#line 2341 "char_ref.rl"
+#line 2336 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2191; }}
 	break;
 	case 2006:
-#line 2342 "char_ref.rl"
+#line 2337 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2195; }}
 	break;
 	case 2007:
-#line 2343 "char_ref.rl"
+#line 2338 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21bf; }}
 	break;
 	case 2008:
-#line 2344 "char_ref.rl"
+#line 2339 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21be; }}
 	break;
 	case 2009:
-#line 2345 "char_ref.rl"
+#line 2340 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228e; }}
 	break;
 	case 2010:
-#line 2346 "char_ref.rl"
+#line 2341 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c5; }}
 	break;
 	case 2011:
-#line 2347 "char_ref.rl"
+#line 2342 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d2; }}
 	break;
 	case 2012:
-#line 2348 "char_ref.rl"
+#line 2343 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c5; }}
 	break;
 	case 2013:
-#line 2349 "char_ref.rl"
+#line 2344 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c8; }}
 	break;
 	case 2014:
-#line 2350 "char_ref.rl"
+#line 2345 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231d; }}
 	break;
 	case 2015:
-#line 2351 "char_ref.rl"
+#line 2346 "char_ref.rl"
 	{te = p+1;{ output->first = 0x231d; }}
 	break;
 	case 2016:
-#line 2352 "char_ref.rl"
+#line 2347 "char_ref.rl"
 	{te = p+1;{ output->first = 0x230e; }}
 	break;
 	case 2017:
-#line 2353 "char_ref.rl"
+#line 2348 "char_ref.rl"
 	{te = p+1;{ output->first = 0x016f; }}
 	break;
 	case 2018:
-#line 2354 "char_ref.rl"
+#line 2349 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25f9; }}
 	break;
 	case 2019:
-#line 2355 "char_ref.rl"
+#line 2350 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4ca; }}
 	break;
 	case 2020:
-#line 2356 "char_ref.rl"
+#line 2351 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22f0; }}
 	break;
 	case 2021:
-#line 2357 "char_ref.rl"
+#line 2352 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0169; }}
 	break;
 	case 2022:
-#line 2358 "char_ref.rl"
+#line 2353 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b5; }}
 	break;
 	case 2023:
-#line 2359 "char_ref.rl"
+#line 2354 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b4; }}
 	break;
 	case 2024:
-#line 2360 "char_ref.rl"
+#line 2355 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21c8; }}
 	break;
 	case 2025:
-#line 2361 "char_ref.rl"
+#line 2356 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfc; }}
 	break;
 	case 2026:
-#line 2363 "char_ref.rl"
+#line 2358 "char_ref.rl"
 	{te = p+1;{ output->first = 0x29a7; }}
 	break;
 	case 2027:
-#line 2364 "char_ref.rl"
+#line 2359 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21d5; }}
 	break;
 	case 2028:
-#line 2365 "char_ref.rl"
+#line 2360 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae8; }}
 	break;
 	case 2029:
-#line 2366 "char_ref.rl"
+#line 2361 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2ae9; }}
 	break;
 	case 2030:
-#line 2367 "char_ref.rl"
+#line 2362 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a8; }}
 	break;
 	case 2031:
-#line 2368 "char_ref.rl"
+#line 2363 "char_ref.rl"
 	{te = p+1;{ output->first = 0x299c; }}
 	break;
 	case 2032:
-#line 2369 "char_ref.rl"
+#line 2364 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f5; }}
 	break;
 	case 2033:
-#line 2370 "char_ref.rl"
+#line 2365 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f0; }}
 	break;
 	case 2034:
-#line 2371 "char_ref.rl"
+#line 2366 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2205; }}
 	break;
 	case 2035:
-#line 2372 "char_ref.rl"
+#line 2367 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d5; }}
 	break;
 	case 2036:
-#line 2373 "char_ref.rl"
+#line 2368 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d6; }}
 	break;
 	case 2037:
-#line 2374 "char_ref.rl"
+#line 2369 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221d; }}
 	break;
 	case 2038:
-#line 2375 "char_ref.rl"
+#line 2370 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2195; }}
 	break;
 	case 2039:
-#line 2376 "char_ref.rl"
+#line 2371 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03f1; }}
 	break;
 	case 2040:
-#line 2377 "char_ref.rl"
+#line 2372 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03c2; }}
 	break;
 	case 2041:
-#line 2378 "char_ref.rl"
+#line 2373 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228a; output->second = 0xfe00; }}
 	break;
 	case 2042:
-#line 2379 "char_ref.rl"
+#line 2374 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acb; output->second = 0xfe00; }}
 	break;
 	case 2043:
-#line 2380 "char_ref.rl"
+#line 2375 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228b; output->second = 0xfe00; }}
 	break;
 	case 2044:
-#line 2381 "char_ref.rl"
+#line 2376 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acc; output->second = 0xfe00; }}
 	break;
 	case 2045:
-#line 2382 "char_ref.rl"
+#line 2377 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03d1; }}
 	break;
 	case 2046:
-#line 2383 "char_ref.rl"
+#line 2378 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b2; }}
 	break;
 	case 2047:
-#line 2384 "char_ref.rl"
+#line 2379 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b3; }}
 	break;
 	case 2048:
-#line 2385 "char_ref.rl"
+#line 2380 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0432; }}
 	break;
 	case 2049:
-#line 2386 "char_ref.rl"
+#line 2381 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22a2; }}
 	break;
 	case 2050:
-#line 2387 "char_ref.rl"
+#line 2382 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2228; }}
 	break;
 	case 2051:
-#line 2388 "char_ref.rl"
+#line 2383 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22bb; }}
 	break;
 	case 2052:
-#line 2389 "char_ref.rl"
+#line 2384 "char_ref.rl"
 	{te = p+1;{ output->first = 0x225a; }}
 	break;
 	case 2053:
-#line 2390 "char_ref.rl"
+#line 2385 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22ee; }}
 	break;
 	case 2054:
-#line 2391 "char_ref.rl"
+#line 2386 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7c; }}
 	break;
 	case 2055:
-#line 2392 "char_ref.rl"
+#line 2387 "char_ref.rl"
 	{te = p+1;{ output->first = 0x7c; }}
 	break;
 	case 2056:
-#line 2393 "char_ref.rl"
+#line 2388 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d533; }}
 	break;
 	case 2057:
-#line 2394 "char_ref.rl"
+#line 2389 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b2; }}
 	break;
 	case 2058:
-#line 2395 "char_ref.rl"
+#line 2390 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2282; output->second = 0x20d2; }}
 	break;
 	case 2059:
-#line 2396 "char_ref.rl"
+#line 2391 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2283; output->second = 0x20d2; }}
 	break;
 	case 2060:
-#line 2397 "char_ref.rl"
+#line 2392 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d567; }}
 	break;
 	case 2061:
-#line 2398 "char_ref.rl"
+#line 2393 "char_ref.rl"
 	{te = p+1;{ output->first = 0x221d; }}
 	break;
 	case 2062:
-#line 2399 "char_ref.rl"
+#line 2394 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22b3; }}
 	break;
 	case 2063:
-#line 2400 "char_ref.rl"
+#line 2395 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4cb; }}
 	break;
 	case 2064:
-#line 2401 "char_ref.rl"
+#line 2396 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acb; output->second = 0xfe00; }}
 	break;
 	case 2065:
-#line 2402 "char_ref.rl"
+#line 2397 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228a; output->second = 0xfe00; }}
 	break;
 	case 2066:
-#line 2403 "char_ref.rl"
+#line 2398 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2acc; output->second = 0xfe00; }}
 	break;
 	case 2067:
-#line 2404 "char_ref.rl"
+#line 2399 "char_ref.rl"
 	{te = p+1;{ output->first = 0x228b; output->second = 0xfe00; }}
 	break;
 	case 2068:
-#line 2405 "char_ref.rl"
+#line 2400 "char_ref.rl"
 	{te = p+1;{ output->first = 0x299a; }}
 	break;
 	case 2069:
-#line 2406 "char_ref.rl"
+#line 2401 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0175; }}
 	break;
 	case 2070:
-#line 2407 "char_ref.rl"
+#line 2402 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a5f; }}
 	break;
 	case 2071:
-#line 2408 "char_ref.rl"
+#line 2403 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2227; }}
 	break;
 	case 2072:
-#line 2409 "char_ref.rl"
+#line 2404 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2259; }}
 	break;
 	case 2073:
-#line 2410 "char_ref.rl"
+#line 2405 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2118; }}
 	break;
 	case 2074:
-#line 2411 "char_ref.rl"
+#line 2406 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d534; }}
 	break;
 	case 2075:
-#line 2412 "char_ref.rl"
+#line 2407 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d568; }}
 	break;
 	case 2076:
-#line 2413 "char_ref.rl"
+#line 2408 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2118; }}
 	break;
 	case 2077:
-#line 2414 "char_ref.rl"
+#line 2409 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2240; }}
 	break;
 	case 2078:
-#line 2415 "char_ref.rl"
+#line 2410 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2240; }}
 	break;
 	case 2079:
-#line 2416 "char_ref.rl"
+#line 2411 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4cc; }}
 	break;
 	case 2080:
-#line 2417 "char_ref.rl"
+#line 2412 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c2; }}
 	break;
 	case 2081:
-#line 2418 "char_ref.rl"
+#line 2413 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25ef; }}
 	break;
 	case 2082:
-#line 2419 "char_ref.rl"
+#line 2414 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c3; }}
 	break;
 	case 2083:
-#line 2420 "char_ref.rl"
+#line 2415 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25bd; }}
 	break;
 	case 2084:
-#line 2421 "char_ref.rl"
+#line 2416 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d535; }}
 	break;
 	case 2085:
-#line 2422 "char_ref.rl"
+#line 2417 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27fa; }}
 	break;
 	case 2086:
-#line 2423 "char_ref.rl"
+#line 2418 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f7; }}
 	break;
 	case 2087:
-#line 2424 "char_ref.rl"
+#line 2419 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03be; }}
 	break;
 	case 2088:
-#line 2425 "char_ref.rl"
+#line 2420 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f8; }}
 	break;
 	case 2089:
-#line 2426 "char_ref.rl"
+#line 2421 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f5; }}
 	break;
 	case 2090:
-#line 2427 "char_ref.rl"
+#line 2422 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27fc; }}
 	break;
 	case 2091:
-#line 2428 "char_ref.rl"
+#line 2423 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22fb; }}
 	break;
 	case 2092:
-#line 2429 "char_ref.rl"
+#line 2424 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a00; }}
 	break;
 	case 2093:
-#line 2430 "char_ref.rl"
+#line 2425 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d569; }}
 	break;
 	case 2094:
-#line 2431 "char_ref.rl"
+#line 2426 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a01; }}
 	break;
 	case 2095:
-#line 2432 "char_ref.rl"
+#line 2427 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a02; }}
 	break;
 	case 2096:
-#line 2433 "char_ref.rl"
+#line 2428 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f9; }}
 	break;
 	case 2097:
-#line 2434 "char_ref.rl"
+#line 2429 "char_ref.rl"
 	{te = p+1;{ output->first = 0x27f6; }}
 	break;
 	case 2098:
-#line 2435 "char_ref.rl"
+#line 2430 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4cd; }}
 	break;
 	case 2099:
-#line 2436 "char_ref.rl"
+#line 2431 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a06; }}
 	break;
 	case 2100:
-#line 2437 "char_ref.rl"
+#line 2432 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2a04; }}
 	break;
 	case 2101:
-#line 2438 "char_ref.rl"
+#line 2433 "char_ref.rl"
 	{te = p+1;{ output->first = 0x25b3; }}
 	break;
 	case 2102:
-#line 2439 "char_ref.rl"
+#line 2434 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c1; }}
 	break;
 	case 2103:
-#line 2440 "char_ref.rl"
+#line 2435 "char_ref.rl"
 	{te = p+1;{ output->first = 0x22c0; }}
 	break;
 	case 2104:
-#line 2441 "char_ref.rl"
+#line 2436 "char_ref.rl"
 	{te = p+1;{ output->first = 0xfd; }}
 	break;
 	case 2105:
-#line 2443 "char_ref.rl"
+#line 2438 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044f; }}
 	break;
 	case 2106:
-#line 2444 "char_ref.rl"
+#line 2439 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0177; }}
 	break;
 	case 2107:
-#line 2445 "char_ref.rl"
+#line 2440 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044b; }}
 	break;
 	case 2108:
-#line 2446 "char_ref.rl"
+#line 2441 "char_ref.rl"
 	{te = p+1;{ output->first = 0xa5; }}
 	break;
 	case 2109:
-#line 2448 "char_ref.rl"
+#line 2443 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d536; }}
 	break;
 	case 2110:
-#line 2449 "char_ref.rl"
+#line 2444 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0457; }}
 	break;
 	case 2111:
-#line 2450 "char_ref.rl"
+#line 2445 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d56a; }}
 	break;
 	case 2112:
-#line 2451 "char_ref.rl"
+#line 2446 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4ce; }}
 	break;
 	case 2113:
-#line 2452 "char_ref.rl"
+#line 2447 "char_ref.rl"
 	{te = p+1;{ output->first = 0x044e; }}
 	break;
 	case 2114:
-#line 2453 "char_ref.rl"
+#line 2448 "char_ref.rl"
 	{te = p+1;{ output->first = 0xff; }}
 	break;
 	case 2115:
-#line 2455 "char_ref.rl"
+#line 2450 "char_ref.rl"
 	{te = p+1;{ output->first = 0x017a; }}
 	break;
 	case 2116:
-#line 2456 "char_ref.rl"
+#line 2451 "char_ref.rl"
 	{te = p+1;{ output->first = 0x017e; }}
 	break;
 	case 2117:
-#line 2457 "char_ref.rl"
+#line 2452 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0437; }}
 	break;
 	case 2118:
-#line 2458 "char_ref.rl"
+#line 2453 "char_ref.rl"
 	{te = p+1;{ output->first = 0x017c; }}
 	break;
 	case 2119:
-#line 2459 "char_ref.rl"
+#line 2454 "char_ref.rl"
 	{te = p+1;{ output->first = 0x2128; }}
 	break;
 	case 2120:
-#line 2460 "char_ref.rl"
+#line 2455 "char_ref.rl"
 	{te = p+1;{ output->first = 0x03b6; }}
 	break;
 	case 2121:
-#line 2461 "char_ref.rl"
+#line 2456 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d537; }}
 	break;
 	case 2122:
-#line 2462 "char_ref.rl"
+#line 2457 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0436; }}
 	break;
 	case 2123:
-#line 2463 "char_ref.rl"
+#line 2458 "char_ref.rl"
 	{te = p+1;{ output->first = 0x21dd; }}
 	break;
 	case 2124:
-#line 2464 "char_ref.rl"
+#line 2459 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d56b; }}
 	break;
 	case 2125:
-#line 2465 "char_ref.rl"
+#line 2460 "char_ref.rl"
 	{te = p+1;{ output->first = 0x0001d4cf; }}
 	break;
 	case 2126:
-#line 2466 "char_ref.rl"
+#line 2461 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200d; }}
 	break;
 	case 2127:
-#line 2467 "char_ref.rl"
+#line 2462 "char_ref.rl"
 	{te = p+1;{ output->first = 0x200c; }}
 	break;
 	case 2128:
-#line 240 "char_ref.rl"
+#line 235 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x26; }}
 	break;
 	case 2129:
-#line 242 "char_ref.rl"
+#line 237 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc1; }}
 	break;
 	case 2130:
-#line 245 "char_ref.rl"
+#line 240 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc2; }}
 	break;
 	case 2131:
-#line 249 "char_ref.rl"
+#line 244 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc0; }}
 	break;
 	case 2132:
-#line 257 "char_ref.rl"
+#line 252 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc5; }}
 	break;
 	case 2133:
-#line 261 "char_ref.rl"
+#line 256 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc3; }}
 	break;
 	case 2134:
-#line 263 "char_ref.rl"
+#line 258 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc4; }}
 	break;
 	case 2135:
-#line 278 "char_ref.rl"
+#line 273 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa9; }}
 	break;
 	case 2136:
-#line 285 "char_ref.rl"
+#line 280 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc7; }}
 	break;
 	case 2137:
-#line 368 "char_ref.rl"
+#line 363 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd0; }}
 	break;
 	case 2138:
-#line 370 "char_ref.rl"
+#line 365 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc9; }}
 	break;
 	case 2139:
-#line 373 "char_ref.rl"
+#line 368 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xca; }}
 	break;
 	case 2140:
-#line 378 "char_ref.rl"
+#line 373 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xc8; }}
 	break;
 	case 2141:
-#line 393 "char_ref.rl"
+#line 388 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xcb; }}
 	break;
 	case 2142:
-#line 406 "char_ref.rl"
+#line 401 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x3e; }}
 	break;
 	case 2143:
-#line 442 "char_ref.rl"
+#line 437 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xcd; }}
 	break;
 	case 2144:
-#line 444 "char_ref.rl"
+#line 439 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xce; }}
 	break;
 	case 2145:
-#line 449 "char_ref.rl"
+#line 444 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xcc; }}
 	break;
 	case 2146:
-#line 466 "char_ref.rl"
+#line 461 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xcf; }}
 	break;
 	case 2147:
-#line 484 "char_ref.rl"
+#line 479 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x3c; }}
 	break;
 	case 2148:
-#line 621 "char_ref.rl"
+#line 616 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd1; }}
 	break;
 	case 2149:
-#line 625 "char_ref.rl"
+#line 620 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd3; }}
 	break;
 	case 2150:
-#line 627 "char_ref.rl"
+#line 622 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd4; }}
 	break;
 	case 2151:
-#line 632 "char_ref.rl"
+#line 627 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd2; }}
 	break;
 	case 2152:
-#line 642 "char_ref.rl"
+#line 637 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd8; }}
 	break;
 	case 2153:
-#line 644 "char_ref.rl"
+#line 639 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd5; }}
 	break;
 	case 2154:
-#line 647 "char_ref.rl"
+#line 642 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd6; }}
 	break;
 	case 2155:
-#line 672 "char_ref.rl"
+#line 667 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x22; }}
 	break;
 	case 2156:
-#line 678 "char_ref.rl"
+#line 673 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xae; }}
 	break;
 	case 2157:
-#line 762 "char_ref.rl"
+#line 757 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xde; }}
 	break;
 	case 2158:
-#line 785 "char_ref.rl"
+#line 780 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xda; }}
 	break;
 	case 2159:
-#line 791 "char_ref.rl"
+#line 786 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xdb; }}
 	break;
 	case 2160:
-#line 796 "char_ref.rl"
+#line 791 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd9; }}
 	break;
 	case 2161:
-#line 823 "char_ref.rl"
+#line 818 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xdc; }}
 	break;
 	case 2162:
-#line 854 "char_ref.rl"
+#line 849 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xdd; }}
 	break;
 	case 2163:
-#line 872 "char_ref.rl"
+#line 867 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe1; }}
 	break;
 	case 2164:
-#line 878 "char_ref.rl"
+#line 873 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe2; }}
 	break;
 	case 2165:
-#line 880 "char_ref.rl"
+#line 875 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb4; }}
 	break;
 	case 2166:
-#line 883 "char_ref.rl"
+#line 878 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe6; }}
 	break;
 	case 2167:
-#line 887 "char_ref.rl"
+#line 882 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe0; }}
 	break;
 	case 2168:
-#line 894 "char_ref.rl"
+#line 889 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x26; }}
 	break;
 	case 2169:
-#line 929 "char_ref.rl"
+#line 924 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe5; }}
 	break;
 	case 2170:
-#line 935 "char_ref.rl"
+#line 930 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe3; }}
 	break;
 	case 2171:
-#line 937 "char_ref.rl"
+#line 932 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe4; }}
 	break;
 	case 2172:
-#line 1042 "char_ref.rl"
+#line 1037 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa6; }}
 	break;
 	case 2173:
-#line 1069 "char_ref.rl"
+#line 1064 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe7; }}
 	break;
 	case 2174:
-#line 1075 "char_ref.rl"
+#line 1070 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb8; }}
 	break;
 	case 2175:
-#line 1078 "char_ref.rl"
+#line 1073 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa2; }}
 	break;
 	case 2176:
-#line 1117 "char_ref.rl"
+#line 1112 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa9; }}
 	break;
 	case 2177:
-#line 1147 "char_ref.rl"
+#line 1142 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa4; }}
 	break;
 	case 2178:
-#line 1171 "char_ref.rl"
+#line 1166 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb0; }}
 	break;
 	case 2179:
-#line 1187 "char_ref.rl"
+#line 1182 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf7; }}
 	break;
 	case 2180:
-#line 1224 "char_ref.rl"
+#line 1219 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe9; }}
 	break;
 	case 2181:
-#line 1229 "char_ref.rl"
+#line 1224 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xea; }}
 	break;
 	case 2182:
-#line 1238 "char_ref.rl"
+#line 1233 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xe8; }}
 	break;
 	case 2183:
-#line 1280 "char_ref.rl"
+#line 1275 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf0; }}
 	break;
 	case 2184:
-#line 1282 "char_ref.rl"
+#line 1277 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xeb; }}
 	break;
 	case 2185:
-#line 1307 "char_ref.rl"
+#line 1302 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xbd; }}
 	break;
 	case 2186:
-#line 1310 "char_ref.rl"
+#line 1305 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xbc; }}
 	break;
 	case 2187:
-#line 1317 "char_ref.rl"
+#line 1312 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xbe; }}
 	break;
 	case 2188:
-#line 1372 "char_ref.rl"
+#line 1367 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x3e; }}
 	break;
 	case 2189:
-#line 1416 "char_ref.rl"
+#line 1411 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xed; }}
 	break;
 	case 2190:
-#line 1419 "char_ref.rl"
+#line 1414 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xee; }}
 	break;
 	case 2191:
-#line 1423 "char_ref.rl"
+#line 1418 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa1; }}
 	break;
 	case 2192:
-#line 1427 "char_ref.rl"
+#line 1422 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xec; }}
 	break;
 	case 2193:
-#line 1458 "char_ref.rl"
+#line 1453 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xbf; }}
 	break;
 	case 2194:
-#line 1470 "char_ref.rl"
+#line 1465 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xef; }}
 	break;
 	case 2195:
-#line 1505 "char_ref.rl"
+#line 1500 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xab; }}
 	break;
 	case 2196:
-#line 1627 "char_ref.rl"
+#line 1622 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x3c; }}
 	break;
 	case 2197:
-#line 1645 "char_ref.rl"
+#line 1640 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xaf; }}
 	break;
 	case 2198:
-#line 1662 "char_ref.rl"
+#line 1657 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb5; }}
 	break;
 	case 2199:
-#line 1667 "char_ref.rl"
+#line 1662 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb7; }}
 	break;
 	case 2200:
-#line 1706 "char_ref.rl"
+#line 1701 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa0; }}
 	break;
 	case 2201:
-#line 1775 "char_ref.rl"
+#line 1770 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xac; }}
 	break;
 	case 2202:
-#line 1822 "char_ref.rl"
+#line 1817 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf1; }}
 	break;
 	case 2203:
-#line 1853 "char_ref.rl"
+#line 1848 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf3; }}
 	break;
 	case 2204:
-#line 1857 "char_ref.rl"
+#line 1852 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf4; }}
 	break;
 	case 2205:
-#line 1869 "char_ref.rl"
+#line 1864 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf2; }}
 	break;
 	case 2206:
-#line 1894 "char_ref.rl"
+#line 1889 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xaa; }}
 	break;
 	case 2207:
-#line 1896 "char_ref.rl"
+#line 1891 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xba; }}
 	break;
 	case 2208:
-#line 1903 "char_ref.rl"
+#line 1898 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf8; }}
 	break;
 	case 2209:
-#line 1906 "char_ref.rl"
+#line 1901 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf5; }}
 	break;
 	case 2210:
-#line 1910 "char_ref.rl"
+#line 1905 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf6; }}
 	break;
 	case 2211:
-#line 1914 "char_ref.rl"
+#line 1909 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb6; }}
 	break;
 	case 2212:
-#line 1944 "char_ref.rl"
+#line 1939 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb1; }}
 	break;
 	case 2213:
-#line 1951 "char_ref.rl"
+#line 1946 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa3; }}
 	break;
 	case 2214:
-#line 1991 "char_ref.rl"
+#line 1986 "char_ref.rl"
 	{te = p;p--;{ output->first = 0x22; }}
 	break;
 	case 2215:
-#line 2006 "char_ref.rl"
+#line 2001 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xbb; }}
 	break;
 	case 2216:
-#line 2045 "char_ref.rl"
+#line 2040 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xae; }}
 	break;
 	case 2217:
-#line 2120 "char_ref.rl"
+#line 2115 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa7; }}
 	break;
 	case 2218:
-#line 2134 "char_ref.rl"
+#line 2129 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xad; }}
 	break;
 	case 2219:
-#line 2221 "char_ref.rl"
+#line 2216 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb9; }}
 	break;
 	case 2220:
-#line 2223 "char_ref.rl"
+#line 2218 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb2; }}
 	break;
 	case 2221:
-#line 2225 "char_ref.rl"
+#line 2220 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xb3; }}
 	break;
 	case 2222:
-#line 2253 "char_ref.rl"
+#line 2248 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xdf; }}
 	break;
 	case 2223:
-#line 2274 "char_ref.rl"
+#line 2269 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xfe; }}
 	break;
 	case 2224:
-#line 2277 "char_ref.rl"
+#line 2272 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xd7; }}
 	break;
 	case 2225:
-#line 2315 "char_ref.rl"
+#line 2310 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xfa; }}
 	break;
 	case 2226:
-#line 2320 "char_ref.rl"
+#line 2315 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xfb; }}
 	break;
 	case 2227:
-#line 2328 "char_ref.rl"
+#line 2323 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xf9; }}
 	break;
 	case 2228:
-#line 2338 "char_ref.rl"
+#line 2333 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa8; }}
 	break;
 	case 2229:
-#line 2362 "char_ref.rl"
+#line 2357 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xfc; }}
 	break;
 	case 2230:
-#line 2442 "char_ref.rl"
+#line 2437 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xfd; }}
 	break;
 	case 2231:
-#line 2447 "char_ref.rl"
+#line 2442 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xa5; }}
 	break;
 	case 2232:
-#line 2454 "char_ref.rl"
+#line 2449 "char_ref.rl"
 	{te = p;p--;{ output->first = 0xff; }}
 	break;
 	case 2233:
-#line 1078 "char_ref.rl"
+#line 1073 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xa2; }}
 	break;
 	case 2234:
-#line 1117 "char_ref.rl"
+#line 1112 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xa9; }}
 	break;
 	case 2235:
-#line 1187 "char_ref.rl"
+#line 1182 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xf7; }}
 	break;
 	case 2236:
-#line 1372 "char_ref.rl"
+#line 1367 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0x3e; }}
 	break;
 	case 2237:
-#line 1627 "char_ref.rl"
+#line 1622 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0x3c; }}
 	break;
 	case 2238:
-#line 1775 "char_ref.rl"
+#line 1770 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xac; }}
 	break;
 	case 2239:
-#line 1914 "char_ref.rl"
+#line 1909 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xb6; }}
 	break;
 	case 2240:
-#line 2277 "char_ref.rl"
+#line 2272 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xd7; }}
 	break;
-#line 23004 "char_ref.c"
+#line 23003 "char_ref.c"
 		}
 	}
 
@@ -23013,7 +23012,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 23017 "char_ref.c"
+#line 23016 "char_ref.c"
 		}
 	}
 
@@ -23033,16 +23032,19 @@ _again:
 	_out: {}
 	}
 
-#line 2491 "char_ref.rl"
+#line 2490 "char_ref.rl"
 
   if (output->first != kGumboNoChar) {
     char last_char = *(te - 1);
     int len = te - start;
+    // Consume the match outside of the if-statement below;
+    // is_legal_attribute_char_next depends upon the iterator having been
+    // advanced past it.
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
       return true;
-    } else if (is_in_attribute && is_legal_attribute_char_next(input)) {
+    } else if (is_in_attribute && (*te == '=' || isalnum(*te))) {
       output->first = kGumboNoChar;
       output->second = kGumboNoChar;
       utf8iterator_reset(input);
@@ -23053,7 +23055,6 @@ _again:
       bad_ref.data = start;
       add_named_reference_error(
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
-      assert(output->first != kGumboNoChar);
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
       return false;

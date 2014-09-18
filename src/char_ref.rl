@@ -203,11 +203,6 @@ static bool consume_numeric_ref(
   return status;
 }
 
-static bool is_legal_attribute_char_next(Utf8Iterator* input) {
-  int c = utf8iterator_current(input);
-  return c == '=' || isalnum(c);
-}
-
 static bool maybe_add_invalid_named_reference(
     struct GumboInternalParser* parser, Utf8Iterator* input) {
   // The iterator will always be reset in this code path, so we don't need to
@@ -2487,16 +2482,23 @@ static bool consume_named_ref(
   (void) ts;
 
   start = p;
+  // Note that the state machine operates on raw character buffers, so it's not
+  // consuming any characters.  As a result, we don't need to do any mark/reset
+  // calls, but we do need to call utf8iterator_maybe_consume_match on success
+  // to consume the characters we just looked at.
   %% write exec;
 
   if (output->first != kGumboNoChar) {
     char last_char = *(te - 1);
     int len = te - start;
+    // Consume the match outside of the if-statement below;
+    // is_legal_attribute_char_next depends upon the iterator having been
+    // advanced past it.
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
       return true;
-    } else if (is_in_attribute && is_legal_attribute_char_next(input)) {
+    } else if (is_in_attribute && (*te == '=' || isalnum(*te))) {
       output->first = kGumboNoChar;
       output->second = kGumboNoChar;
       utf8iterator_reset(input);
@@ -2507,7 +2509,6 @@ static bool consume_named_ref(
       bad_ref.data = start;
       add_named_reference_error(
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
-      assert(output->first != kGumboNoChar);
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
       return false;
