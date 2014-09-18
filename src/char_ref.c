@@ -23034,7 +23034,8 @@ _again:
 
 #line 2490 "char_ref.rl"
 
-  if (output->first != kGumboNoChar) {
+  if (false) {
+    assert(output->first != kGumboNoChar);
     char last_char = *(te - 1);
     int len = te - start;
     // Consume the match outside of the if-statement below;

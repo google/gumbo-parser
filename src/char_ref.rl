@@ -2482,18 +2482,12 @@ static bool consume_named_ref(
   (void) ts;
 
   start = p;
-  // Note that the state machine operates on raw character buffers, so it's not
-  // consuming any characters.  As a result, we don't need to do any mark/reset
-  // calls, but we do need to call utf8iterator_maybe_consume_match on success
-  // to consume the characters we just looked at.
   %% write exec;
 
   if (output->first != kGumboNoChar) {
+    assert(output->first != kGumboNoChar);
     char last_char = *(te - 1);
     int len = te - start;
-    // Consume the match outside of the if-statement below;
-    // is_legal_attribute_char_next depends upon the iterator having been
-    // advanced past it.
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
