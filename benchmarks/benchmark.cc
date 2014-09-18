@@ -22,15 +22,19 @@
 #include <stdlib.h>
 #include <string>
 #include <time.h>
+#include <chrono>
 
 #include "gumbo.h"
 
 static const int kNumReps = 10;
 
 static uint64_t get_time() {
-  struct timespec time;
-  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
-  return time.tv_sec * 1000000000 + time.tv_nsec;
+  using namespace std::chrono;
+
+  high_resolution_clock::time_point now = high_resolution_clock::now();
+  high_resolution_clock::duration duration = now.time_since_epoch();
+
+  return duration_cast<std::chrono::nanoseconds>(duration).count();
 }
 
 int main(int argc, char** argv) {
