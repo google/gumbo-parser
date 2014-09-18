@@ -13993,12 +13993,8 @@ static bool consume_named_ref(
   (void) ts;
 
   start = p;
-  // Note that the state machine operates on raw character buffers, so it's not
-  // consuming any characters.  As a result, we don't need to do any mark/reset
-  // calls, but we do need to call utf8iterator_maybe_consume_match on success
-  // to consume the characters we just looked at.
   
-#line 14002 "char_ref.c"
+#line 13998 "char_ref.c"
 	{
 	int _slen;
 	int _trans;
@@ -14020,7 +14016,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 14024 "char_ref.c"
+#line 14020 "char_ref.c"
 		}
 	}
 
@@ -22999,7 +22995,7 @@ _eof_trans:
 #line 2272 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xd7; }}
 	break;
-#line 23003 "char_ref.c"
+#line 22999 "char_ref.c"
 		}
 	}
 
@@ -23012,7 +23008,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 23016 "char_ref.c"
+#line 23012 "char_ref.c"
 		}
 	}
 
@@ -23032,15 +23028,16 @@ _again:
 	_out: {}
 	}
 
-#line 2490 "char_ref.rl"
+#line 2486 "char_ref.rl"
 
-  if (false) {
+  if (cs >= 
+#line 23035 "char_ref.c"
+7623
+#line 2487 "char_ref.rl"
+) {
     assert(output->first != kGumboNoChar);
     char last_char = *(te - 1);
     int len = te - start;
-    // Consume the match outside of the if-statement below;
-    // is_legal_attribute_char_next depends upon the iterator having been
-    // advanced past it.
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
@@ -23061,6 +23058,8 @@ _again:
       return false;
     }
   } else {
+    output->first = kGumboNoChar;
+    output->second = kGumboNoChar;
     bool status = maybe_add_invalid_named_reference(parser, input);
     utf8iterator_reset(input);
     return status;

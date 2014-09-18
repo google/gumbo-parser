@@ -2484,7 +2484,7 @@ static bool consume_named_ref(
   start = p;
   %% write exec;
 
-  if (output->first != kGumboNoChar) {
+  if (cs >= %%{ write first_final; }%%) {
     assert(output->first != kGumboNoChar);
     char last_char = *(te - 1);
     int len = te - start;
@@ -2508,6 +2508,8 @@ static bool consume_named_ref(
       return false;
     }
   } else {
+    output->first = kGumboNoChar;
+    output->second = kGumboNoChar;
     bool status = maybe_add_invalid_named_reference(parser, input);
     utf8iterator_reset(input);
     return status;
