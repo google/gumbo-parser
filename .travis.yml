@@ -1,0 +1,16 @@
+language: c++
+
+compiler:
+  - gcc
+  - clang
+
+install:
+  - wget 'https://googletest.googlecode.com/files/gtest-1.6.0.zip'
+  - unzip gtest-1.6.0.zip
+  - ln -s gtest-1.6.0 gtest
+  - sudo pip install html5lib
+
+script:
+  - ./configure && make && make check
+  - sudo make install
+  - LD_LIBRARY_PATH=/usr/local/lib python python/gumbo/html5lib_adapter_test.py
