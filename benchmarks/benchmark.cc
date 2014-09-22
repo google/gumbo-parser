@@ -27,12 +27,6 @@
 
 static const int kNumReps = 10;
 
-static uint64_t get_time() {
-  struct timespec time;
-  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
-  return time.tv_sec * 1000000000 + time.tv_nsec;
-}
-
 int main(int argc, char** argv) {
   if (argc != 1) {
     std::cout << "Usage: benchmarks\n";
@@ -65,13 +59,15 @@ int main(int argc, char** argv) {
       in.read(&contents[0], contents.size());
       in.close();
 
-      uint64_t start_time = get_time();
+      clock_t start_time = clock();
       for (int i = 0; i < kNumReps; ++i) {
         GumboOutput* output = gumbo_parse(contents.c_str());
         gumbo_destroy_output(&kGumboDefaultOptions, output);
       }
-      uint64_t end_time = get_time();
-      std::cout << filename << ": " << ((end_time - start_time) / (1000 * kNumReps)) << " microseconds.\n";
+      clock_t end_time = clock();
+      std::cout << filename << ": "
+          << (1000000 * (end_time - start_time) / (kNumReps * CLOCKS_PER_SEC))
+          << " microseconds.\n";
     }
   }
   closedir(dir);
