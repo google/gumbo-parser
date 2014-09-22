@@ -181,7 +181,7 @@ typedef struct _ReplacementEntry {
     { GUMBO_STRING(from), GUMBO_STRING(to) }
 
 // Static data for SVG attribute replacements.
-// http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adjust-svg-attributes
+// https://html.spec.whatwg.org/multipage/syntax.html#creating-and-inserting-nodes
 static const ReplacementEntry kSvgAttributeReplacements[] = {
   REPLACEMENT_ENTRY("attributename", "attributeName"),
   REPLACEMENT_ENTRY("attributetype", "attributeType"),
@@ -189,12 +189,8 @@ static const ReplacementEntry kSvgAttributeReplacements[] = {
   REPLACEMENT_ENTRY("baseprofile", "baseProfile"),
   REPLACEMENT_ENTRY("calcmode", "calcMode"),
   REPLACEMENT_ENTRY("clippathunits", "clipPathUnits"),
-  REPLACEMENT_ENTRY("contentscripttype", "contentScriptType"),
-  REPLACEMENT_ENTRY("contentstyletype", "contentStyleType"),
   REPLACEMENT_ENTRY("diffuseconstant", "diffuseConstant"),
   REPLACEMENT_ENTRY("edgemode", "edgeMode"),
-  REPLACEMENT_ENTRY("externalresourcesrequired", "externalResourcesRequired"),
-  REPLACEMENT_ENTRY("filterres", "filterRes"),
   REPLACEMENT_ENTRY("filterunits", "filterUnits"),
   REPLACEMENT_ENTRY("glyphref", "glyphRef"),
   REPLACEMENT_ENTRY("gradienttransform", "gradientTransform"),
