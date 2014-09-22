@@ -1,0 +1,22 @@
+language: c++
+
+compiler:
+  - gcc
+  - clang
+
+install:
+  - wget 'https://googletest.googlecode.com/files/gtest-1.6.0.zip'
+  - unzip gtest-1.6.0.zip
+  - ln -s gtest-1.6.0 gtest
+  - sudo pip install BeautifulSoup
+  - sudo pip install html5lib==0.95
+  - ln -s `python -c 'import html5lib, os; print os.path.dirname(html5lib.__file__)'`/tests/testdata .
+
+script:
+  - ./autogen.sh && ./configure && make && make check
+  - python python/gumbo/gumboc_test.py
+  - python python/gumbo/html5lib_adapter_test.py
+  - python python/gumbo/soup_adapter_test.py
+  - sudo make install
+  - sudo python setup.py sdist install
+  - python -c 'import gumbo; gumbo.parse("Foo")'
