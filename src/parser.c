@@ -1435,9 +1435,9 @@ static bool has_an_element_in_scope_with_tagname(GumboParser* parser, ...) {
   bool found = has_an_element_in_specific_scope(
       parser, &tags, false, GUMBO_TAG_APPLET, GUMBO_TAG_CAPTION, GUMBO_TAG_HTML,
       GUMBO_TAG_TABLE, GUMBO_TAG_TD, GUMBO_TAG_TH, GUMBO_TAG_MARQUEE,
-      GUMBO_TAG_OBJECT, GUMBO_TAG_MI, GUMBO_TAG_MO, GUMBO_TAG_MN, GUMBO_TAG_MS,
-      GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML, GUMBO_TAG_FOREIGNOBJECT,
-      GUMBO_TAG_DESC, GUMBO_TAG_TITLE, GUMBO_TAG_LAST);
+      GUMBO_TAG_OBJECT, GUMBO_TAG_TEMPLATE, GUMBO_TAG_MI, GUMBO_TAG_MO,
+      GUMBO_TAG_MN, GUMBO_TAG_MS, GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML,
+      GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_TITLE, GUMBO_TAG_LAST);
   gumbo_vector_destroy(parser, &tags);
   va_end(args);
   return found;
@@ -1449,10 +1449,10 @@ static bool has_an_element_in_list_scope(GumboParser* parser, GumboTag tag) {
   return has_an_element_in_specific_scope(
       parser, &tags, false, GUMBO_TAG_APPLET, GUMBO_TAG_CAPTION, GUMBO_TAG_HTML,
       GUMBO_TAG_TABLE, GUMBO_TAG_TD, GUMBO_TAG_TH, GUMBO_TAG_MARQUEE,
-      GUMBO_TAG_OBJECT, GUMBO_TAG_MI, GUMBO_TAG_MO, GUMBO_TAG_MN, GUMBO_TAG_MS,
-      GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML, GUMBO_TAG_FOREIGNOBJECT,
-      GUMBO_TAG_DESC, GUMBO_TAG_TITLE, GUMBO_TAG_OL, GUMBO_TAG_UL,
-      GUMBO_TAG_LAST);
+      GUMBO_TAG_OBJECT, GUMBO_TAG_TEMPLATE, GUMBO_TAG_MI, GUMBO_TAG_MO,
+      GUMBO_TAG_MN, GUMBO_TAG_MS, GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML,
+      GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_TITLE, GUMBO_TAG_OL,
+      GUMBO_TAG_UL, GUMBO_TAG_LAST);
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-button-scope
@@ -1461,16 +1461,18 @@ static bool has_an_element_in_button_scope(GumboParser* parser, GumboTag tag) {
   return has_an_element_in_specific_scope(
       parser, &tags, false, GUMBO_TAG_APPLET, GUMBO_TAG_CAPTION, GUMBO_TAG_HTML,
       GUMBO_TAG_TABLE, GUMBO_TAG_TD, GUMBO_TAG_TH, GUMBO_TAG_MARQUEE,
-      GUMBO_TAG_OBJECT, GUMBO_TAG_MI, GUMBO_TAG_MO, GUMBO_TAG_MN, GUMBO_TAG_MS,
-      GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML, GUMBO_TAG_FOREIGNOBJECT,
-      GUMBO_TAG_DESC, GUMBO_TAG_TITLE, GUMBO_TAG_BUTTON, GUMBO_TAG_LAST);
+      GUMBO_TAG_OBJECT, GUMBO_TAG_TEMPLATE, GUMBO_TAG_MI, GUMBO_TAG_MO,
+      GUMBO_TAG_MN, GUMBO_TAG_MS, GUMBO_TAG_MTEXT, GUMBO_TAG_ANNOTATION_XML,
+      GUMBO_TAG_FOREIGNOBJECT, GUMBO_TAG_DESC, GUMBO_TAG_TITLE,
+      GUMBO_TAG_BUTTON, GUMBO_TAG_LAST);
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-table-scope
 static bool has_an_element_in_table_scope(GumboParser* parser, GumboTag tag) {
   DECLARE_ONE_ELEMENT_GUMBO_VECTOR(tags, tag);
   return has_an_element_in_specific_scope(
-      parser, &tags, false, GUMBO_TAG_HTML, GUMBO_TAG_TABLE, GUMBO_TAG_LAST);
+      parser, &tags, false,
+      GUMBO_TAG_HTML, GUMBO_TAG_TABLE, GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST);
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-select-scope
