@@ -537,115 +537,6 @@ static bool is_in_static_list(
   return false;
 }
 
-static void push_template_insertion_mode(
-    GumboParser* parser, GumboInsertionMode mode) {
-  gumbo_vector_add(
-      parser, (void*) mode, &parser->_parser_state->_template_insertion_modes);
-}
-
-static void pop_template_insertion_mode(GumboParser* parser) {
-  gumbo_vector_pop(parser, &parser->_parser_state->_template_insertion_modes);
-}
-
-static GumboInsertionMode get_current_template_insertion_mode(
-    GumboParser* parser) {
-  GumboVector* template_insertion_modes =
-      &parser->_parser_state->_template_insertion_modes;
-  assert(template_insertion_modes->length > 0);
-  return (GumboInsertionMode) template_insertion_modes->data[
-      template_insertion_modes->length - 1];
-}
-
-static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
-  parser->_parser_state->_insertion_mode = mode;
-}
-
-// http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#reset-the-insertion-mode-appropriately
-// This is a helper function that returns the appropriate insertion mode instead
-// of setting it.  Returns GUMBO_INSERTION_MODE_INITIAL as a sentinel value to
-// indicate that there is no appropriate insertion mode, and the loop should
-// continue.
-static GumboInsertionMode get_appropriate_insertion_mode(
-    const GumboNode* node, bool is_last) {
-  assert(node->type == GUMBO_NODE_ELEMENT);
-  switch (node->v.element.tag) {
-    case GUMBO_TAG_SELECT:
-      return GUMBO_INSERTION_MODE_IN_SELECT;
-    case GUMBO_TAG_TD:
-    case GUMBO_TAG_TH:
-      return is_last ?
-          GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_IN_CELL;
-    case GUMBO_TAG_TR:
-      return GUMBO_INSERTION_MODE_IN_ROW;
-    case GUMBO_TAG_TBODY:
-    case GUMBO_TAG_THEAD:
-    case GUMBO_TAG_TFOOT:
-      return GUMBO_INSERTION_MODE_IN_TABLE_BODY;
-    case GUMBO_TAG_CAPTION:
-      return GUMBO_INSERTION_MODE_IN_CAPTION;
-    case GUMBO_TAG_COLGROUP:
-      return GUMBO_INSERTION_MODE_IN_COLUMN_GROUP;
-    case GUMBO_TAG_TABLE:
-      return GUMBO_INSERTION_MODE_IN_TABLE;
-    case GUMBO_TAG_HEAD:
-    case GUMBO_TAG_BODY:
-      return GUMBO_INSERTION_MODE_IN_BODY;
-    case GUMBO_TAG_FRAMESET:
-      return GUMBO_INSERTION_MODE_IN_FRAMESET;
-    case GUMBO_TAG_HTML:
-      return GUMBO_INSERTION_MODE_BEFORE_HEAD;
-    default:
-      return is_last ?
-          GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_INITIAL;
-  }
-}
-
-// This performs the actual "reset the insertion mode" loop.
-static void reset_insertion_mode_appropriately(GumboParser* parser) {
-  const GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  for (int i = open_elements->length; --i >= 0; ) {
-    GumboInsertionMode mode =
-        get_appropriate_insertion_mode(open_elements->data[i], i == 0);
-    if (mode != GUMBO_INSERTION_MODE_INITIAL) {
-      set_insertion_mode(parser, mode);
-      return;
-    }
-  }
-  // Should never get here, because is_last will be set on the last iteration
-  // and will force GUMBO_INSERTION_MODE_IN_BODY.
-  assert(0);
-}
-
-static GumboError* parser_add_parse_error(GumboParser* parser, const GumboToken* token) {
-  gumbo_debug("Adding parse error.\n");
-  GumboError* error = gumbo_add_error(parser);
-  if (!error) {
-    return NULL;
-  }
-  error->type = GUMBO_ERR_PARSER;
-  error->position = token->position;
-  error->original_text = token->original_text.data;
-  GumboParserError* extra_data = &error->v.parser;
-  extra_data->input_type = token->type;
-  extra_data->input_tag = GUMBO_TAG_UNKNOWN;
-  if (token->type == GUMBO_TOKEN_START_TAG) {
-    extra_data->input_tag = token->v.start_tag.tag;
-  } else if (token->type == GUMBO_TOKEN_END_TAG) {
-    extra_data->input_tag = token->v.end_tag;
-  }
-  GumboParserState* state = parser->_parser_state;
-  extra_data->parser_state = state->_insertion_mode;
-  gumbo_vector_init(parser, state->_open_elements.length,
-                   &extra_data->tag_stack);
-  for (int i = 0; i < state->_open_elements.length; ++i) {
-    const GumboNode* node = state->_open_elements.data[i];
-    assert(node->type == GUMBO_NODE_ELEMENT);
-    gumbo_vector_add(parser, (void*) node->v.element.tag,
-                    &extra_data->tag_stack);
-  }
-  return error;
-}
-
 // Returns true if the specified token is either a start or end tag (specified
 // by is_start) with one of the tag types in the varargs list.  Terminate the
 // list with GUMBO_TAG_LAST; this functions as a sentinel since no portion of
@@ -717,6 +608,137 @@ static bool node_tag_in(const GumboNode* node, ...) {
 // Like node_tag_in, but for the single-tag case.
 static bool node_tag_is(const GumboNode* node, GumboTag tag) {
   return node->type == GUMBO_NODE_ELEMENT && node->v.element.tag == tag;
+}
+
+
+static void push_template_insertion_mode(
+    GumboParser* parser, GumboInsertionMode mode) {
+  gumbo_vector_add(
+      parser, (void*) mode, &parser->_parser_state->_template_insertion_modes);
+}
+
+static void pop_template_insertion_mode(GumboParser* parser) {
+  gumbo_vector_pop(parser, &parser->_parser_state->_template_insertion_modes);
+}
+
+static GumboInsertionMode get_current_template_insertion_mode(
+    const GumboParser* parser) {
+  GumboVector* template_insertion_modes =
+      &parser->_parser_state->_template_insertion_modes;
+  assert(template_insertion_modes->length > 0);
+  return (GumboInsertionMode) template_insertion_modes->data[
+      template_insertion_modes->length - 1];
+}
+
+static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
+  parser->_parser_state->_insertion_mode = mode;
+}
+
+// http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#reset-the-insertion-mode-appropriately
+// This is a helper function that returns the appropriate insertion mode instead
+// of setting it.  Returns GUMBO_INSERTION_MODE_INITIAL as a sentinel value to
+// indicate that there is no appropriate insertion mode, and the loop should
+// continue.
+static GumboInsertionMode get_appropriate_insertion_mode(
+    const GumboParser* parser, int index) {
+  const GumboVector* open_elements = &parser->_parser_state->_open_elements;
+  const GumboNode* node = open_elements->data[index];
+  bool is_last = index == 0;
+  assert(node->type == GUMBO_NODE_ELEMENT);
+  switch (node->v.element.tag) {
+    case GUMBO_TAG_SELECT:
+      if (is_last) {
+        return GUMBO_INSERTION_MODE_IN_SELECT;
+      }
+      int i = index;
+      for (const GumboNode* ancestor = open_elements->data[i];
+           i > 0; --i) {
+        if (node_tag_is(ancestor, GUMBO_TAG_TEMPLATE)) {
+          return GUMBO_INSERTION_MODE_IN_SELECT;
+        }
+        if (node_tag_is(ancestor, GUMBO_TAG_TABLE)) {
+          return GUMBO_INSERTION_MODE_IN_SELECT_IN_TABLE;
+        }
+      }
+      return GUMBO_INSERTION_MODE_IN_SELECT;
+    case GUMBO_TAG_TD:
+    case GUMBO_TAG_TH:
+      return is_last ?
+          GUMBO_INSERTION_MODE_INITIAL : GUMBO_INSERTION_MODE_IN_CELL;
+    case GUMBO_TAG_TR:
+      return GUMBO_INSERTION_MODE_IN_ROW;
+    case GUMBO_TAG_TBODY:
+    case GUMBO_TAG_THEAD:
+    case GUMBO_TAG_TFOOT:
+      return GUMBO_INSERTION_MODE_IN_TABLE_BODY;
+    case GUMBO_TAG_CAPTION:
+      return GUMBO_INSERTION_MODE_IN_CAPTION;
+    case GUMBO_TAG_COLGROUP:
+      return GUMBO_INSERTION_MODE_IN_COLUMN_GROUP;
+    case GUMBO_TAG_TABLE:
+      return GUMBO_INSERTION_MODE_IN_TABLE;
+    case GUMBO_TAG_TEMPLATE:
+      return get_current_template_insertion_mode(parser);
+    case GUMBO_TAG_HEAD:
+      return is_last ?
+        GUMBO_INSERTION_MODE_INITIAL : GUMBO_INSERTION_MODE_IN_HEAD;
+    case GUMBO_TAG_BODY:
+      return GUMBO_INSERTION_MODE_IN_BODY;
+    case GUMBO_TAG_FRAMESET:
+      return GUMBO_INSERTION_MODE_IN_FRAMESET;
+    case GUMBO_TAG_HTML:
+      return parser->_parser_state->_head_element ?
+        GUMBO_INSERTION_MODE_AFTER_HEAD : GUMBO_INSERTION_MODE_BEFORE_HEAD;
+    default:
+      return is_last ?
+          GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_INITIAL;
+  }
+}
+
+// This performs the actual "reset the insertion mode" loop.
+static void reset_insertion_mode_appropriately(GumboParser* parser) {
+  const GumboVector* open_elements = &parser->_parser_state->_open_elements;
+  for (int i = open_elements->length; --i >= 0; ) {
+    GumboInsertionMode mode =
+        get_appropriate_insertion_mode(parser, i);
+    if (mode != GUMBO_INSERTION_MODE_INITIAL) {
+      set_insertion_mode(parser, mode);
+      return;
+    }
+  }
+  // Should never get here, because is_last will be set on the last iteration
+  // and will force GUMBO_INSERTION_MODE_IN_BODY.
+  assert(0);
+}
+
+static GumboError* parser_add_parse_error(GumboParser* parser, const GumboToken* token) {
+  gumbo_debug("Adding parse error.\n");
+  GumboError* error = gumbo_add_error(parser);
+  if (!error) {
+    return NULL;
+  }
+  error->type = GUMBO_ERR_PARSER;
+  error->position = token->position;
+  error->original_text = token->original_text.data;
+  GumboParserError* extra_data = &error->v.parser;
+  extra_data->input_type = token->type;
+  extra_data->input_tag = GUMBO_TAG_UNKNOWN;
+  if (token->type == GUMBO_TOKEN_START_TAG) {
+    extra_data->input_tag = token->v.start_tag.tag;
+  } else if (token->type == GUMBO_TOKEN_END_TAG) {
+    extra_data->input_tag = token->v.end_tag;
+  }
+  GumboParserState* state = parser->_parser_state;
+  extra_data->parser_state = state->_insertion_mode;
+  gumbo_vector_init(parser, state->_open_elements.length,
+                   &extra_data->tag_stack);
+  for (int i = 0; i < state->_open_elements.length; ++i) {
+    const GumboNode* node = state->_open_elements.data[i];
+    assert(node->type == GUMBO_NODE_ELEMENT);
+    gumbo_vector_add(parser, (void*) node->v.element.tag,
+                    &extra_data->tag_stack);
+  }
+  return error;
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#mathml-text-integration-point
