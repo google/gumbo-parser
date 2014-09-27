@@ -760,6 +760,59 @@ static bool is_html_integration_point(const GumboNode* node) {
                             "encoding", "application/xhtml+xml")));
 }
 
+// This represents a place to insert a node, consisting of a target parent and a
+// child index within that parent.  If the node should be inserted at the end of
+// the parent's child, index will be -1.
+typedef struct {
+  GumboNode* target;
+  int index;
+} InsertionLocation;
+
+InsertionLocation get_appropriate_insertion_location(
+    GumboParser* parser, GumboNode* override_target) {
+  InsertionLocation retval = {
+    override_target != NULL ? override_target : get_current_node(parser),
+    -1
+  };
+  if (!parser->_parser_state->_foster_parent_insertions ||
+      !node_tag_in(
+          retval.target, GUMBO_TAG_TABLE, GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT,
+          GUMBO_TAG_THEAD, GUMBO_TAG_TR, GUMBO_TAG_LAST)) {
+    return retval;
+  }
+
+  // Foster-parenting case.
+  int last_template_index = -1;
+  int last_table_index = -1;
+  GumboVector* open_elements = &parser->_parser_state->_open_elements;
+  for (int i = 0; i < open_elements->length; ++i) {
+    if (node_tag_is(open_elements->data[i], GUMBO_TAG_TEMPLATE)) {
+      last_template_index = i;
+    }
+    if (node_tag_is(open_elements->data[i], GUMBO_TAG_TABLE)) {
+      last_table_index = i;
+    }
+  }
+  if (last_template_index != -1 &&
+      (last_table_index == -1 || last_template_index > last_table_index)) {
+    retval.target = open_elements->data[last_template_index];
+    return retval;
+  }
+  if (last_table_index == -1) {
+    retval.target = open_elements->data[0];
+    return retval;
+  }
+  GumboNode* last_table = open_elements->data[last_table_index];
+  if (last_table->parent != NULL) {
+    retval.target = last_table->parent;
+    retval.index = last_table->index_within_parent;
+    return retval;
+  }
+
+  retval.target = open_elements->data[last_table_index - 1];
+  return retval;
+}
+
 // Appends a node to the end of its parent, setting the "parent" and
 // "index_within_parent" fields appropriately.
 static void append_node(
