@@ -1023,6 +1023,21 @@ static GumboNode* create_element_from_token(
   assert(token->type == GUMBO_TOKEN_START_TAG);
   GumboTokenStartTag* start_tag = &token->v.start_tag;
 
+  if (token_has_attribute(token, "xmlns") &&
+      !attribute_matches_case_sensitive(
+          &token->v.start_tag.attributes, "xmlns",
+          kLegalXmlns[tag_namespace])) {
+    // TODO(jdtang): Since there're multiple possible error codes here, we
+    // eventually need reason codes to differentiate them.
+    parser_add_parse_error(parser, token);
+  }
+  if (token_has_attribute(token, "xmlns:xlink") &&
+      !attribute_matches_case_sensitive(
+          &token->v.start_tag.attributes,
+          "xmlns:xlink", "http://www.w3.org/1999/xlink")) {
+    parser_add_parse_error(parser, token);
+  }
+
   GumboNode* node = create_node(parser, GUMBO_NODE_ELEMENT);
   GumboElement* element = &node->v.element;
   gumbo_vector_init(parser, 1, &element->children);
@@ -1110,20 +1125,6 @@ static GumboNode* insert_foreign_element(
   assert(token->type == GUMBO_TOKEN_START_TAG);
   GumboNode* element = create_element_from_token(parser, token, tag_namespace);
   insert_element(parser, element, false);
-  if (token_has_attribute(token, "xmlns") &&
-      !attribute_matches_case_sensitive(
-          &token->v.start_tag.attributes, "xmlns",
-          kLegalXmlns[tag_namespace])) {
-    // TODO(jdtang): Since there're multiple possible error codes here, we
-    // eventually need reason codes to differentiate them.
-    parser_add_parse_error(parser, token);
-  }
-  if (token_has_attribute(token, "xmlns:xlink") &&
-      !attribute_matches_case_sensitive(
-          &token->v.start_tag.attributes,
-          "xmlns:xlink", "http://www.w3.org/1999/xlink")) {
-    parser_add_parse_error(parser, token);
-  }
   return element;
 }
 
