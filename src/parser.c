@@ -828,24 +828,31 @@ static void append_node(
   assert(node->index_within_parent < children->length);
 }
 
-// Inserts a node at the specified index within its parent, updating the
+// Inserts a node at the specified InsertionLocation, updating the
 // "parent" and "index_within_parent" fields of it and all its siblings.
+// If the index of the location is -1, this calls append_node.
 static void insert_node(
-    GumboParser* parser, GumboNode* parent, int index, GumboNode* node) {
+    GumboParser* parser, GumboNode* node, InsertionLocation location) {
   assert(node->parent == NULL);
   assert(node->index_within_parent == -1);
+  GumboNode* parent = location.target;
+  int index = location.index;
   assert(parent->type == GUMBO_NODE_ELEMENT);
-  GumboVector* children = &parent->v.element.children;
-  assert(index >= 0);
-  assert(index < children->length);
-  node->parent = parent;
-  node->index_within_parent = index;
-  gumbo_vector_insert_at(parser, (void*) node, index, children);
-  assert(node->index_within_parent < children->length);
-  for (int i = index + 1; i < children->length; ++i) {
-    GumboNode* sibling = children->data[i];
-    sibling->index_within_parent = i;
-    assert(sibling->index_within_parent < children->length);
+  if (index != -1) {
+    GumboVector* children = &parent->v.element.children;
+    assert(index >= 0);
+    assert(index < children->length);
+    node->parent = parent;
+    node->index_within_parent = index;
+    gumbo_vector_insert_at(parser, (void*) node, index, children);
+    assert(node->index_within_parent < children->length);
+    for (int i = index + 1; i < children->length; ++i) {
+      GumboNode* sibling = children->data[i];
+      sibling->index_within_parent = i;
+      assert(sibling->index_within_parent < children->length);
+    }
+  } else {
+    append_node(parser, parent, node);
   }
 }
 
@@ -1014,6 +1021,7 @@ static GumboNode* create_element_from_token(
 static void insert_element(GumboParser* parser, GumboNode* node,
                            bool is_reconstructing_formatting_elements) {
   GumboParserState* state = parser->_parser_state;
+  InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
   // NOTE(jdtang): The text node buffer must always be flushed before inserting
   // a node, otherwise we're handling nodes in a different order than the spec
   // mandated.  However, one clause of the spec (character tokens in the body)
