@@ -378,10 +378,6 @@ typedef struct GumboInternalParserState {
   // must instead be foster parented".  This is used for misnested table
   // content, which needs to be handled according to "in body" rules yet foster
   // parented outside of the table.
-  // It would perhaps be more explicit to have this as a parameter to
-  // handle_in_body and insert_element, but given how special-purpose this is
-  // and the number of call-sites that would need to take the extra parameter,
-  // it's easier just to have a state flag.
   bool _foster_parent_insertions;
 
   // The accumulated text node buffer state.
