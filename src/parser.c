@@ -849,45 +849,6 @@ static void insert_node(
   }
 }
 
-// http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#foster-parenting
-static void foster_parent_element(GumboParser* parser, GumboNode* node) {
-  GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  assert(open_elements->length > 2);
-
-  node->parse_flags |= GUMBO_INSERTION_FOSTER_PARENTED;
-  GumboNode* foster_parent_element = open_elements->data[0];
-  assert(foster_parent_element->type == GUMBO_NODE_ELEMENT);
-  assert(node_tag_is(foster_parent_element, GUMBO_TAG_HTML));
-  for (int i = open_elements->length; --i > 1; ) {
-    GumboNode* table_element = open_elements->data[i];
-    if (node_tag_is(table_element, GUMBO_TAG_TABLE)) {
-      foster_parent_element = table_element->parent;
-      if (!foster_parent_element ||
-          foster_parent_element->type != GUMBO_NODE_ELEMENT) {
-        // Table has no parent; spec says it's possible if a script manipulated
-        // the DOM, although I don't think we have to worry about this case.
-        gumbo_debug("Table has no parent.\n");
-        foster_parent_element = open_elements->data[i - 1];
-        break;
-      }
-      assert(foster_parent_element->type == GUMBO_NODE_ELEMENT);
-      gumbo_debug("Found enclosing table (%x) at %d; parent=%s, index=%d.\n",
-                 table_element, i, gumbo_normalized_tagname(
-                     foster_parent_element->v.element.tag),
-                 table_element->index_within_parent);
-      assert(foster_parent_element->v.element.children.data[
-             table_element->index_within_parent] == table_element);
-      insert_node(parser, foster_parent_element,
-                  table_element->index_within_parent, node);
-      return;
-    }
-  }
-  if (node->type == GUMBO_NODE_ELEMENT) {
-    gumbo_vector_add(parser, (void*) node, open_elements);
-  }
-  append_node(parser, foster_parent_element, node);
-}
-
 static void maybe_flush_text_node_buffer(GumboParser* parser) {
   GumboParserState* state = parser->_parser_state;
   TextNodeBufferState* buffer_state = &state->_text_node;
@@ -906,15 +867,9 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
       state->_current_token->original_text.data -
       buffer_state->_start_original_text;
   text_node_data->start_pos = buffer_state->_start_position;
-  if (state->_foster_parent_insertions && node_tag_in(
-      get_current_node(parser), GUMBO_TAG_TABLE, GUMBO_TAG_TBODY,
-      GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD, GUMBO_TAG_TR, GUMBO_TAG_LAST)) {
-    foster_parent_element(parser, text_node);
-  } else {
-    append_node(
-        parser, parser->_output->root ?
-        get_current_node(parser) : parser->_output->document, text_node);
-  }
+  append_node(
+      parser, parser->_output->root ?
+      get_current_node(parser) : parser->_output->document, text_node);
   gumbo_debug("Flushing text node buffer of %.*s.\n",
              (int) buffer_state->_buffer.length, buffer_state->_buffer.data);
 
@@ -1074,7 +1029,6 @@ static void insert_element(GumboParser* parser, GumboNode* node,
   if (state->_foster_parent_insertions && node_tag_in(
       get_current_node(parser), GUMBO_TAG_TABLE, GUMBO_TAG_TBODY,
       GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD, GUMBO_TAG_TR, GUMBO_TAG_LAST)) {
-    foster_parent_element(parser, node);
     gumbo_vector_add(parser, (void*) node, &state->_open_elements);
     return;
   }
@@ -2000,16 +1954,9 @@ static bool adoption_agency_algorithm(
                 gumbo_normalized_tagname(last_node->v.element.tag));
     remove_from_parent(parser, last_node);
     last_node->parse_flags |= GUMBO_INSERTION_ADOPTION_AGENCY_MOVED;
-    if (node_tag_in(common_ancestor, GUMBO_TAG_TABLE, GUMBO_TAG_TBODY,
-                    GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD, GUMBO_TAG_TR,
-                    GUMBO_TAG_LAST)) {
-      gumbo_debug("and foster-parenting it.\n");
-      foster_parent_element(parser, last_node);
-    } else {
-      gumbo_debug("and inserting it into %s.\n",
-                  gumbo_normalized_tagname(common_ancestor->v.element.tag));
-      append_node(parser, common_ancestor, last_node);
-    }
+    gumbo_debug("and inserting it into %s.\n",
+                gumbo_normalized_tagname(common_ancestor->v.element.tag));
+    append_node(parser, common_ancestor, last_node);
 
     // Step 11.
     GumboNode* new_formatting_node = clone_node(
