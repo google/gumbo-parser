@@ -766,10 +766,14 @@ typedef struct {
 
 InsertionLocation get_appropriate_insertion_location(
     GumboParser* parser, GumboNode* override_target) {
-  InsertionLocation retval = {
-    override_target != NULL ? override_target : get_current_node(parser),
-    -1
-  };
+  InsertionLocation retval = { override_target, -1 };
+  if (retval.target == NULL) {
+    // No override target; default to the current node, but special-case the
+    // root node since get_current_node() assumes the stack of open elements is
+    // non-empty.
+    retval.target = parser->_output->root != NULL ?
+        get_current_node(parser) : get_document_node(parser);
+  }
   if (!parser->_parser_state->_foster_parent_insertions ||
       !node_tag_in(
           retval.target, GUMBO_TAG_TABLE, GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT,
@@ -837,9 +841,17 @@ static void insert_node(
   assert(node->index_within_parent == -1);
   GumboNode* parent = location.target;
   int index = location.index;
-  assert(parent->type == GUMBO_NODE_ELEMENT);
   if (index != -1) {
-    GumboVector* children = &parent->v.element.children;
+    GumboVector* children = NULL;
+    if (parent->type == GUMBO_NODE_ELEMENT) {
+      children = &parent->v.element.children;
+    } else if (parent->type == GUMBO_NODE_DOCUMENT) {
+      children = &parent->v.document.children;
+      assert(children->length == 0);
+    } else {
+      assert(0);
+    }
+
     assert(index >= 0);
     assert(index < children->length);
     node->parent = parent;
@@ -1018,35 +1030,12 @@ static GumboNode* create_element_from_token(
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#insert-an-html-element
-static void insert_element(GumboParser* parser, GumboNode* node,
-                           bool is_reconstructing_formatting_elements) {
+static void insert_element(GumboParser* parser, GumboNode* node) {
   GumboParserState* state = parser->_parser_state;
-  InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
-  // NOTE(jdtang): The text node buffer must always be flushed before inserting
-  // a node, otherwise we're handling nodes in a different order than the spec
-  // mandated.  However, one clause of the spec (character tokens in the body)
-  // requires that we reconstruct the active formatting elements *before* adding
-  // the character, and reconstructing the active formatting elements may itself
-  // result in the insertion of new elements (which should be pushed onto the
-  // stack of open elements before the buffer is flushed).  We solve this (for
-  // the time being, the spec has been rewritten for <template> and the new
-  // version may be simpler here) with a boolean flag to this method.
-  if (!is_reconstructing_formatting_elements) {
-    maybe_flush_text_node_buffer(parser);
-  }
-  if (state->_foster_parent_insertions && node_tag_in(
-      get_current_node(parser), GUMBO_TAG_TABLE, GUMBO_TAG_TBODY,
-      GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD, GUMBO_TAG_TR, GUMBO_TAG_LAST)) {
-    gumbo_vector_add(parser, (void*) node, &state->_open_elements);
-    return;
-  }
-
-  // This is called to insert the root HTML element, but get_current_node
-  // assumes the stack of open elements is non-empty, so we need special
-  // handling for this case.
-  append_node(
-      parser, parser->_output->root ?
-      get_current_node(parser) : parser->_output->document, node);
+  maybe_flush_text_node_buffer(parser);
+  InsertionLocation location =
+      get_appropriate_insertion_location(parser, NULL);
+  insert_node(parser, node, location);
   gumbo_vector_add(parser, (void*) node, &state->_open_elements);
 }
 
@@ -1057,7 +1046,7 @@ static GumboNode* insert_element_from_token(
     GumboParser* parser, GumboToken* token) {
   GumboNode* element =
       create_element_from_token(parser, token, GUMBO_NAMESPACE_HTML);
-  insert_element(parser, element, false);
+  insert_element(parser, element);
   gumbo_debug("Inserting <%s> element (@%x) from token.\n",
              gumbo_normalized_tagname(element->v.element.tag), element);
   return element;
@@ -1070,7 +1059,7 @@ static GumboNode* insert_element_of_tag_type(
     GumboParser* parser, GumboTag tag, GumboParseFlags reason) {
   GumboNode* element = create_element(parser, tag);
   element->parse_flags |= GUMBO_INSERTION_BY_PARSER | reason;
-  insert_element(parser, element, false);
+  insert_element(parser, element);
   gumbo_debug("Inserting %s element (@%x) from tag type.\n",
              gumbo_normalized_tagname(tag), element);
   return element;
@@ -1082,7 +1071,7 @@ static GumboNode* insert_foreign_element(
     GumboParser* parser, GumboToken* token, GumboNamespaceEnum tag_namespace) {
   assert(token->type == GUMBO_TOKEN_START_TAG);
   GumboNode* element = create_element_from_token(parser, token, tag_namespace);
-  insert_element(parser, element, false);
+  insert_element(parser, element);
   return element;
 }
 
@@ -1273,7 +1262,9 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
     GumboNode* clone = clone_node(
         parser, element, GUMBO_INSERTION_RECONSTRUCTED_FORMATTING_ELEMENT);
     // Step 9.
-    insert_element(parser, clone, true);
+    InsertionLocation location =
+        get_appropriate_insertion_location(parser, NULL);
+    insert_node(parser, clone, location);
     // Step 10.
     elements->data[i] = clone;
     gumbo_debug("Reconstructed %s element at %d.\n",
