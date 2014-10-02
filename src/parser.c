@@ -1029,6 +1029,11 @@ static GumboNode* create_element_from_token(
   return node;
 }
 
+static void add_to_open_elements(GumboParser* parser, GumboNode* node) {
+  gumbo_vector_add(parser, (void*) node,
+      &parser->_parser_state->_open_elements);
+}
+
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#insert-an-html-element
 static void insert_element(GumboParser* parser, GumboNode* node) {
   GumboParserState* state = parser->_parser_state;
@@ -1036,7 +1041,7 @@ static void insert_element(GumboParser* parser, GumboNode* node) {
   InsertionLocation location =
       get_appropriate_insertion_location(parser, NULL);
   insert_node(parser, node, location);
-  gumbo_vector_add(parser, (void*) node, &state->_open_elements);
+  add_to_open_elements(parser, node);
 }
 
 // Convenience method that combines create_element_from_token and
@@ -1265,6 +1270,7 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
     InsertionLocation location =
         get_appropriate_insertion_location(parser, NULL);
     insert_node(parser, clone, location);
+    add_to_open_elements(parser, clone);
     // Step 10.
     elements->data[i] = clone;
     gumbo_debug("Reconstructed %s element at %d.\n",
