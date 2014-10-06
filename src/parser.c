@@ -1432,6 +1432,13 @@ cleanup:
     void* varname ## _tmp_array[1] = { (void*) from_var }; \
     GumboVector varname = { varname ## _tmp_array, 1, 1 }
 
+// Checks for the presence of an open element of the specified tag type.
+static bool has_open_element(GumboParser* parser, GumboTag tag) {
+  DECLARE_ONE_ELEMENT_GUMBO_VECTOR(tags, tag);
+  return has_an_element_in_specific_scope(parser, &tags, false,
+      GUMBO_TAG_HTML, GUMBO_TAG_LAST);
+}
+
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-scope
 static bool has_an_element_in_scope(GumboParser* parser, GumboTag tag) {
   DECLARE_ONE_ELEMENT_GUMBO_VECTOR(tags, tag);
@@ -1547,6 +1554,18 @@ static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
                    GUMBO_TAG_LI, GUMBO_TAG_OPTION, GUMBO_TAG_OPTGROUP,
                    GUMBO_TAG_P, GUMBO_TAG_RP, GUMBO_TAG_RT, GUMBO_TAG_LAST) &&
        !node_tag_is(get_current_node(parser), exception);
+       pop_current_node(parser));
+}
+
+// This is the "generate all implied end tags thoroughly" clause of the spec.
+static void generate_all_implied_end_tags_thoroughly(GumboParser* parser) {
+  for (;
+       node_tag_in(get_current_node(parser), GUMBO_TAG_CAPTION,
+                   GUMBO_TAG_COLGROUP, GUMBO_TAG_DD, GUMBO_TAG_DT,
+                   GUMBO_TAG_LI, GUMBO_TAG_OPTION, GUMBO_TAG_OPTGROUP,
+                   GUMBO_TAG_P, GUMBO_TAG_RP, GUMBO_TAG_RT,
+                   GUMBO_TAG_TBODY, GUMBO_TAG_TD, GUMBO_TAG_TFOOT,
+                   GUMBO_TAG_TH, GUMBO_TAG_THEAD, GUMBO_TAG_TR, GUMBO_TAG_LAST);
        pop_current_node(parser));
 }
 
@@ -2238,6 +2257,30 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
     assert(node_tag_is(head, GUMBO_TAG_HEAD));
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_HEAD);
     return true;
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_TEMPLATE)) {
+    insert_element_from_token(parser, token);
+    add_formatting_element(parser, &kActiveFormattingScopeMarker);
+    parser->_parser_state->_frameset_ok = false;
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TEMPLATE);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TEMPLATE);
+    return true;
+  } else if (tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
+    if (!has_open_element(parser, GUMBO_TAG_TEMPLATE)) {
+      parser_add_parse_error(parser, token);
+      ignore_token(parser);
+      return false;
+    }
+    generate_all_implied_end_tags_thoroughly(parser);
+    bool success = true;
+    if (!node_tag_is(get_current_node(parser), GUMBO_TAG_TEMPLATE)) {
+      parser_add_parse_error(parser, token);
+      success = false;
+    }
+    while (!node_tag_is(pop_current_node(parser), GUMBO_TAG_TEMPLATE));
+    clear_active_formatting_elements(parser);
+    pop_template_insertion_mode(parser);
+    reset_insertion_mode_appropriately(parser);
+    return success;
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HEAD)) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
