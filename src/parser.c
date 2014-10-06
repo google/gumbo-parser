@@ -813,6 +813,40 @@ InsertionLocation get_appropriate_insertion_location(
   return retval;
 }
 
+static void destroy_node(GumboParser* parser, GumboNode* node) {
+  switch (node->type) {
+    case GUMBO_NODE_DOCUMENT:
+      {
+        GumboDocument* doc = &node->v.document;
+        for (int i = 0; i < doc->children.length; ++i) {
+          destroy_node(parser, doc->children.data[i]);
+        }
+        gumbo_parser_deallocate(parser, (void*) doc->children.data);
+        gumbo_parser_deallocate(parser, (void*) doc->name);
+        gumbo_parser_deallocate(parser, (void*) doc->public_identifier);
+        gumbo_parser_deallocate(parser, (void*) doc->system_identifier);
+      }
+      break;
+    case GUMBO_NODE_ELEMENT:
+      for (int i = 0; i < node->v.element.attributes.length; ++i) {
+        gumbo_destroy_attribute(parser, node->v.element.attributes.data[i]);
+      }
+      gumbo_parser_deallocate(parser, node->v.element.attributes.data);
+      for (int i = 0; i < node->v.element.children.length; ++i) {
+        destroy_node(parser, node->v.element.children.data[i]);
+      }
+      gumbo_parser_deallocate(parser, node->v.element.children.data);
+      break;
+    case GUMBO_NODE_TEXT:
+    case GUMBO_NODE_CDATA:
+    case GUMBO_NODE_COMMENT:
+    case GUMBO_NODE_WHITESPACE:
+      gumbo_parser_deallocate(parser, (void*) node->v.text.text);
+      break;
+  }
+  gumbo_parser_deallocate(parser, node);
+}
+
 // Appends a node to the end of its parent, setting the "parent" and
 // "index_within_parent" fields appropriately.
 static void append_node(
@@ -886,11 +920,17 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
       state->_current_token->original_text.data -
       buffer_state->_start_original_text;
   text_node_data->start_pos = buffer_state->_start_position;
-  append_node(
-      parser, parser->_output->root ?
-      get_current_node(parser) : parser->_output->document, text_node);
+
   gumbo_debug("Flushing text node buffer of %.*s.\n",
              (int) buffer_state->_buffer.length, buffer_state->_buffer.data);
+  InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
+  if (location.target->type == GUMBO_NODE_DOCUMENT) {
+    // The DOM does not allow Document nodes to have Text children, so per the
+    // spec, they are dropped on the floor.
+    destroy_node(parser, text_node);
+  } else {
+    insert_node(parser, text_node, location);
+  }
 
   gumbo_string_buffer_destroy(parser, &buffer_state->_buffer);
   gumbo_string_buffer_init(parser, &buffer_state->_buffer);
@@ -2306,40 +2346,6 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
     state->_reprocess_current_token = true;
     return true;
   }
-}
-
-static void destroy_node(GumboParser* parser, GumboNode* node) {
-  switch (node->type) {
-    case GUMBO_NODE_DOCUMENT:
-      {
-        GumboDocument* doc = &node->v.document;
-        for (int i = 0; i < doc->children.length; ++i) {
-          destroy_node(parser, doc->children.data[i]);
-        }
-        gumbo_parser_deallocate(parser, (void*) doc->children.data);
-        gumbo_parser_deallocate(parser, (void*) doc->name);
-        gumbo_parser_deallocate(parser, (void*) doc->public_identifier);
-        gumbo_parser_deallocate(parser, (void*) doc->system_identifier);
-      }
-      break;
-    case GUMBO_NODE_ELEMENT:
-      for (int i = 0; i < node->v.element.attributes.length; ++i) {
-        gumbo_destroy_attribute(parser, node->v.element.attributes.data[i]);
-      }
-      gumbo_parser_deallocate(parser, node->v.element.attributes.data);
-      for (int i = 0; i < node->v.element.children.length; ++i) {
-        destroy_node(parser, node->v.element.children.data[i]);
-      }
-      gumbo_parser_deallocate(parser, node->v.element.children.data);
-      break;
-    case GUMBO_NODE_TEXT:
-    case GUMBO_NODE_CDATA:
-    case GUMBO_NODE_COMMENT:
-    case GUMBO_NODE_WHITESPACE:
-      gumbo_parser_deallocate(parser, (void*) node->v.text.text);
-      break;
-  }
-  gumbo_parser_deallocate(parser, node);
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-inbody
