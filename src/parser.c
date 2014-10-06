@@ -2248,7 +2248,8 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
                       GUMBO_TAG_BR, GUMBO_TAG_LAST))) {
     parser_add_parse_error(parser, token);
     return false;
-  } else if (tag_is(token, kStartTag, GUMBO_TAG_UNKNOWN) && token->v.start_tag.is_self_closing) {
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_UNKNOWN) &&
+               token->v.start_tag.is_self_closing) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
     return false;
