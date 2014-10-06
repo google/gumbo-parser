@@ -998,16 +998,16 @@ static void append_comment_node(
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#clear-the-stack-back-to-a-table-row-context
 static void clear_stack_to_table_row_context(GumboParser* parser) {
-  while (!node_tag_in(get_current_node(parser),
-                      GUMBO_TAG_HTML, GUMBO_TAG_TR, GUMBO_TAG_LAST)) {
+  while (!node_tag_in(get_current_node(parser), GUMBO_TAG_HTML,
+                      GUMBO_TAG_TR, GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST)) {
     pop_current_node(parser);
   }
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#clear-the-stack-back-to-a-table-context
 static void clear_stack_to_table_context(GumboParser* parser) {
-  while (!node_tag_in(get_current_node(parser),
-                      GUMBO_TAG_HTML, GUMBO_TAG_TABLE, GUMBO_TAG_LAST)) {
+  while (!node_tag_in(get_current_node(parser), GUMBO_TAG_HTML,
+                      GUMBO_TAG_TABLE, GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST)) {
     pop_current_node(parser);
   }
 }
@@ -1016,7 +1016,7 @@ static void clear_stack_to_table_context(GumboParser* parser) {
 void clear_stack_to_table_body_context(GumboParser* parser) {
   while (!node_tag_in(get_current_node(parser), GUMBO_TAG_HTML,
                       GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD,
-                      GUMBO_TAG_LAST)) {
+                      GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST)) {
     pop_current_node(parser);
   }
 }
