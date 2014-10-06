@@ -141,7 +141,7 @@ extern const GumboVector kGumboEmptyVector;
  * Returns the first index at which an element appears in this vector (testing
  * by pointer equality), or -1 if it never does.
  */
-int gumbo_vector_index_of(GumboVector* vector, void* element);
+int gumbo_vector_index_of(GumboVector* vector, const void* element);
 
 
 /**
