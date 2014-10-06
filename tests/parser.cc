@@ -510,7 +510,7 @@ TEST_F(GumboParserTest, CommentBeforeNode) {
   EXPECT_EQ(GUMBO_TAG_H1, h1->v.element.tag);
 }
 
-TEST_F(GumboParserTest, CommentInVerbatimMode) {
+TEST_F(GumboParserTest, CommentAfterBody) {
   Parse("<body> <div id='onegoogle'>Text</div>  </body><!-- comment \n\n-->");
 
   GumboNode* html = GetChild(root_, 0);
@@ -520,15 +520,15 @@ TEST_F(GumboParserTest, CommentInVerbatimMode) {
             GUMBO_INSERTION_IMPLIED |
             GUMBO_INSERTION_IMPLICIT_END_TAG,
             html->parse_flags);
-  EXPECT_EQ(3, GetChildCount(html));
+  EXPECT_EQ(2, GetChildCount(html));
 
   GumboNode* body = GetChild(html, 1);
   EXPECT_EQ(GUMBO_NODE_ELEMENT, body->type);
   EXPECT_EQ(GUMBO_TAG_BODY, GetTag(body));
   EXPECT_EQ(GUMBO_INSERTION_NORMAL, body->parse_flags);
-  EXPECT_EQ(3, GetChildCount(body));
+  EXPECT_EQ(4, GetChildCount(body));
 
-  GumboNode* comment = GetChild(html, 2);
+  GumboNode* comment = GetChild(body, 3);
   ASSERT_EQ(GUMBO_NODE_COMMENT, comment->type);
   EXPECT_EQ(GUMBO_INSERTION_NORMAL, comment->parse_flags);
   EXPECT_STREQ(" comment \n\n", comment->v.text.text);

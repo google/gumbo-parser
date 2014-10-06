@@ -984,7 +984,12 @@ static void append_comment_node(
   comment->v.text.text = token->v.text;
   comment->v.text.original_text = token->original_text;
   comment->v.text.start_pos = token->position;
-  append_node(parser, node, comment);
+  // TODO: the spec allows the possibility of a comment having an explicit
+  // insertion position that should be plumbed through here, but I haven't yet
+  // gone through all the clauses to see where this is used.  Add it to the
+  // signature when it's necessary.
+  InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
+  insert_node(parser, comment, location);
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#clear-the-stack-back-to-a-table-row-context
