@@ -1081,7 +1081,6 @@ static void add_to_open_elements(GumboParser* parser, GumboNode* node) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#insert-an-html-element
 static void insert_element(GumboParser* parser, GumboNode* node) {
-  GumboParserState* state = parser->_parser_state;
   maybe_flush_text_node_buffer(parser);
   InsertionLocation location =
       get_appropriate_insertion_location(parser, NULL);
