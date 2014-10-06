@@ -2371,7 +2371,7 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
   } else if (tag_in(token, kStartTag, GUMBO_TAG_BASE, GUMBO_TAG_BASEFONT,
                     GUMBO_TAG_BGSOUND, GUMBO_TAG_LINK, GUMBO_TAG_META,
                     GUMBO_TAG_NOFRAMES, GUMBO_TAG_SCRIPT, GUMBO_TAG_STYLE,
-                    GUMBO_TAG_TITLE, GUMBO_TAG_LAST)) {
+                    GUMBO_TAG_TEMPLATE, GUMBO_TAG_TITLE, GUMBO_TAG_LAST)) {
     parser_add_parse_error(parser, token);
     assert(state->_head_element != NULL);
     // This must be flushed before we push the head element on, as there may be
@@ -2381,6 +2381,8 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
     bool result = handle_in_head(parser, token);
     gumbo_vector_remove(parser, state->_head_element, &state->_open_elements);
     return result;
+  } else if (tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
+    return handle_in_head(parser, token);
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HEAD) ||
             (token->type == GUMBO_TOKEN_END_TAG &&
              !tag_in(token, kEndTag, GUMBO_TAG_BODY, GUMBO_TAG_HTML,
