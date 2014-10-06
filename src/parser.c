@@ -3288,6 +3288,9 @@ static bool handle_in_column_group(GumboParser* parser, GumboToken* token) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
     return false;
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_TEMPLATE) ||
+             tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
+    return handle_in_head(parser, token);
   } else if (token->type == GUMBO_TOKEN_EOF &&
              get_current_node(parser) == parser->_output->root) {
     return true;
@@ -3537,7 +3540,9 @@ static bool handle_in_select(GumboParser* parser, GumboToken* token) {
       parser->_parser_state->_reprocess_current_token = true;
     }
     return false;
-  } else if (tag_is(token, kStartTag, GUMBO_TAG_SCRIPT)) {
+  } else if (tag_in(token, kStartTag, GUMBO_TAG_SCRIPT, GUMBO_TAG_TEMPLATE,
+                    GUMBO_TAG_LAST) ||
+             tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
     return handle_in_head(parser, token);
   } else if (token->type == GUMBO_TOKEN_EOF) {
     if (get_current_node(parser) != parser->_output->root) {
