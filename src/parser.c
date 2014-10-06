@@ -2404,8 +2404,71 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#parsing-main-intemplate
 static bool handle_in_template(GumboParser* parser, GumboToken* token) {
-  // TODO(jdtang): Implement this.
-  return true;
+  GumboParserState* state = parser->_parser_state;
+  if (token->type == GUMBO_TOKEN_WHITESPACE ||
+      token->type == GUMBO_TOKEN_CHARACTER ||
+      token->type == GUMBO_TOKEN_COMMENT ||
+      token->type == GUMBO_TOKEN_DOCTYPE) {
+    return handle_in_body(parser, token);
+  } else if (tag_in(token, kStartTag, GUMBO_TAG_BASE, GUMBO_TAG_BASEFONT,
+                    GUMBO_TAG_LINK, GUMBO_TAG_META, GUMBO_TAG_NOFRAMES,
+                    GUMBO_TAG_SCRIPT, GUMBO_TAG_STYLE, GUMBO_TAG_TEMPLATE,
+                    GUMBO_TAG_TITLE, GUMBO_TAG_LAST) ||
+             tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
+    return handle_in_head(parser, token);
+  } else if (tag_in(token, kStartTag, GUMBO_TAG_CAPTION, GUMBO_TAG_COLGROUP,
+                    GUMBO_TAG_TBODY, GUMBO_TAG_TFOOT, GUMBO_TAG_THEAD,
+                    GUMBO_TAG_LAST)) {
+    pop_template_insertion_mode(parser);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE);
+    state->_reprocess_current_token = true;
+    return true;
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_COL)) {
+    pop_template_insertion_mode(parser);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_COLUMN_GROUP);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_COLUMN_GROUP);
+    state->_reprocess_current_token = true;
+    return true;
+  } else if (tag_is(token, kStartTag, GUMBO_TAG_TR)) {
+    pop_template_insertion_mode(parser);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE_BODY);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE_BODY);
+    state->_reprocess_current_token = true;
+    return true;
+  } else if (tag_in(token, kEndTag, GUMBO_TAG_TD, GUMBO_TAG_TH,
+                    GUMBO_TAG_LAST)) {
+    pop_template_insertion_mode(parser);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_ROW);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_ROW);
+    state->_reprocess_current_token = true;
+    return true;
+  } else if (token->type == GUMBO_TOKEN_START_TAG) {
+    pop_template_insertion_mode(parser);
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_BODY);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_BODY);
+    state->_reprocess_current_token = true;
+    return true;
+  } else if (token->type == GUMBO_TOKEN_END_TAG) {
+    parser_add_parse_error(parser, token);
+    ignore_token(parser);
+    return false;
+  } else if (token->type == GUMBO_TOKEN_EOF) {
+    if (!has_open_element(parser, GUMBO_TAG_TEMPLATE)) {
+      // Stop parsing.
+      return true;
+    }
+    parser_add_parse_error(parser, token);
+    while (!node_tag_is(pop_current_node(parser), GUMBO_TAG_TEMPLATE));
+    clear_active_formatting_elements(parser);
+    pop_template_insertion_mode(parser);
+    reset_insertion_mode_appropriately(parser);
+    state->_reprocess_current_token = true;
+    return false;
+  } else {
+    assert(0);
+    return false;
+  }
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-inbody
