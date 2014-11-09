@@ -183,7 +183,7 @@ other repositories:
   * [OCGumbo] by TracyYih
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
-[ruby-gumbo]: https://github.com/galdor/ruby-gumbo
+[ruby-gumbo]: https://github.com/nevir/ruby-gumbo
 [nokogumbo]: https://github.com/rubys/nokogumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
 [gumbo-d]: https://github.com/bakkdoor/gumbo-d
