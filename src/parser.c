@@ -336,7 +336,7 @@ typedef struct _TextNodeBufferState {
   // The source position of the start of this text node.
   GumboSourcePosition _start_position;
 
-  // The type of node that will be inserted (TEXT or WHITESPACE).
+  // The type of node that will be inserted (TEXT, CDATA, or WHITESPACE).
   GumboNodeType _type;
 } TextNodeBufferState;
 
