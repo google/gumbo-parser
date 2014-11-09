@@ -136,6 +136,10 @@ typedef struct GumboInternalTokenizerState {
   // markup declaration state.
   bool _is_current_node_foreign;
 
+  // A flag indicating whether the tokenizer is in a CDATA section.  If so, then
+  // text tokens emitted will be GUMBO_TOKEN_CDATA.
+  bool _is_in_cdata;
+
   // Certain states (notably character references) may emit two character tokens
   // at once, but the contract for lex() fills in only one token at a time.  The
   // extra character is buffered here, and then this is checked on entry to
@@ -475,7 +479,11 @@ static void finish_doctype_system_id(GumboParser* parser) {
 
 // Writes a single specified character to the output token.
 static void emit_char(GumboParser* parser, int c, GumboToken* output) {
-  output->type = get_char_token_type(c);
+  if (parser->_tokenizer_state->_is_in_cdata) {
+    output->type = GUMBO_TOKEN_CDATA;
+  } else {
+    output->type = get_char_token_type(c);
+  }
   output->v.character = c;
   finish_token(parser, output);
 }
@@ -850,6 +858,7 @@ void gumbo_tokenizer_state_init(
   gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
   tokenizer->_reconsume_current_input = false;
   tokenizer->_is_current_node_foreign = false;
+  tokenizer->_is_in_cdata = false;
   tokenizer->_tag_state._last_start_tag = GUMBO_TAG_LAST;
 
   tokenizer->_buffered_emit_char = kGumboNoChar;
@@ -2041,6 +2050,7 @@ static StateResult handle_markup_declaration_state(
              utf8iterator_maybe_consume_match(
                 &tokenizer->_input, "[CDATA[", sizeof("[CDATA[") - 1, true)) {
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_CDATA);
+    tokenizer->_is_in_cdata = true;
     tokenizer->_reconsume_current_input = true;
   } else {
     tokenizer_add_parse_error(parser, GUMBO_ERR_DASHES_OR_DOCTYPE);
@@ -2814,6 +2824,7 @@ static StateResult handle_cdata_state(
     tokenizer->_reconsume_current_input = true;
     reset_token_start_point(tokenizer);
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
+    tokenizer->_is_in_cdata = true;
     return NEXT_CHAR;
   } else {
     return emit_current_char(parser, output);
