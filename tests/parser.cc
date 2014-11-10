@@ -1491,6 +1491,10 @@ TEST_F(GumboParserTest, AdoptionAgency2) {
   EXPECT_STREQ("3", text3->v.text.text);
 }
 
+TEST_F(GumboParserTest, AdoptionAgency3) {
+  Parse("<div><a><b><u><i><code><div></a>");
+}
+
 TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   Parse("<ul>\n"
         "  <li>First\n"
