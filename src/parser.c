@@ -806,7 +806,8 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
   }
 
   assert(buffer_state->_type == GUMBO_NODE_WHITESPACE ||
-         buffer_state->_type == GUMBO_NODE_TEXT);
+         buffer_state->_type == GUMBO_NODE_TEXT ||
+         buffer_state->_type == GUMBO_NODE_CDATA);
   GumboNode* text_node = create_node(parser, buffer_state->_type);
   GumboText* text_node_data = &text_node->v.text;
   text_node_data->text = gumbo_string_buffer_to_string(
@@ -1035,7 +1036,8 @@ static GumboNode* insert_foreign_element(
 
 static void insert_text_token(GumboParser* parser, GumboToken* token) {
   assert(token->type == GUMBO_TOKEN_WHITESPACE ||
-         token->type == GUMBO_TOKEN_CHARACTER);
+         token->type == GUMBO_TOKEN_CHARACTER ||
+         token->type == GUMBO_TOKEN_CDATA);
   TextNodeBufferState* buffer_state = &parser->_parser_state->_text_node;
   if (buffer_state->_buffer.length == 0) {
     // Initialize position fields.
@@ -1046,6 +1048,8 @@ static void insert_text_token(GumboParser* parser, GumboToken* token) {
       parser, token->v.character, &buffer_state->_buffer);
   if (token->type == GUMBO_TOKEN_CHARACTER) {
     buffer_state->_type = GUMBO_NODE_TEXT;
+  } else if (token->type == GUMBO_TOKEN_CDATA) {
+    buffer_state->_type = GUMBO_NODE_CDATA;
   }
   gumbo_debug("Inserting text token '%c'.\n", token->v.character);
 }
@@ -2307,7 +2311,8 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     reconstruct_active_formatting_elements(parser);
     insert_text_token(parser, token);
     return true;
-  } else if (token->type == GUMBO_TOKEN_CHARACTER) {
+  } else if (token->type == GUMBO_TOKEN_CHARACTER ||
+             token->type == GUMBO_TOKEN_CDATA) {
     reconstruct_active_formatting_elements(parser);
     insert_text_token(parser, token);
     set_frameset_not_ok(parser);
@@ -3638,6 +3643,7 @@ static bool handle_in_foreign_content(GumboParser* parser, GumboToken* token) {
     case GUMBO_TOKEN_WHITESPACE:
       insert_text_token(parser, token);
       return true;
+    case GUMBO_TOKEN_CDATA:
     case GUMBO_TOKEN_CHARACTER:
       insert_text_token(parser, token);
       set_frameset_not_ok(parser);
