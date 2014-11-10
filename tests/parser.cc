@@ -1537,6 +1537,21 @@ TEST_F(GumboParserTest, CData) {
   EXPECT_STREQ("this is text", cdata->v.text.text);
 }
 
+TEST_F(GumboParserTest, CDataInBody) {
+  Parse("<div><![CDATA[this is text]]></div>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* div = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(div));
+
+  GumboNode* cdata = GetChild(div, 0);
+  ASSERT_EQ(GUMBO_NODE_COMMENT, cdata->type);
+  EXPECT_STREQ("[CDATA[this is text]]", cdata->v.text.text);
+}
+
 TEST_F(GumboParserTest, FormattingTagsInHeading) {
   Parse("<h2>This is <b>old</h2>text");
 
