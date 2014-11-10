@@ -2319,7 +2319,8 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
     return false;
   } else {
     const GumboNode* node = pop_current_node(parser);
-    assert(node_tag_is(node, GUMBO_TAG_HEAD));
+    assert(node_tag_in(node,
+          GUMBO_TAG_HEAD, GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST));
     AVOID_UNUSED_VARIABLE_WARNING(node);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_HEAD);
     parser->_parser_state->_reprocess_current_token = true;
@@ -3383,7 +3384,8 @@ static bool handle_in_column_group(GumboParser* parser, GumboToken* token) {
       parser_add_parse_error(parser, token);
       return false;
     }
-    assert(node_tag_is(get_current_node(parser), GUMBO_TAG_COLGROUP));
+    assert(node_tag_in(get_current_node(parser),
+          GUMBO_TAG_COLGROUP, GUMBO_TAG_TEMPLATE, GUMBO_TAG_LAST));
     pop_current_node(parser);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE);
     if (!tag_is(token, kEndTag, GUMBO_TAG_COLGROUP)) {
