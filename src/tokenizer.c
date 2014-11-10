@@ -2940,7 +2940,8 @@ bool gumbo_lex(GumboParser* parser, GumboToken* output) {
     assert(!tokenizer->_temporary_buffer_emit);
     assert(tokenizer->_buffered_emit_char == kGumboNoChar);
     int c = utf8iterator_current(&tokenizer->_input);
-    gumbo_debug("Lexing character '%c' in state %d.\n", c, tokenizer->_state);
+    gumbo_debug("Lexing character '%c' (%d) in state %d.\n",
+        c, c, tokenizer->_state);
     StateResult result =
         dispatch_table[tokenizer->_state](parser, tokenizer, c, output);
     // We need to clear reconsume_current_input before returning to prevent
