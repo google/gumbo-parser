@@ -1522,6 +1522,21 @@ TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   ASSERT_EQ(1, GetChildCount(li2));
 }
 
+TEST_F(GumboParserTest, CData) {
+  Parse("<svg><![CDATA[this is text]]></svg>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  EXPECT_STREQ("this is text", cdata->v.text.text);
+}
+
 TEST_F(GumboParserTest, FormattingTagsInHeading) {
   Parse("<h2>This is <b>old</h2>text");
 

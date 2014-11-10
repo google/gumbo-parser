@@ -319,7 +319,11 @@ static int ensure_lowercase(int c) {
   return c >= 'A' && c <= 'Z' ? c + 0x20 : c;
 }
 
-static GumboTokenType get_char_token_type(int c) {
+static GumboTokenType get_char_token_type(bool is_in_cdata, int c) {
+  if (is_in_cdata && c != -1) {
+    return GUMBO_TOKEN_CDATA;
+  }
+
   switch (c) {
     case '\t':
     case '\n':
@@ -479,11 +483,7 @@ static void finish_doctype_system_id(GumboParser* parser) {
 
 // Writes a single specified character to the output token.
 static void emit_char(GumboParser* parser, int c, GumboToken* output) {
-  if (parser->_tokenizer_state->_is_in_cdata) {
-    output->type = GUMBO_TOKEN_CDATA;
-  } else {
-    output->type = get_char_token_type(c);
-  }
+  output->type = get_char_token_type(parser->_tokenizer_state->_is_in_cdata, c);
   output->v.character = c;
   finish_token(parser, output);
 }
