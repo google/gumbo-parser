@@ -104,6 +104,7 @@ class Html5libAdapterTest(unittest.TestCase):
   The vague name is so nosetests doesn't try to run it as a test.
   """
   def impl(self, inner_html, input, expected, errors):
+    print('Testing %s...' % input)
     p = html5lib_adapter.HTMLParser(
             tree=TREEBUILDER(namespaceHTMLElements=True))
     if not inner_html:

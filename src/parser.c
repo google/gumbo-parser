@@ -581,7 +581,7 @@ static bool tag_is(const GumboToken* token, bool is_start, GumboTag tag) {
 // Like tag_in, but checks for the tag of a node, rather than a token.
 static bool node_tag_in(const GumboNode* node, ...) {
   assert(node != NULL);
-  if (node->type != GUMBO_NODE_ELEMENT) {
+  if (node->type != GUMBO_NODE_ELEMENT && node->type != GUMBO_NODE_TEMPLATE) {
     return false;
   }
   GumboTag node_tag = node->v.element.tag;
@@ -603,7 +603,8 @@ static bool node_tag_in(const GumboNode* node, ...) {
 
 // Like node_tag_in, but for the single-tag case.
 static bool node_tag_is(const GumboNode* node, GumboTag tag) {
-  return node->type == GUMBO_NODE_ELEMENT && node->v.element.tag == tag;
+  return (node->type == GUMBO_NODE_ELEMENT ||
+          node->type == GUMBO_NODE_TEMPLATE) && node->v.element.tag == tag;
 }
 
 
@@ -644,7 +645,7 @@ static GumboInsertionMode get_appropriate_insertion_mode(
   const GumboVector* open_elements = &parser->_parser_state->_open_elements;
   const GumboNode* node = open_elements->data[index];
   bool is_last = index == 0;
-  assert(node->type == GUMBO_NODE_ELEMENT);
+  assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
   switch (node->v.element.tag) {
     case GUMBO_TAG_SELECT:
       if (is_last) {
@@ -734,7 +735,8 @@ static GumboError* parser_add_parse_error(GumboParser* parser, const GumboToken*
                    &extra_data->tag_stack);
   for (int i = 0; i < state->_open_elements.length; ++i) {
     const GumboNode* node = state->_open_elements.data[i];
-    assert(node->type == GUMBO_NODE_ELEMENT);
+    assert(node->type == GUMBO_NODE_ELEMENT ||
+           node->type == GUMBO_NODE_TEMPLATE);
     gumbo_vector_add(parser, (void*) node->v.element.tag,
                     &extra_data->tag_stack);
   }
@@ -831,6 +833,7 @@ static void destroy_node(GumboParser* parser, GumboNode* node) {
         gumbo_parser_deallocate(parser, (void*) doc->system_identifier);
       }
       break;
+    case GUMBO_NODE_TEMPLATE:
     case GUMBO_NODE_ELEMENT:
       for (int i = 0; i < node->v.element.attributes.length; ++i) {
         gumbo_destroy_attribute(parser, node->v.element.attributes.data[i]);
@@ -858,7 +861,8 @@ static void append_node(
   assert(node->parent == NULL);
   assert(node->index_within_parent == -1);
   GumboVector* children;
-  if (parent->type == GUMBO_NODE_ELEMENT) {
+  if (parent->type == GUMBO_NODE_ELEMENT ||
+      parent->type == GUMBO_NODE_TEMPLATE) {
     children = &parent->v.element.children;
   } else {
     assert(parent->type == GUMBO_NODE_DOCUMENT);
@@ -881,7 +885,8 @@ static void insert_node(
   int index = location.index;
   if (index != -1) {
     GumboVector* children = NULL;
-    if (parent->type == GUMBO_NODE_ELEMENT) {
+    if (parent->type == GUMBO_NODE_ELEMENT ||
+        parent->type == GUMBO_NODE_TEMPLATE) {
       children = &parent->v.element.children;
     } else if (parent->type == GUMBO_NODE_DOCUMENT) {
       children = &parent->v.document.children;
@@ -964,7 +969,8 @@ static GumboNode* pop_current_node(GumboParser* parser) {
     assert(state->_open_elements.length == 0);
     return NULL;
   }
-  assert(current_node->type == GUMBO_NODE_ELEMENT);
+  assert(current_node->type == GUMBO_NODE_ELEMENT ||
+         current_node->type == GUMBO_NODE_TEMPLATE);
   bool is_closed_body_or_html_tag =
       (node_tag_is(current_node, GUMBO_TAG_BODY) && state->_closed_body_tag) ||
       (node_tag_is(current_node, GUMBO_TAG_HTML) && state->_closed_html_tag);
@@ -1057,7 +1063,12 @@ static GumboNode* create_element_from_token(
     parser_add_parse_error(parser, token);
   }
 
-  GumboNode* node = create_node(parser, GUMBO_NODE_ELEMENT);
+  GumboNodeType type = (
+      tag_namespace == GUMBO_NAMESPACE_HTML &&
+      start_tag->tag == GUMBO_TAG_TEMPLATE)
+        ? GUMBO_NODE_TEMPLATE
+        : GUMBO_NODE_ELEMENT;
+  GumboNode* node = create_node(parser, type);
   GumboElement* element = &node->v.element;
   gumbo_vector_init(parser, 1, &element->children);
   element->attributes = start_tag->attributes;
@@ -1245,7 +1256,7 @@ static bool is_open_element(GumboParser* parser, const GumboNode* node) {
 // values are fresh copies.
 GumboNode* clone_node(
     GumboParser* parser, const GumboNode* node, GumboParseFlags reason) {
-  assert(node->type == GUMBO_NODE_ELEMENT);
+  assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
   GumboNode* new_node = gumbo_parser_allocate(parser, sizeof(GumboNode));
   *new_node = *node;
   new_node->parent = NULL;
@@ -1395,7 +1406,7 @@ static bool has_an_element_in_specific_scope(
   bool result = false;
   for (int i = open_elements->length; --i >= 0; ) {
     const GumboNode* node = open_elements->data[i];
-    if (node->type != GUMBO_NODE_ELEMENT) {
+    if (node->type != GUMBO_NODE_ELEMENT && node->type != GUMBO_NODE_TEMPLATE) {
       continue;
     }
     GumboTag node_tag = node->v.element.tag;
@@ -1424,6 +1435,11 @@ cleanup:
   gumbo_vector_destroy(parser, &tags);
   return result;
 }
+
+// TODO: all of the has_an_element_in_scope functions ignore namespaces.  They
+// shouldn't - it could potentially lead to strange states if the parser
+// encounters a tag that it always assumes is in the HTML namespace within
+// foreign content or vice versa.
 
 // This is a bit of a hack to stack-allocate a one-element GumboVector name
 // 'varname' containing the 'from_var' variable, since it's used in nearly all
@@ -1466,7 +1482,8 @@ static bool has_node_in_scope(GumboParser* parser, const GumboNode* node) {
     if (current == node) {
       return true;
     }
-    if (current->type != GUMBO_NODE_ELEMENT) {
+    if (current->type != GUMBO_NODE_ELEMENT &&
+        current->type != GUMBO_NODE_TEMPLATE) {
       continue;
     }
     if (node_tag_in(
@@ -1636,7 +1653,8 @@ static void close_current_select(GumboParser* parser) {
 // The list of nodes in the "special" category:
 // http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#special
 static bool is_special_node(const GumboNode* node) {
-  assert(node->type == GUMBO_NODE_ELEMENT);
+  assert(node->type == GUMBO_NODE_ELEMENT ||
+         node->type == GUMBO_NODE_TEMPLATE);
   switch (node->v.element.tag_namespace) {
     case GUMBO_NAMESPACE_HTML:
       return node_tag_in(node,
@@ -2459,7 +2477,10 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
       return true;
     }
     parser_add_parse_error(parser, token);
-    while (!node_tag_is(pop_current_node(parser), GUMBO_TAG_TEMPLATE));
+    for (GumboNode* popped = pop_current_node(parser);
+         popped->v.element.tag_namespace != GUMBO_NAMESPACE_HTML ||
+         !node_tag_is(popped, GUMBO_TAG_TEMPLATE);
+         popped = pop_current_node(parser));
     clear_active_formatting_elements(parser);
     pop_template_insertion_mode(parser);
     reset_insertion_mode_appropriately(parser);
@@ -3980,7 +4001,9 @@ static bool handle_token(GumboParser* parser, GumboToken* token) {
   }
 
   const GumboNode* current_node = get_current_node(parser);
-  assert(!current_node || current_node->type == GUMBO_NODE_ELEMENT);
+  assert(!current_node ||
+         current_node->type == GUMBO_NODE_ELEMENT ||
+         current_node->type == GUMBO_NODE_TEMPLATE);
   if (current_node) {
     gumbo_debug("Current node: <%s>.\n",
                 gumbo_normalized_tagname(current_node->v.element.tag));
