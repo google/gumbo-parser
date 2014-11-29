@@ -61,7 +61,7 @@ static const char* find_title(const GumboNode* root) {
         return "<empty title>";
       }
       GumboNode* title_text = child->v.element.children.data[0];
-      assert(title_text->type == GUMBO_NODE_TEXT);
+      assert(title_text->type == GUMBO_NODE_TEXT || title_text->type == GUMBO_NODE_WHITESPACE);
       return title_text->v.text.text;
     }
   }
