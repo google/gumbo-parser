@@ -1537,6 +1537,22 @@ TEST_F(GumboParserTest, CData) {
   EXPECT_STREQ("this is text", cdata->v.text.text);
 }
 
+TEST_F(GumboParserTest, CDataUnsafe) {
+  Parse("<svg><![CDATA[\0filler\0text\0]]>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  // \xEF\xBF\xBD = unicode replacement char
+  EXPECT_STREQ("fillertext", cdata->v.text.text);
+}
+
 TEST_F(GumboParserTest, CDataInBody) {
   Parse("<div><![CDATA[this is text]]></div>");
 
