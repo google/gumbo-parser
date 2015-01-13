@@ -97,7 +97,7 @@ gumbo_test_DEPENDENCIES += check-local
 gumbo_test_LDADD += gtest/lib/libgtest.la gtest/lib/libgtest_main.la
 endif
 
-noinst_PROGRAMS = clean_text find_links get_title positions_of_class benchmark
+noinst_PROGRAMS = clean_text find_links get_title positions_of_class benchmark serialize
 LDADD = libgumbo.la
 AM_CPPFLAGS = -I"$(srcdir)/src"
 
@@ -106,3 +106,4 @@ find_links_SOURCES = examples/find_links.cc
 get_title_SOURCES = examples/get_title.c
 positions_of_class_SOURCES = examples/positions_of_class.cc
 benchmark_SOURCES = benchmarks/benchmark.cc
+serialize_SOURCES = examples/serialize.cc
