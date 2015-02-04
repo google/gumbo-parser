@@ -28,10 +28,43 @@ static void search_for_links(GumboNode* node) {
   if (node->type != GUMBO_NODE_ELEMENT) {
     return;
   }
-  GumboAttribute* href;
-  if (node->v.element.tag == GUMBO_TAG_A &&
-      (href = gumbo_get_attribute(&node->v.element.attributes, "href"))) {
-    std::cout << href->value << std::endl;
+  GumboAttribute* link = NULL;
+  // handle main cases: href and src
+  if ( ( node->v.element.tag == GUMBO_TAG_A     ) ||
+       ( node->v.element.tag == GUMBO_TAG_AREA  ) ||
+       ( node->v.element.tag == GUMBO_TAG_BASE  ) ||
+       ( node->v.element.tag == GUMBO_TAG_IMAGE ) ||
+       ( node->v.element.tag == GUMBO_TAG_LINK  ) ) {
+      link = gumbo_get_attribute(&node->v.element.attributes, "href");
+
+  }  else if ( ( node->v.element.tag == GUMBO_TAG_EMBED  ) ||
+       ( node->v.element.tag == GUMBO_TAG_FORM   ) ||
+       ( node->v.element.tag == GUMBO_TAG_FRAME  ) ||
+       ( node->v.element.tag == GUMBO_TAG_IFRAME ) ||
+       ( node->v.element.tag == GUMBO_TAG_IMG    ) ||
+       ( node->v.element.tag == GUMBO_TAG_INPUT  ) ||
+       ( node->v.element.tag == GUMBO_TAG_OBJECT ) ||
+       ( node->v.element.tag == GUMBO_TAG_SCRIPT ) ||
+       ( node->v.element.tag == GUMBO_TAG_SOURCE ) ) {
+      link = gumbo_get_attribute(&node->v.element.attributes, "src");
+  }
+  if (link) {
+      std::cout << link->value << std::endl;
+      link = NULL;
+  }
+
+  // now handle special cases which can overlap with the above
+  if (node->v.element.tag == GUMBO_TAG_IMAGE) {
+      link = gumbo_get_attribute(&node->v.element.attributes, "xlink:href");
+  } else if (node->v.element.tag == GUMBO_TAG_FORM) {
+      link = gumbo_get_attribute(&node->v.element.attributes, "action");
+
+  } else if (node->v.element.tag == GUMBO_TAG_OBJECT) {
+      link = gumbo_get_attribute(&node->v.element.attributes, "data");
+  }
+  if (link) {
+      std::cout << link->value << std::endl;
+      link = NULL;
   }
 
   GumboVector* children = &node->v.element.children;
@@ -60,7 +93,10 @@ int main(int argc, char** argv) {
   in.read(&contents[0], contents.size());
   in.close();
 
-  GumboOutput* output = gumbo_parse(contents.c_str());
+  GumboOptions myoptions = kGumboDefaultOptions;
+  myoptions.use_xhtml_rules = true;
+  
+  GumboOutput* output = gumbo_parse_with_options(&myoptions, contents.data(), contents.length());
   search_for_links(output->root);
   gumbo_destroy_output(&kGumboDefaultOptions, output);
 }

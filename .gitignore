@@ -8,6 +8,13 @@
 *.swo
 *.swn
 
+# diff leftovers
+*.orig
+
+#Emacs leftovers
+*~
+#*#
+
 # Other build artifacts
 /Debug
 /visualc/Debug

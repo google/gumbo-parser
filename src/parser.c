@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <stdio.h>
 
 #include "attribute.h"
 #include "error.h"
@@ -51,6 +52,7 @@ const GumboOptions kGumboDefaultOptions = {
   &free_wrapper,
   NULL,
   8,
+  false,
   false,
   -1,
 };
@@ -2126,6 +2128,23 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
     // should specifically look for that string in the document and re-encode it
     // before passing to Gumbo.
     return true;
+
+  // XHTML5 Parser support for cdata and rcdata in head to fix <title/> and etc
+  } else if (parser->_options->use_xhtml_rules  && token->v.start_tag.is_self_closing &&
+             tag_in(token, kStartTag, GUMBO_TAG_TITLE, GUMBO_TAG_TEXTAREA,
+                    GUMBO_TAG_STYLE, GUMBO_TAG_SCRIPT, GUMBO_TAG_XMP, GUMBO_TAG_IFRAME,
+                    GUMBO_TAG_NOEMBED, GUMBO_TAG_NOFRAMES, GUMBO_TAG_NOSCRIPT, 
+                    GUMBO_TAG_LAST)) {
+    insert_element_from_token(parser, token);
+    return true;
+  } else if (parser->_options->use_xhtml_rules  && 
+             tag_in(token, kEndTag, GUMBO_TAG_TITLE, GUMBO_TAG_TEXTAREA,
+                    GUMBO_TAG_STYLE, GUMBO_TAG_SCRIPT, GUMBO_TAG_XMP, GUMBO_TAG_IFRAME,
+                    GUMBO_TAG_NOEMBED, GUMBO_TAG_NOFRAMES, GUMBO_TAG_NOSCRIPT, 
+                    GUMBO_TAG_LAST)) {
+    pop_current_node(parser);
+    return true;
+
   } else if (tag_is(token, kStartTag, GUMBO_TAG_TITLE)) {
     run_generic_parsing_algorithm(parser, token, GUMBO_LEX_RCDATA);
     return true;
@@ -3822,6 +3841,11 @@ GumboOutput* gumbo_parse_with_options(
   int loop_count = 0;
 
   GumboToken token;
+
+  // XHTML5 parsing support
+  bool inject_end = false;
+  GumboToken injected_token;
+  
   bool has_error = false;
   do {
     if (state->_reprocess_current_token) {
@@ -3855,6 +3879,31 @@ GumboOutput* gumbo_parse_with_options(
                state->_insertion_mode);
 
     state->_current_token = &token;
+
+    if (parser._options->use_xhtml_rules) {
+      // XHTML5 Parser support
+      // prepare to inject an end tag token if token is not a proper 
+      // void element but is a self-closing start tag
+      // no memory is allocated so no free is ever needed
+      if (token.type == GUMBO_TOKEN_START_TAG && token.v.start_tag.is_self_closing) {
+        if (!tag_in(&token, true, GUMBO_TAG_AREA, GUMBO_TAG_BASE, GUMBO_TAG_BASEFONT,
+                 GUMBO_TAG_BGSOUND, GUMBO_TAG_BR, GUMBO_TAG_EMBED, GUMBO_TAG_HR,
+                 GUMBO_TAG_IMG, GUMBO_TAG_IMAGE, GUMBO_TAG_INPUT, GUMBO_TAG_KEYGEN,
+                 GUMBO_TAG_LINK, GUMBO_TAG_MENUITEM, GUMBO_TAG_META, GUMBO_TAG_PARAM,
+                 GUMBO_TAG_COL, GUMBO_TAG_FRAME, GUMBO_TAG_ISINDEX, GUMBO_TAG_SPACER,
+                 GUMBO_TAG_SOURCE, GUMBO_TAG_TRACK, GUMBO_TAG_WBR, GUMBO_TAG_LAST)) {
+          inject_end = true;
+    	  // since self closing tag,  end tag should share same 
+    	  // position and original text information as start tag
+    	  // but have no attributes
+  	  injected_token.type = GUMBO_TOKEN_END_TAG;
+  	  injected_token.v.end_tag = token.v.start_tag.tag;
+  	  injected_token.position = token.position;
+  	  injected_token.original_text = token.original_text;
+        }
+      }
+    }
+
     state->_self_closing_flag_acknowledged =
         !(token.type == GUMBO_TOKEN_START_TAG &&
           token.v.start_tag.is_self_closing);
@@ -3866,6 +3915,17 @@ GumboOutput* gumbo_parse_with_options(
     assert(state->_reprocess_current_token ||
            token.type != GUMBO_TOKEN_START_TAG ||
            token.v.start_tag.attributes.data == NULL);
+
+    if (parser._options->use_xhtml_rules && inject_end) {
+      // XHTML5 Parser support - immediately inject end tag if self-closing 
+      // non-void start tag was just processed
+      // which the html5 parser treats as only a start tag
+      // unless in head in RCDATA where it breaks everything
+      state->_current_token = &injected_token;
+      state->_self_closing_flag_acknowledged = true;
+      has_error = !handle_token(&parser, &injected_token) || has_error;
+      inject_end = false;
+    }
 
     if (!state->_self_closing_flag_acknowledged) {
       GumboError* error = parser_add_parse_error(&parser, &token);

@@ -29,8 +29,7 @@ static std::string empty_tags          = "|area|base|basefont|bgsound|br|command
 static std::string preserve_whitespace = "|pre|textarea|script|style|";
 static std::string special_handling    = "|html|body|";
 static std::string no_entity_sub       = "|script|style|";
-static std::string rcdatatags          = "|style|script|xmp|iframe|noembed|noframes|noscript|";
-static std::string cdatatags           = "|title|textarea|";
+
 
 static inline void rtrim(std::string &s) 
 {
@@ -52,54 +51,6 @@ static void replace_all(std::string &s, const char * s1, const char * s2)
   while (pos != std::string::npos) {
     s.replace(pos, len, s2);
     pos = s.find(t1, pos + len);
-  }
-}
-
-
-static std::string get_next_tag(const std::string& tags, size_t & pos)
-{
-  std::string tag = "";
-  size_t fp = tags.find("|",pos);
-  if (fp != std::string::npos) {
-    tag = tags.substr(pos,fp-pos);
-    pos = fp+1;
-  } else {
-    pos = std::string::npos;
-  }
-  return tag;
-}
-
-
-// replace self-closed cdata and rcdata tags with a
-// start and end tag pair
-// Why? - parse html with <title/> and see what happens
-
-// Note: This should actually be be done with regular expressions
-// to properly deal with any attributes or whitespace variations.
-// Ignore all of that for now and just handle most common cases
-// such as <title/> and <title />
-
-static void fix_self_closed_cdata_tags(std::string &contents)
-{
-  size_t pos = 1;
-  std::string tag = get_next_tag(cdatatags, pos);
-  while(!tag.empty()) {
-    std::string source = "<" + tag + "/>";
-    std::string dest = "<" + tag + "></" + tag + ">";
-    replace_all(contents, source.c_str(), dest.c_str());
-    source = "<" + tag + " />";
-    replace_all(contents, source.c_str(), dest.c_str());
-    tag = get_next_tag(cdatatags, pos);
-  }
-  pos = 1;
-  tag = get_next_tag(rcdatatags, pos);
-  while(!tag.empty()) {
-    std::string source = "<" + tag + "/>";
-    std::string dest = "<" + tag + "></" + tag + ">";
-    replace_all(contents, source.c_str(), dest.c_str());
-    source = "<" + tag + " />";
-    replace_all(contents, source.c_str(), dest.c_str());
-    tag = get_next_tag(cdatatags, pos);
   }
 }
 
@@ -328,11 +279,10 @@ int main(int argc, char** argv) {
   in.read(&contents[0], contents.size());
   in.close();
  
-  // before parsing handle things like <title/> that
-  // confuse the parser greatly
-  fix_self_closed_cdata_tags(contents);
+  GumboOptions myoptions = kGumboDefaultOptions;
+  myoptions.use_xhtml_rules = true;
 
-  GumboOutput* output = gumbo_parse(contents.c_str());
+  GumboOutput* output = gumbo_parse_with_options(&myoptions, contents.data(), contents.length());
   std::cout << serialize(output->document) << std::endl;
   gumbo_destroy_output(&kGumboDefaultOptions, output);
 }

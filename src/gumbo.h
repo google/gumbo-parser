@@ -737,6 +737,12 @@ typedef struct GumboInternalOptions {
   int tab_stop;
 
   /**
+   * Whether to use xhtml parsing rules for self-closing non-void tags
+   * Default: false.
+   */
+  bool use_xhtml_rules;
+
+  /**
    * Whether or not to stop parsing when the first error is encountered.
    * Default: false.
    */
