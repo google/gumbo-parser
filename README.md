@@ -4,7 +4,7 @@ Gumbo - A pure-C HTML5 parser.
 Modified version of google's upstream gumbo-parser
 Includes:
  - support for xhtml parsing (specifically injects close tag tokens for non-void but self-closed tags)
- - xhtml parsing support includes fix for horrible parsing of rcdata tags like <title/> in <head>
+ - xhtml parsing support includes fix for horrible parsing of rcdata tags like &lt;title/&gt; in <head>
  - added improved serialize example in C++ which includes support for unknown tags
  - added prettyprint example in C++
  - improved find_links to return all outside references that might need to be updated
