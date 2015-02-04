@@ -15,7 +15,7 @@
 //
 // Author: Kevin Hendricks
 //
-// Serialize back to html / xhtml making as few changes as possible (even in whitespace)
+// Prettyprint back to html / xhtml
 
 #include <fstream>
 #include <iostream>
@@ -29,6 +29,8 @@ static std::string empty_tags          = "|area|base|basefont|bgsound|br|command
 static std::string preserve_whitespace = "|pre|textarea|script|style|";
 static std::string special_handling    = "|html|body|";
 static std::string no_entity_sub       = "|script|style|";
+static std::string rcdatatags          = "|style|script|xmp|iframe|noembed|noframes|noscript|";
+static std::string cdatatags           = "|title|textarea|";
 
 
 static inline void rtrim(std::string &s) 
@@ -51,6 +53,54 @@ static void replace_all(std::string &s, const char * s1, const char * s2)
   while (pos != std::string::npos) {
     s.replace(pos, len, s2);
     pos = s.find(t1, pos + len);
+  }
+}
+
+
+static std::string get_next_tag(const std::string& tags, size_t & pos)
+{
+  std::string tag = "";
+  size_t fp = tags.find("|",pos);
+  if (fp != std::string::npos) {
+    tag = tags.substr(pos,fp-pos);
+    pos = fp+1;
+  } else {
+    pos = std::string::npos;
+  }
+  return tag;
+}
+
+
+// replace self-closed cdata and rcdata tags with a
+// start and end tag pair
+// Why? - parse html with <title/> in head and see what happens
+
+// Note:  this should be done with regular expressions
+// to properly deal with any attributes or whitespace variations.
+// Ignore all of that for now and just handle most common cases
+// such as <title/> and <title />
+
+static void fix_self_closed_cdata_tags(std::string &contents)
+{
+  size_t pos = 1;
+  std::string tag = get_next_tag(cdatatags, pos);
+  while(!tag.empty()) {
+    std::string source = "<" + tag + "/>";
+    std::string dest = "<" + tag + "></" + tag + ">";
+    replace_all(contents, source.c_str(), dest.c_str());
+    source = "<" + tag + " />";
+    replace_all(contents, source.c_str(), dest.c_str());
+    tag = get_next_tag(cdatatags, pos);
+  }
+  pos = 1;
+  tag = get_next_tag(rcdatatags, pos);
+  while(!tag.empty()) {
+    std::string source = "<" + tag + "/>";
+    std::string dest = "<" + tag + "></" + tag + ">";
+    replace_all(contents, source.c_str(), dest.c_str());
+    source = "<" + tag + " />";
+    replace_all(contents, source.c_str(), dest.c_str());
+    tag = get_next_tag(cdatatags, pos);
   }
 }
 
@@ -132,7 +182,8 @@ static std::string build_doctype(GumboNode *node)
 
 static std::string build_attributes(GumboAttribute * at, bool no_entities)
 {
-  std::string atts = " ";
+  std::string atts = "";
+  atts.append(" ");
   atts.append(at->name);
 
   // how do we want to handle attributes with empty values
@@ -147,13 +198,17 @@ static std::string build_attributes(GumboAttribute * at, bool no_entities)
     std::string qs = "";
     if (quote == '\'') qs = std::string("'");
     if (quote == '"') qs = std::string("\"");
+
     atts.append("=");
+
     atts.append(qs);
+
     if (no_entities) {
       atts.append(at->value);
     } else {
       atts.append(substitute_xml_entities_into_attributes(quote, std::string(at->value)));
     }
+
     atts.append(qs);
   }
   return atts;
@@ -161,71 +216,109 @@ static std::string build_attributes(GumboAttribute * at, bool no_entities)
 
 
 // forward declaration
-static std::string serialize(GumboNode*);
+
+static std::string prettyprint(GumboNode*, int lvl, const std::string indent_chars);
 
 
-// serialize children of a node
+// prettyprint children of a node
 // may be invoked recursively
 
-static std::string serialize_contents(GumboNode* node) {
+static std::string prettyprint_contents(GumboNode* node, int lvl, const std::string indent_chars) {
+
   std::string contents        = "";
   std::string tagname         = get_tag_name(node);
   std::string key             = "|" + tagname + "|";
   bool no_entity_substitution = no_entity_sub.find(key) != std::string::npos;
   bool keep_whitespace        = preserve_whitespace.find(key) != std::string::npos;
   bool is_inline              = nonbreaking_inline.find(key) != std::string::npos;
+  bool pp_okay                = !is_inline && !keep_whitespace;
 
-  // build up result for each child, recursively if need be
   GumboVector* children = &node->v.element.children;
 
   for (unsigned int i = 0; i < children->length; ++i) {
     GumboNode* child = static_cast<GumboNode*> (children->data[i]);
 
     if (child->type == GUMBO_NODE_TEXT) {
+
+      std::string val;
+
       if (no_entity_substitution) {
-        contents.append(std::string(child->v.text.text));
+        val = std::string(child->v.text.text);
       } else {
-        contents.append(substitute_xml_entities_into_text(std::string(child->v.text.text)));
+        val = substitute_xml_entities_into_text(std::string(child->v.text.text));
       }
 
+      if (pp_okay) rtrim(val);
+
+      if (pp_okay && (contents.length() == 0)) {
+        // add required indentation
+        char c = indent_chars.at(0);
+        int n  = indent_chars.length();
+        contents.append(std::string((lvl-1)*n,c));
+      }
+
+      contents.append(val);
+
+
     } else if (child->type == GUMBO_NODE_ELEMENT) {
-      contents.append(serialize(child));
+
+      std::string val = prettyprint(child, lvl, indent_chars);
+
+      // remove any indentation if this child is inline and not first child
+      std::string childname = get_tag_name(child);
+      std::string childkey = "|" + childname + "|";
+      if ((nonbreaking_inline.find(childkey) != std::string::npos) && (contents.length() > 0)) {
+        ltrim(val);
+      }
+
+      contents.append(val);
 
     } else if (child->type == GUMBO_NODE_WHITESPACE) {
-      // keep all whitespace to keep as close to original as possible
-      contents.append(std::string(child->v.text.text));
+
+      if (keep_whitespace || is_inline) {
+        contents.append(std::string(child->v.text.text));
+      }
 
     } else if (child->type != GUMBO_NODE_COMMENT) {
+
       // Does this actually exist: (child->type == GUMBO_NODE_CDATA)
       fprintf(stderr, "unknown element of type: %d\n", child->type); 
+
     }
+
   }
+
   return contents;
 }
 
 
-// serialize a GumboNode back to html/xhtml
+// prettyprint a GumboNode back to html/xhtml
 // may be invoked recursively
 
-static std::string serialize(GumboNode* node) {
+static std::string prettyprint(GumboNode* node, int lvl, const std::string indent_chars) {
+
   // special case the document node
   if (node->type == GUMBO_NODE_DOCUMENT) {
     std::string results = build_doctype(node);
-    results.append(serialize_contents(node));
+    results.append(prettyprint_contents(node,lvl+1,indent_chars));
     return results;
   }
 
-  std::string close = "";
-  std::string closeTag = "";
-  std::string atts = "";
+  std::string close              = "";
+  std::string closeTag           = "";
+  std::string atts               = "";
   std::string tagname            = get_tag_name(node);
   std::string key                = "|" + tagname + "|";
   bool need_special_handling     =  special_handling.find(key) != std::string::npos;
   bool is_empty_tag              = empty_tags.find(key) != std::string::npos;
   bool no_entity_substitution    = no_entity_sub.find(key) != std::string::npos;
+  bool keep_whitespace           = preserve_whitespace.find(key) != std::string::npos;
   bool is_inline                 = nonbreaking_inline.find(key) != std::string::npos;
+  bool pp_okay                   = !is_inline && !keep_whitespace;
+  char c                         = indent_chars.at(0);
+  int  n                         = indent_chars.length(); 
 
-  // build attr string  
+  // build attr string
   const GumboVector * attribs = &node->v.element.attributes;
   for (int i=0; i< attribs->length; ++i) {
     GumboAttribute* at = static_cast<GumboAttribute*>(attribs->data[i]);
@@ -239,29 +332,49 @@ static std::string serialize(GumboNode* node) {
       closeTag = "</" + tagname + ">";
   }
 
-  // serialize your contents
-  std::string contents = serialize_contents(node);
+  std::string indent_space = std::string((lvl-1)*n,c);
+
+  // prettyprint your contents 
+  std::string contents = prettyprint_contents(node, lvl+1, indent_chars);
 
   if (need_special_handling) {
-    ltrim(contents);
     rtrim(contents);
     contents.append("\n");
   }
 
+  char last_char = ' ';
+  if (!contents.empty()) {
+    last_char = contents.at(contents.length()-1);
+  } 
+
   // build results
   std::string results;
+  if (pp_okay) {
+    results.append(indent_space);
+  }
   results.append("<"+tagname+atts+close+">");
-  if (need_special_handling) results.append("\n");
+  if (pp_okay) {
+    results.append("\n");
+  }
   results.append(contents);
+  if (pp_okay && !contents.empty() && (last_char != '\n')) {
+    results.append("\n");
+  }
+  if (pp_okay && !closeTag.empty()) {
+    results.append(indent_space);
+  }
   results.append(closeTag);
-  if (need_special_handling) results.append("\n");
+  if (pp_okay && !closeTag.empty()) {
+    results.append("\n");
+  }
+
   return results;
 }
 
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-      std::cout << "serialize <html filename>\n";
+      std::cout << "prettyprint <html filename>\n";
       exit(EXIT_FAILURE);
   }
   const char* filename = argv[1];
@@ -279,10 +392,12 @@ int main(int argc, char** argv) {
   in.read(&contents[0], contents.size());
   in.close();
  
-  GumboOptions myoptions = kGumboDefaultOptions;
-  myoptions.use_xhtml_rules = true;
+  // before parsing handle things like <title/> that
+  // confuse the parser greatly
+  fix_self_closed_cdata_tags(contents);
 
-  GumboOutput* output = gumbo_parse_with_options(&myoptions, contents.data(), contents.length());
-  std::cout << serialize(output->document) << std::endl;
+  GumboOutput* output = gumbo_parse(contents.c_str());
+  std::string indent_chars = "  ";
+  std::cout << prettyprint(output->document, 0, indent_chars) << std::endl;
   gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
