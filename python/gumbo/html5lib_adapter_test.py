@@ -92,6 +92,23 @@ def convertExpected(data, stripChars):
   return "\n".join(rv)
 
 
+def reformatTemplateContents(expected):
+  lines = expected.split('\n')
+  retval = []
+  template_indents = []
+  for line in lines:
+    indent = len(line) - len(line.strip())
+    if 'content' in line:
+      template_indents.append(indent)
+      continue
+    elif template_indents and indent <= template_indents[-1]:
+      template_indents.pop()
+    elif template_indents:
+      line = line[2 * len(template_indents):]
+    retval.append(line)
+  return '\n'.join(retval)
+
+
 class Html5libAdapterTest(unittest.TestCase):
   """Adapter between Gumbo and the html5lib tests.
 
@@ -104,8 +121,10 @@ class Html5libAdapterTest(unittest.TestCase):
   The vague name is so nosetests doesn't try to run it as a test.
   """
   def impl(self, inner_html, input, expected, errors):
+    print('Testing %s...' % input)
     p = html5lib_adapter.HTMLParser(
             tree=TREEBUILDER(namespaceHTMLElements=True))
+
     if not inner_html:
       # TODO(jdtang): Need to implement fragment parsing.
       document = p.parse(StringIO.StringIO(input))
@@ -119,6 +138,10 @@ class Html5libAdapterTest(unittest.TestCase):
 
     expected = re.compile(r'^(\s*)<(\S+)>', re.M).sub(
         r'\1<html \2>', convertExpected(expected, 2))
+    # html5lib doesn't yet support the template tag, but it appears in the
+    # tests with the expectation that the template contents will be under the
+    # word 'contents', so we need to reformat that string a bit.
+    expected = reformatTemplateContents(expected)
 
     error_msg = '\n'.join(['\n\nInput:', input, '\nExpected:', expected,
                            '\nReceived:', output])
