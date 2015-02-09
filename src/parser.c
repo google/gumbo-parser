@@ -2829,7 +2829,8 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
                     GUMBO_TAG_RTC, GUMBO_TAG_LAST)) {
     bool success = true;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      GumboTag exception = tag_is(token, kStartTag, GUMBO_TAG_RT)
+      GumboTag exception = tag_in(
+          token, kStartTag, GUMBO_TAG_RT, GUMBO_TAG_RP, GUMBO_TAG_LAST)
         ? GUMBO_TAG_RTC : GUMBO_TAG_LAST;
       generate_implied_end_tags(parser, exception);
     }
