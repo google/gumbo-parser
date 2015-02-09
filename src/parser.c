@@ -1444,7 +1444,8 @@ static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
   for (;
        node_tag_in(get_current_node(parser), GUMBO_TAG_DD, GUMBO_TAG_DT,
                    GUMBO_TAG_LI, GUMBO_TAG_OPTION, GUMBO_TAG_OPTGROUP,
-                   GUMBO_TAG_P, GUMBO_TAG_RP, GUMBO_TAG_RT, GUMBO_TAG_LAST) &&
+                   GUMBO_TAG_P, GUMBO_TAG_RP, GUMBO_TAG_RB, GUMBO_TAG_RT,
+                   GUMBO_TAG_LAST) &&
        !node_tag_is(get_current_node(parser), exception);
        pop_current_node(parser));
 }
