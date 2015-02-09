@@ -2828,13 +2828,14 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
   } else if (tag_in(token, kStartTag, GUMBO_TAG_RB, GUMBO_TAG_RP, GUMBO_TAG_RT,
                     GUMBO_TAG_RTC, GUMBO_TAG_LAST)) {
     bool success = true;
+    GumboTag exception = tag_in(
+        token, kStartTag, GUMBO_TAG_RT, GUMBO_TAG_RP, GUMBO_TAG_LAST)
+      ? GUMBO_TAG_RTC : GUMBO_TAG_LAST;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      GumboTag exception = tag_in(
-          token, kStartTag, GUMBO_TAG_RT, GUMBO_TAG_RP, GUMBO_TAG_LAST)
-        ? GUMBO_TAG_RTC : GUMBO_TAG_LAST;
       generate_implied_end_tags(parser, exception);
     }
-    if (!node_tag_is(get_current_node(parser), GUMBO_TAG_RUBY)) {
+    if (!node_tag_in(get_current_node(parser),
+          GUMBO_TAG_RUBY, exception, GUMBO_TAG_LAST)) {
       parser_add_parse_error(parser, token);
       success = false;
     }
