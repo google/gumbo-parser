@@ -2423,8 +2423,8 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
                     GUMBO_TAG_DETAILS, GUMBO_TAG_DIR, GUMBO_TAG_DIV,
                     GUMBO_TAG_DL, GUMBO_TAG_FIELDSET, GUMBO_TAG_FIGCAPTION,
                     GUMBO_TAG_FIGURE, GUMBO_TAG_FOOTER, GUMBO_TAG_HEADER,
-                    GUMBO_TAG_HGROUP, GUMBO_TAG_MENU, GUMBO_TAG_NAV,
-                    GUMBO_TAG_OL, GUMBO_TAG_P, GUMBO_TAG_SECTION,
+                    GUMBO_TAG_HGROUP, GUMBO_TAG_MAIN, GUMBO_TAG_MENU,
+                    GUMBO_TAG_NAV, GUMBO_TAG_OL, GUMBO_TAG_P, GUMBO_TAG_SECTION,
                     GUMBO_TAG_SUMMARY, GUMBO_TAG_UL, GUMBO_TAG_LAST)) {
     bool result = maybe_implicitly_close_p_tag(parser, token);
     insert_element_from_token(parser, token);
@@ -2492,9 +2492,9 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
                     GUMBO_TAG_DIV, GUMBO_TAG_DL, GUMBO_TAG_FIELDSET,
                     GUMBO_TAG_FIGCAPTION, GUMBO_TAG_FIGURE, GUMBO_TAG_FOOTER,
                     GUMBO_TAG_HEADER, GUMBO_TAG_HGROUP, GUMBO_TAG_LISTING,
-                    GUMBO_TAG_MENU, GUMBO_TAG_NAV, GUMBO_TAG_OL, GUMBO_TAG_PRE,
-                    GUMBO_TAG_SECTION, GUMBO_TAG_SUMMARY, GUMBO_TAG_UL,
-                    GUMBO_TAG_LAST)) {
+                    GUMBO_TAG_MAIN, GUMBO_TAG_MENU, GUMBO_TAG_NAV, GUMBO_TAG_OL,
+                    GUMBO_TAG_PRE, GUMBO_TAG_SECTION, GUMBO_TAG_SUMMARY,
+                    GUMBO_TAG_UL, GUMBO_TAG_LAST)) {
     GumboTag tag = token->v.end_tag;
     if (!has_an_element_in_scope(parser, tag)) {
       parser_add_parse_error(parser, token);
