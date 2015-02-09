@@ -55,6 +55,7 @@ libgumbo_la_SOURCES = \
 				src/string_piece.c \
 				src/string_piece.h \
 				src/tag.c \
+				src/tag.h \
 				src/token_type.h \
 				src/tokenizer.c \
 				src/tokenizer.h \
