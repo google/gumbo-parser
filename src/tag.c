@@ -175,6 +175,7 @@ const char* kGumboTagNames[] = {
   "spacer",
   "tt",
   "",                   // TAG_UNKNOWN
+  "rtc",
   "",                   // TAG_LAST
 };
 
