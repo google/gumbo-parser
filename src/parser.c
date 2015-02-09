@@ -1445,7 +1445,7 @@ static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
        node_tag_in(get_current_node(parser), GUMBO_TAG_DD, GUMBO_TAG_DT,
                    GUMBO_TAG_LI, GUMBO_TAG_OPTION, GUMBO_TAG_OPTGROUP,
                    GUMBO_TAG_P, GUMBO_TAG_RP, GUMBO_TAG_RB, GUMBO_TAG_RT,
-                   GUMBO_TAG_LAST) &&
+                   GUMBO_TAG_RTC, GUMBO_TAG_LAST) &&
        !node_tag_is(get_current_node(parser), exception);
        pop_current_node(parser));
 }
@@ -2399,11 +2399,11 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     for (int i = 0; i < state->_open_elements.length; ++i) {
       if (!node_tag_in(state->_open_elements.data[i], GUMBO_TAG_DD,
                        GUMBO_TAG_DT, GUMBO_TAG_LI, GUMBO_TAG_OPTGROUP,
-                       GUMBO_TAG_OPTION, GUMBO_TAG_P, GUMBO_TAG_RP,
-                       GUMBO_TAG_RT, GUMBO_TAG_TBODY, GUMBO_TAG_TD,
-                       GUMBO_TAG_TFOOT, GUMBO_TAG_TH, GUMBO_TAG_THEAD,
-                       GUMBO_TAG_TR, GUMBO_TAG_BODY, GUMBO_TAG_HTML,
-                       GUMBO_TAG_LAST)) {
+                       GUMBO_TAG_OPTION, GUMBO_TAG_P, GUMBO_TAG_RB,
+                       GUMBO_TAG_RP, GUMBO_TAG_RT, GUMBO_TAG_RTC,
+                       GUMBO_TAG_TBODY, GUMBO_TAG_TD, GUMBO_TAG_TFOOT,
+                       GUMBO_TAG_TH, GUMBO_TAG_THEAD, GUMBO_TAG_TR,
+                       GUMBO_TAG_BODY, GUMBO_TAG_HTML, GUMBO_TAG_LAST)) {
         parser_add_parse_error(parser, token);
         success = false;
         break;
@@ -2825,11 +2825,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     reconstruct_active_formatting_elements(parser);
     insert_element_from_token(parser, token);
     return true;
-  } else if (tag_in(token, kStartTag, GUMBO_TAG_RP, GUMBO_TAG_RT,
-                    GUMBO_TAG_LAST)) {
+  } else if (tag_in(token, kStartTag, GUMBO_TAG_RB, GUMBO_TAG_RP, GUMBO_TAG_RT,
+                    GUMBO_TAG_RTC, GUMBO_TAG_LAST)) {
     bool success = true;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      generate_implied_end_tags(parser, GUMBO_TAG_LAST);
+      GumboTag exception = tag_is(token, kStartTag, GUMBO_TAG_RT)
+        ? GUMBO_TAG_RTC : GUMBO_TAG_LAST;
+      generate_implied_end_tags(parser, exception);
     }
     if (!node_tag_is(get_current_node(parser), GUMBO_TAG_RUBY)) {
       parser_add_parse_error(parser, token);
