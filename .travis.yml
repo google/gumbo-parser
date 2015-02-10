@@ -4,6 +4,10 @@ compiler:
   - gcc
   - clang
 
+os:
+  - linux
+  - osx
+
 install:
   - wget 'https://googletest.googlecode.com/files/gtest-1.6.0.zip'
   - unzip gtest-1.6.0.zip

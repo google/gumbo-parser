@@ -189,6 +189,20 @@ TEST_F(GumboTokenizerTest, DoctypeSystem) {
   EXPECT_STREQ("DTD_location", doc_type->system_identifier);
 }
 
+TEST_F(GumboTokenizerTest, DoctypeUnterminated) {
+  SetInput("<!DOCTYPE a PUBLIC''");
+  EXPECT_FALSE(gumbo_lex(&parser_, &token_));
+  ASSERT_EQ(GUMBO_TOKEN_DOCTYPE, token_.type);
+  EXPECT_EQ(0, token_.position.offset);
+
+  GumboTokenDocType* doc_type = &token_.v.doc_type;
+  EXPECT_TRUE(doc_type->force_quirks);
+  EXPECT_TRUE(doc_type->has_public_identifier);
+  EXPECT_FALSE(doc_type->has_system_identifier);
+  EXPECT_STREQ("a", doc_type->name);
+  EXPECT_STREQ("", doc_type->system_identifier);
+}
+
 TEST_F(GumboTokenizerTest, RawtextEnd) {
   SetInput("<title>x ignores <tag></title>");
   EXPECT_TRUE(gumbo_lex(&parser_, &token_));
