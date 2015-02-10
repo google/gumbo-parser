@@ -230,6 +230,7 @@ static bool maybe_add_invalid_named_reference(
 machine char_ref;
 
 valid_named_ref := |*
+  'AElig;' => { output->first = 0xc6; fbreak; };
   'AElig' => { output->first = 0xc6; fbreak; };
   'AMP;' => { output->first = 0x26; fbreak; };
   'AMP' => { output->first = 0x26; fbreak; };

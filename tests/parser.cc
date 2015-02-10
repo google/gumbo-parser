@@ -1611,6 +1611,17 @@ TEST_F(GumboParserTest, FormattingTagsInHeading) {
   EXPECT_STREQ("text", text3->v.text.text);
 }
 
+TEST_F(GumboParserTest, ExtraReconstruction) {
+  Parse("<span><b></span></p>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(2, GetChildCount(body));
+
+  EXPECT_EQ(GUMBO_TAG_SPAN, GetTag(GetChild(body, 0)));
+  EXPECT_EQ(GUMBO_TAG_P, GetTag(GetChild(body, 1)));
+}
+
 TEST_F(GumboParserTest, LinkifiedHeading) {
   Parse("<li><h3><a href=#foo>Text</a></h3><div>Summary</div>");
 
@@ -1751,6 +1762,90 @@ TEST_F(GumboParserTest, DoubleBody) {
   ASSERT_EQ(GUMBO_NODE_TEXT, text->type);
   EXPECT_EQ(GUMBO_INSERTION_NORMAL, text->parse_flags);
   EXPECT_STREQ("Text", text->v.text.text);
+}
+
+TEST_F(GumboParserTest, ThInMathMl) {
+  Parse("<math><th><mI><table></table><tr></table><div><tr>0");
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* math = GetChild(body, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, math->type);
+  EXPECT_EQ(GUMBO_TAG_MATH, math->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_MATHML, math->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(math));
+
+  GumboNode* th = GetChild(math, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, th->type);
+  EXPECT_EQ(GUMBO_TAG_TH, th->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_MATHML, th->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(th));
+
+  GumboNode* mi = GetChild(th, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, mi->type);
+  EXPECT_EQ(GUMBO_TAG_MI, mi->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_MATHML, mi->v.element.tag_namespace);
+  ASSERT_EQ(2, GetChildCount(mi));
+
+  GumboNode* table = GetChild(mi, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, table->type);
+  EXPECT_EQ(GUMBO_TAG_TABLE, table->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, table->v.element.tag_namespace);
+  ASSERT_EQ(0, GetChildCount(table));
+
+  GumboNode* div = GetChild(mi, 1);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, div->type);
+  EXPECT_EQ(GUMBO_TAG_DIV, div->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, div->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(div));
+
+  GumboNode* text = GetChild(div, 0);
+  ASSERT_EQ(GUMBO_NODE_TEXT, text->type);
+  EXPECT_STREQ("0", text->v.text.text);
+}
+
+TEST_F(GumboParserTest, TdInMathml) {
+  Parse("<table><th><math><td></tr>");
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* table = GetChild(body, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, table->type);
+  EXPECT_EQ(GUMBO_TAG_TABLE, table->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, table->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(table));
+
+  GumboNode* tbody = GetChild(table, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, tbody->type);
+  EXPECT_EQ(GUMBO_TAG_TBODY, tbody->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, tbody->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(tbody));
+
+  GumboNode* tr = GetChild(tbody, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, tr->type);
+  EXPECT_EQ(GUMBO_TAG_TR, tr->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, tr->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(tr));
+
+  GumboNode* th = GetChild(tr, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, th->type);
+  EXPECT_EQ(GUMBO_TAG_TH, th->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_HTML, th->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(th));
+
+  GumboNode* math = GetChild(th, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, math->type);
+  EXPECT_EQ(GUMBO_TAG_MATH, math->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_MATHML, math->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(math));
+
+  GumboNode* td = GetChild(math, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, td->type);
+  EXPECT_EQ(GUMBO_TAG_TD, td->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_MATHML, td->v.element.tag_namespace);
+  ASSERT_EQ(0, GetChildCount(td));
 }
 
 }  // namespace
