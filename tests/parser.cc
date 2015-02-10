@@ -1565,6 +1565,17 @@ TEST_F(GumboParserTest, FormattingTagsInHeading) {
   EXPECT_STREQ("text", text3->v.text.text);
 }
 
+TEST_F(GumboParserTest, ExtraReconstruction) {
+  Parse("<span><b></span></p>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(2, GetChildCount(body));
+
+  EXPECT_EQ(GUMBO_TAG_SPAN, GetTag(GetChild(body, 0)));
+  EXPECT_EQ(GUMBO_TAG_P, GetTag(GetChild(body, 1)));
+}
+
 TEST_F(GumboParserTest, LinkifiedHeading) {
   Parse("<li><h3><a href=#foo>Text</a></h3><div>Summary</div>");
 

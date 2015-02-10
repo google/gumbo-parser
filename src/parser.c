@@ -2532,7 +2532,6 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kEndTag, GUMBO_TAG_P)) {
     if (!has_an_element_in_button_scope(parser, HTML_QN(P))) {
       parser_add_parse_error(parser, token);
-      reconstruct_active_formatting_elements(parser);
       insert_element_of_tag_type(
           parser, GUMBO_TAG_P, GUMBO_INSERTION_CONVERTED_FROM_END_TAG);
       state->_reprocess_current_token = true;
