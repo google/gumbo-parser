@@ -279,10 +279,9 @@ int main(int argc, char** argv) {
   in.read(&contents[0], contents.size());
   in.close();
  
-  GumboOptions myoptions = kGumboDefaultOptions;
-  myoptions.use_xhtml_rules = true;
+  GumboOptions options = kGumboDefaultOptions;
 
-  GumboOutput* output = gumbo_parse_with_options(&myoptions, contents.data(), contents.length());
+  GumboOutput* output = gumbo_parse_with_options(&options, contents.data(), contents.length());
   std::cout << serialize(output->document) << std::endl;
   gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
