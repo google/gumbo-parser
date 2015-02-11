@@ -183,7 +183,9 @@ other repositories:
   * [OCGumbo] by TracyYih
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
-[ruby-gumbo]: https://github.com/galdor/ruby-gumbo
+* Perl: [HTML::Gumbo] by Ruslan Zakirov
+
+[ruby-gumbo]: https://github.com/nevir/ruby-gumbo
 [nokogumbo]: https://github.com/rubys/nokogumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
 [gumbo-d]: https://github.com/bakkdoor/gumbo-d
@@ -198,3 +200,4 @@ other repositories:
 [html5lib-0.95 tests]: https://github.com/html5lib/html5lib-tests
 [googletest]: https://code.google.com/p/googletest/
 [semantic versioning]: http://semver.org/
+[HTML::Gumbo]: https://metacpan.org/pod/HTML::Gumbo
