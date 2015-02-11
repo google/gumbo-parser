@@ -48,6 +48,9 @@ $ gdb .libs/lt-gumbo_test core
 
 The same goes for core dumps in other example binaries.
 
+To run only a single unit test, pass the --gtest_filter='TestName' flag to the
+lt-gumbo_test binary.
+
 Assertions
 ==========
 
