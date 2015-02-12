@@ -32,13 +32,11 @@
 #include "util.h"
 #include "vector.h"
 
-
 #define AVOID_UNUSED_VARIABLE_WARNING(i) (void)(i)
 
 #define GUMBO_STRING(literal) { literal, sizeof(literal) - 1 }
 #define TERMINATOR { "", 0 }
 
-// for working with large sets of tags with namespace information
 typedef char gumbo_tagset[GUMBO_TAG_LAST];
 #define TAG(tag) [GUMBO_TAG_##tag] = (1 << GUMBO_NAMESPACE_HTML)
 #define TAG_SVG(tag) [GUMBO_TAG_##tag] = (1 << GUMBO_NAMESPACE_SVG)
@@ -1284,7 +1282,7 @@ static bool has_an_element_in_specific_scope(GumboParser* parser, gumbo_tagset e
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-scope
 static bool has_an_element_in_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = (gumbo_tagset) {0};
+  gumbo_tagset qualset = {0};
   qualset[(int) tag] = (1 << (int) GUMBO_NAMESPACE_HTML);
   return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
@@ -1334,7 +1332,7 @@ static bool has_an_element_in_scope_with_tagname(GumboParser* parser, gumbo_tags
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-list-item-scope
 static bool has_an_element_in_list_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = (gumbo_tagset) {0};
+  gumbo_tagset qualset = {0};
   qualset[(int)tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
   return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
@@ -1346,7 +1344,7 @@ static bool has_an_element_in_list_scope(GumboParser* parser, GumboTag tag) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-button-scope
 static bool has_an_element_in_button_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = (gumbo_tagset) {0};
+  gumbo_tagset qualset = {0};
   qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
   return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
@@ -1357,18 +1355,17 @@ static bool has_an_element_in_button_scope(GumboParser* parser, GumboTag tag) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-table-scope
 static bool has_an_element_in_table_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = (gumbo_tagset) {0};
+  gumbo_tagset qualset = {0};
   qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
   return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(HTML), TAG(TABLE) });
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-select-scope
 static bool has_an_element_in_select_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = (gumbo_tagset) {0};
+  gumbo_tagset qualset = {0};
   qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
   return has_an_element_in_specific_scope(parser, qualset, true, (gumbo_tagset) { TAG(OPTGROUP), TAG(OPTION) });
 }
-
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#generate-implied-end-tags
 // "exception" is the "element to exclude from the process" listed in the spec.
