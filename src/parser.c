@@ -1322,12 +1322,11 @@ static bool has_node_in_scope(GumboParser* parser, const GumboNode* node) {
 // Like has_an_element_in_scope, but restricts the expected qualified name to a
 // range of possible qualified names instead of just a single one.
 static bool has_an_element_in_scope_with_tagname(GumboParser* parser, gumbo_tagset qualset) {
-  bool found = has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
+  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
         TAG(OBJECT), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
         TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
         TAG_SVG(FOREIGNOBJECT), TAG_SVG(DESC), TAG_SVG(TITLE) });
-  return found;
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-list-item-scope

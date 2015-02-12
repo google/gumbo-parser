@@ -8,6 +8,16 @@
 *.swo
 *.swn
 
+#emacs editor leftovers
+*.*~
+
+#diff leftovers
+*.orig
+
+# gtest pieces
+gtest
+gtest-1.7.0
+
 # Other build artifacts
 /Debug
 /visualc/Debug
