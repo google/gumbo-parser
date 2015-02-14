@@ -3481,7 +3481,7 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
       token->type == GUMBO_TOKEN_COMMENT ||
       token->type == GUMBO_TOKEN_DOCTYPE) {
     return handle_in_body(parser, token);
-  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(BASE), TAG(BASEFONT),
+  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(BASE), TAG(BASEFONT), TAG(BGSOUND),
           TAG(LINK), TAG(META), TAG(NOFRAMES), TAG(SCRIPT), TAG(STYLE),
           TAG(TEMPLATE), TAG(TITLE) }) ||
              tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
@@ -3505,7 +3505,7 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE_BODY);
     state->_reprocess_current_token = true;
     return true;
-  } else if (tag_in(token, kEndTag, (gumbo_tagset) { TAG(TD), TAG(TH) })) {
+  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(TD), TAG(TH) })) {
     pop_template_insertion_mode(parser);
     push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_ROW);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_ROW);
