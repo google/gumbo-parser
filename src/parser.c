@@ -1364,7 +1364,6 @@ static GumboQuirksModeEnum compute_quirks_mode(
 // from the rest of the document.
 static bool has_an_element_in_specific_scope(GumboParser* parser, gumbo_tagset expected, bool negate, const gumbo_tagset tags) {
   GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  bool result = false;
   for (int i = open_elements->length; --i >= 0; ) {
     const GumboNode* node = open_elements->data[i];
     if (node->type != GUMBO_NODE_ELEMENT && node->type != GUMBO_NODE_TEMPLATE) {
@@ -1378,11 +1377,10 @@ static bool has_an_element_in_specific_scope(GumboParser* parser, gumbo_tagset e
       found_qualname = true;
     }
     if (negate != found_qualname) {
-      result = false;
-      return result;
+      return false;
     }
   }
-  return result;
+  return false;
 }
 
 // Checks for the presence of an open element of the specified tag type.
