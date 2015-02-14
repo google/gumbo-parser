@@ -80,6 +80,7 @@ _HANDLERS = [
     _add_text(BeautifulSoup.CData),
     _add_text(BeautifulSoup.Comment),
     _add_text(BeautifulSoup.NavigableString),
+    _add_element,
     ]
 
 

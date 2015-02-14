@@ -444,7 +444,8 @@ class Text(ctypes.Structure):
 
 
 class NodeType(Enum):
-  _values_ = ['DOCUMENT', 'ELEMENT', 'TEXT', 'CDATA', 'COMMENT', 'WHITESPACE']
+  _values_ = ['DOCUMENT', 'ELEMENT', 'TEXT', 'CDATA', 
+              'COMMENT', 'WHITESPACE', 'TEMPLATE']
 
 
 class NodeUnion(ctypes.Union):
@@ -463,7 +464,7 @@ class Node(ctypes.Structure):
     # __getattr__, so we factor it out to a helper.
     if self.type == NodeType.DOCUMENT:
       return self.v.document
-    elif self.type == NodeType.ELEMENT:
+    elif self.type in (NodeType.ELEMENT, NodeType.TEMPLATE):
       return self.v.element
     else:
       return self.v.text
