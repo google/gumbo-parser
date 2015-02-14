@@ -197,7 +197,7 @@ typedef struct _ReplacementEntry {
     { GUMBO_STRING(from), GUMBO_STRING(to) }
 
 // Static data for SVG attribute replacements.
-// http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adjust-svg-attributes
+// https://html.spec.whatwg.org/multipage/syntax.html#creating-and-inserting-nodes
 static const ReplacementEntry kSvgAttributeReplacements[] = {
   REPLACEMENT_ENTRY("attributename", "attributeName"),
   REPLACEMENT_ENTRY("attributetype", "attributeType"),
@@ -205,12 +205,12 @@ static const ReplacementEntry kSvgAttributeReplacements[] = {
   REPLACEMENT_ENTRY("baseprofile", "baseProfile"),
   REPLACEMENT_ENTRY("calcmode", "calcMode"),
   REPLACEMENT_ENTRY("clippathunits", "clipPathUnits"),
-  REPLACEMENT_ENTRY("contentscripttype", "contentScriptType"),
-  REPLACEMENT_ENTRY("contentstyletype", "contentStyleType"),
+  // REPLACEMENT_ENTRY("contentscripttype", "contentScriptType"),
+  // REPLACEMENT_ENTRY("contentstyletype", "contentStyleType"),
   REPLACEMENT_ENTRY("diffuseconstant", "diffuseConstant"),
   REPLACEMENT_ENTRY("edgemode", "edgeMode"),
-  REPLACEMENT_ENTRY("externalresourcesrequired", "externalResourcesRequired"),
-  REPLACEMENT_ENTRY("filterres", "filterRes"),
+  // REPLACEMENT_ENTRY("externalresourcesrequired", "externalResourcesRequired"),
+  // REPLACEMENT_ENTRY("filterres", "filterRes"),
   REPLACEMENT_ENTRY("filterunits", "filterUnits"),
   REPLACEMENT_ENTRY("glyphref", "glyphRef"),
   REPLACEMENT_ENTRY("gradienttransform", "gradientTransform"),
@@ -1483,7 +1483,7 @@ static bool has_an_element_in_select_scope(GumboParser* parser, GumboTag tag) {
 static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
   for (;
        node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(DD), TAG(DT),
-             TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RT) }) &&
+             TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RB), TAG(RT) }) &&
        !node_html_tag_is(get_current_node(parser), exception);
        pop_current_node(parser));
 }
@@ -2470,7 +2470,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(ADDRESS), TAG(ARTICLE),
           TAG(ASIDE), TAG(BLOCKQUOTE), TAG(CENTER), TAG(DETAILS), 
           TAG(DIR), TAG(DIV), TAG(DL), TAG(FIELDSET), TAG(FIGCAPTION),
-          TAG(FIGURE), TAG(FOOTER), TAG(HEADER), TAG(HGROUP), TAG(MENU), 
+          TAG(FIGURE), TAG(FOOTER), TAG(HEADER), TAG(HGROUP), TAG(MENU), TAG(MAIN),
           TAG(NAV), TAG(OL), TAG(P), TAG(SECTION), TAG(SUMMARY), TAG(UL) })) {
     bool result = maybe_implicitly_close_p_tag(parser, token);
     insert_element_from_token(parser, token);
@@ -2535,7 +2535,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
          TAG(ASIDE), TAG(BLOCKQUOTE), TAG(BUTTON), TAG(CENTER), TAG(DETAILS), 
          TAG(DIR), TAG(DIV), TAG(DL), TAG(FIELDSET), TAG(FIGCAPTION), 
          TAG(FIGURE), TAG(FOOTER), TAG(HEADER), TAG(HGROUP), TAG(LISTING),
-         TAG(MENU), TAG(NAV), TAG(OL), TAG(PRE),
+         TAG(MAIN), TAG(MENU), TAG(NAV), TAG(OL), TAG(PRE),
          TAG(SECTION), TAG(SUMMARY), TAG(UL) })) {
     GumboTag tag = token->v.end_tag;
     if (!has_an_element_in_scope(parser, tag)) {
