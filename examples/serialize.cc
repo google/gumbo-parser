@@ -188,7 +188,7 @@ static std::string serialize_contents(GumboNode* node) {
         contents.append(substitute_xml_entities_into_text(std::string(child->v.text.text)));
       }
 
-    } else if (child->type == GUMBO_NODE_ELEMENT) {
+    } else if (child->type == GUMBO_NODE_ELEMENT || child->type == GUMBO_NODE_TEMPLATE) {
       contents.append(serialize(child));
 
     } else if (child->type == GUMBO_NODE_WHITESPACE) {

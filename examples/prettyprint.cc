@@ -210,7 +210,7 @@ static std::string prettyprint_contents(GumboNode* node, int lvl, const std::str
       contents.append(val);
 
 
-    } else if (child->type == GUMBO_NODE_ELEMENT) {
+    } else if ((child->type == GUMBO_NODE_ELEMENT) || (child->type == GUMBO_NODE_TEMPLATE)) {
 
       std::string val = prettyprint(child, lvl, indent_chars);
 
