@@ -1491,6 +1491,10 @@ TEST_F(GumboParserTest, AdoptionAgency2) {
   EXPECT_STREQ("3", text3->v.text.text);
 }
 
+TEST_F(GumboParserTest, AdoptionAgency3) {
+  Parse("<div><a><b><u><i><code><div></a>");
+}
+
 TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   Parse("<ul>\n"
         "  <li>First\n"
@@ -1851,6 +1855,37 @@ TEST_F(GumboParserTest, TdInMathml) {
   EXPECT_EQ(GUMBO_TAG_TD, td->v.element.tag);
   EXPECT_EQ(GUMBO_NAMESPACE_MATHML, td->v.element.tag_namespace);
   ASSERT_EQ(0, GetChildCount(td));
+}
+
+TEST_F(GumboParserTest, TestTemplateInForeignContent) {
+  Parse("<template><svg><template>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  EXPECT_EQ(0, GetChildCount(body));
+
+  GumboNode* html = GetChild(root_, 0);
+  ASSERT_EQ(2, GetChildCount(html));
+
+  GumboNode* head = GetChild(html, 0);
+  ASSERT_EQ(1, GetChildCount(head));
+
+  GumboNode* template_node = GetChild(head, 0);
+  ASSERT_EQ(GUMBO_NODE_TEMPLATE, template_node->type);
+  EXPECT_EQ(GUMBO_TAG_TEMPLATE, template_node->v.element.tag);
+  ASSERT_EQ(1, GetChildCount(template_node));
+
+  GumboNode* svg_node = GetChild(template_node, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, svg_node->type);
+  EXPECT_EQ(GUMBO_TAG_SVG, svg_node->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_SVG, svg_node->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(svg_node));
+
+  GumboNode* svg_template = GetChild(svg_node, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, svg_template->type);
+  EXPECT_EQ(GUMBO_TAG_TEMPLATE, svg_template->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_SVG, svg_template->v.element.tag_namespace);
+  EXPECT_EQ(0, GetChildCount(svg_template));
 }
 
 }  // namespace
