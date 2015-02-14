@@ -730,7 +730,7 @@ static GumboInsertionMode get_current_template_insertion_mode(const GumboParser*
   if (template_insertion_modes->length == 0) {
     return GUMBO_INSERTION_MODE_INITIAL;
   }
-  return (GumboInsertionMode) template_insertion_modes->data[template_insertion_modes->length - 1];
+  return (GumboInsertionMode) template_insertion_modes->data[(template_insertion_modes->length - 1)];
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#mathml-text-integration-point
@@ -3057,8 +3057,8 @@ static bool handle_in_table(GumboParser* parser, GumboToken* token) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
     return false;
-  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(STYLE), TAG(SCRIPT) }) ||
-             tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
+  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(STYLE), TAG(SCRIPT), TAG(TEMPLATE) }) ||
+             (tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE))) { 
     return handle_in_head(parser, token);
   } else if (tag_is(token, kStartTag, GUMBO_TAG_INPUT) &&
              attribute_matches(&token->v.start_tag.attributes,
