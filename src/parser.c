@@ -2350,9 +2350,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     ignore_token(parser);
     return false;
   } else if (tag_is(token, kStartTag, GUMBO_TAG_HTML)) {
+    parser_add_parse_error(parser, token);
+    if (has_open_element(parser, GUMBO_TAG_TEMPLATE)) {
+      ignore_token(parser);
+      return false;
+    }
     assert(parser->_output->root != NULL);
     assert(parser->_output->root->type == GUMBO_NODE_ELEMENT);
-    parser_add_parse_error(parser, token);
     merge_attributes(parser, token, parser->_output->root);
     return false;
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(BASE), TAG(BASEFONT),
