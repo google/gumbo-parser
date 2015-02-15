@@ -1278,7 +1278,10 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
     GumboNode* clone = clone_node(
         parser, element, GUMBO_INSERTION_RECONSTRUCTED_FORMATTING_ELEMENT);
     // Step 9.
-    insert_element(parser, clone, true);
+    InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
+    insert_node(parser, clone, location);
+    gumbo_vector_add(parser, (void*) clone, &parser->_parser_state->_open_elements);
+
     // Step 10.
     elements->data[i] = clone;
     gumbo_debug("Reconstructed %s element at %d.\n",
