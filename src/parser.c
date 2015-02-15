@@ -53,6 +53,8 @@ typedef char gumbo_tagset[GUMBO_TAG_LAST];
 static bool node_html_tag_is(const GumboNode*, GumboTag);
 static GumboInsertionMode get_current_template_insertion_mode(const GumboParser*);
 static bool handle_in_template(GumboParser*, GumboToken*);
+static void destroy_node(GumboParser*, GumboNode*);
+
 
 static void* malloc_wrapper(void* unused, size_t size) {
   return malloc(size);
@@ -826,65 +828,43 @@ static void append_node(
   assert(node->index_within_parent < children->length);
 }
 
-// Inserts a node at the specified index within its parent, updating the
+// Inserts a node at the specified InsertionLocation, updating the
 // "parent" and "index_within_parent" fields of it and all its siblings.
+// If the index of the location is -1, this calls append_node.
 static void insert_node(
-    GumboParser* parser, GumboNode* parent, int index, GumboNode* node) {
+                        GumboParser* parser, GumboNode* node, InsertionLocation location) {
   assert(node->parent == NULL);
   assert(node->index_within_parent == -1);
-  assert(parent->type == GUMBO_NODE_ELEMENT || parent->type == GUMBO_NODE_TEMPLATE);
-  GumboVector* children = &parent->v.element.children;
-  assert(index >= 0);
-  assert(index < children->length);
-  node->parent = parent;
-  node->index_within_parent = index;
-  gumbo_vector_insert_at(parser, (void*) node, index, children);
-  assert(node->index_within_parent < children->length);
-  for (int i = index + 1; i < children->length; ++i) {
-    GumboNode* sibling = children->data[i];
-    sibling->index_within_parent = i;
-    assert(sibling->index_within_parent < children->length);
-  }
-}
-
-// http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#foster-parenting
-static void foster_parent_element(GumboParser* parser, GumboNode* node) {
-  GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  assert(open_elements->length > 2);
-
-  node->parse_flags |= GUMBO_INSERTION_FOSTER_PARENTED;
-  GumboNode* foster_parent_element = open_elements->data[0];
-  assert(foster_parent_element->type == GUMBO_NODE_ELEMENT);
-  assert(node_html_tag_is(foster_parent_element, GUMBO_TAG_HTML));
-  for (int i = open_elements->length; --i > 1; ) {
-    GumboNode* table_element = open_elements->data[i];
-    if (node_html_tag_is(table_element, GUMBO_TAG_TABLE)) {
-      foster_parent_element = table_element->parent;
-      if (!foster_parent_element ||
-          foster_parent_element->type != GUMBO_NODE_ELEMENT) {
-        // Table has no parent; spec says it's possible if a script manipulated
-        // the DOM, although I don't think we have to worry about this case.
-        gumbo_debug("Table has no parent.\n");
-        foster_parent_element = open_elements->data[i - 1];
-        break;
-      }
-      assert(foster_parent_element->type == GUMBO_NODE_ELEMENT);
-      gumbo_debug("Found enclosing table (%x) at %d; parent=%s, index=%d.\n",
-                 table_element, i, gumbo_normalized_tagname(
-                     foster_parent_element->v.element.tag),
-                 table_element->index_within_parent);
-      assert(foster_parent_element->v.element.children.data[
-             table_element->index_within_parent] == table_element);
-      insert_node(parser, foster_parent_element,
-                  table_element->index_within_parent, node);
-      return;
+  GumboNode* parent = location.target;
+  int index = location.index;
+  if (index != -1) {
+    GumboVector* children = NULL;
+    if (parent->type == GUMBO_NODE_ELEMENT ||
+        parent->type == GUMBO_NODE_TEMPLATE) {
+      children = &parent->v.element.children;
+    } else if (parent->type == GUMBO_NODE_DOCUMENT) {
+      children = &parent->v.document.children;
+      assert(children->length == 0);
+    } else {
+      assert(0);
     }
+
+    assert(index >= 0);
+    assert(index < children->length);
+    node->parent = parent;
+    node->index_within_parent = index;
+    gumbo_vector_insert_at(parser, (void*) node, index, children);
+    assert(node->index_within_parent < children->length);
+    for (int i = index + 1; i < children->length; ++i) {
+      GumboNode* sibling = children->data[i];
+      sibling->index_within_parent = i;
+      assert(sibling->index_within_parent < children->length);
+    }
+  } else {
+    append_node(parser, parent, node);
   }
-  if (node->type == GUMBO_NODE_ELEMENT) {
-    gumbo_vector_add(parser, (void*) node, open_elements);
-  }
-  append_node(parser, foster_parent_element, node);
 }
+
 
 static void maybe_flush_text_node_buffer(GumboParser* parser) {
   GumboParserState* state = parser->_parser_state;
@@ -905,17 +885,18 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
       state->_current_token->original_text.data -
       buffer_state->_start_original_text;
   text_node_data->start_pos = buffer_state->_start_position;
-  if (state->_foster_parent_insertions && 
-      node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(TABLE), TAG(TBODY), TAG(TFOOT),
-            TAG(THEAD), TAG(TR) })) {
-    foster_parent_element(parser, text_node);
-  } else {
-    append_node(
-        parser, parser->_output->root ?
-        get_current_node(parser) : parser->_output->document, text_node);
-  }
+
   gumbo_debug("Flushing text node buffer of %.*s.\n",
              (int) buffer_state->_buffer.length, buffer_state->_buffer.data);
+
+  InsertionLocation location = get_appropriate_insertion_location(parser, NULL);
+  if (location.target->type == GUMBO_NODE_DOCUMENT) {
+    // The DOM does not allow Document nodes to have Text children, so per the
+    // spec, they are dropped on the floor.
+    destroy_node(parser, text_node);
+  } else {
+    insert_node(parser, text_node, location);
+  }
 
   gumbo_string_buffer_destroy(parser, &buffer_state->_buffer);
   gumbo_string_buffer_init(parser, &buffer_state->_buffer);
@@ -1057,20 +1038,9 @@ static void insert_element(GumboParser* parser, GumboNode* node,
   if (!is_reconstructing_formatting_elements) {
     maybe_flush_text_node_buffer(parser);
   }
-  if (state->_foster_parent_insertions && 
-      node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(TABLE), TAG(TBODY), TAG(TFOOT),
-            TAG(THEAD), TAG(TR) } )) {
-    foster_parent_element(parser, node);
-    gumbo_vector_add(parser, (void*) node, &state->_open_elements);
-    return;
-  }
-
-  // This is called to insert the root HTML element, but get_current_node
-  // assumes the stack of open elements is non-empty, so we need special
-  // handling for this case.
-  append_node(
-      parser, parser->_output->root ?
-      get_current_node(parser) : parser->_output->document, node);
+  InsertionLocation location =
+    get_appropriate_insertion_location(parser, NULL);
+  insert_node(parser, node, location);
   gumbo_vector_add(parser, (void*) node, &state->_open_elements);
 }
 
@@ -1950,15 +1920,11 @@ static bool adoption_agency_algorithm(
                 gumbo_normalized_tagname(last_node->v.element.tag));
     remove_from_parent(parser, last_node);
     last_node->parse_flags |= GUMBO_INSERTION_ADOPTION_AGENCY_MOVED;
-    if (node_tag_in_set(common_ancestor, (gumbo_tagset) { TAG(TABLE), TAG(TBODY),
-            TAG(TFOOT), TAG(THEAD), TAG(TR) })) {
-      gumbo_debug("and foster-parenting it.\n");
-      foster_parent_element(parser, last_node);
-    } else {
-      gumbo_debug("and inserting it into %s.\n",
-                  gumbo_normalized_tagname(common_ancestor->v.element.tag));
-      append_node(parser, common_ancestor, last_node);
-    }
+    InsertionLocation location =
+      get_appropriate_insertion_location(parser, common_ancestor);
+    gumbo_debug("and inserting it into %s.\n",
+                gumbo_normalized_tagname(location.target->v.element.tag));
+    insert_node(parser, last_node, location);
 
     // Step 11.
     GumboNode* new_formatting_node = clone_node(
