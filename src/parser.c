@@ -3068,11 +3068,7 @@ static bool handle_in_table(GumboParser* parser, GumboToken* token) {
     pop_current_node(parser);
     return false;
   } else if (token->type == GUMBO_TOKEN_EOF) {
-    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_HTML)) {
-      parser_add_parse_error(parser, token);
-      return false;
-    }
-    return true;
+    return handle_in_body(parser, token);
   } else {
     parser_add_parse_error(parser, token);
     state->_foster_parent_insertions = true;
