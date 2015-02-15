@@ -87,6 +87,7 @@ const char* kGumboTagNames[] = {
   "mark",
   "ruby",
   "rt",
+  "rtc",
   "rp",
   "bdi",
   "bdo",
