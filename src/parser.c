@@ -3181,6 +3181,15 @@ static bool handle_in_column_group(GumboParser* parser, GumboToken* token) {
     pop_current_node(parser);
     acknowledge_self_closing_tag(parser);
     return true;
+  } else if (tag_is(token, kEndTag, GUMBO_TAG_COLGROUP)) {
+    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_COLGROUP)) {
+      parser_add_parse_error(parser, token);
+      ignore_token(parser);
+      return false;
+    }
+    pop_current_node(parser);
+    set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE);
+    return false;
   } else if (tag_is(token, kEndTag, GUMBO_TAG_COL)) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
@@ -3188,20 +3197,17 @@ static bool handle_in_column_group(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_TEMPLATE) ||
              tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
     return handle_in_head(parser, token);
-  } else if (token->type == GUMBO_TOKEN_EOF &&
-             get_current_node(parser) == parser->_output->root) {
-    return true;
+  } else if (token->type == GUMBO_TOKEN_EOF) {
+    return handle_in_body(parser, token);
   } else {
-    if (get_current_node(parser) == parser->_output->root) {
+    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_COLGROUP)) {
       parser_add_parse_error(parser, token);
+      ignore_token(parser);
       return false;
     }
-    assert(node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(COLGROUP), TAG(TEMPLATE) }));
     pop_current_node(parser);
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TABLE);
-    if (!tag_is(token, kEndTag, GUMBO_TAG_COLGROUP)) {
-      parser->_parser_state->_reprocess_current_token = true;
-    }
+    parser->_parser_state->_reprocess_current_token = true;
     return true;
   }
 }
