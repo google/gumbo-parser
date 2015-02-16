@@ -535,7 +535,7 @@ def parse(text, **kwargs):
   try:
     yield output
   finally:
-    _destroy_output(ctypes.byref(options), output)
+    _destroy_output(output)
 
 _DEFAULT_OPTIONS = Options.in_dll(_dll, 'kGumboDefaultOptions')
 
@@ -552,7 +552,7 @@ _normalize_svg_tagname.argtypes = [_Ptr(StringPiece)]
 _normalize_svg_tagname.restype = ctypes.c_char_p
 
 _destroy_output = _dll.gumbo_destroy_output
-_destroy_output.argtypes = [_Ptr(Options), _Ptr(Output)]
+_destroy_output.argtypes = [_Ptr(Output)]
 _destroy_output.restype = None
 
 _tagname = _dll.gumbo_normalized_tagname

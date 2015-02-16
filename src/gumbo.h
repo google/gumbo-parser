@@ -725,18 +725,6 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
 typedef struct GumboInternalOptions {
-  /** A memory allocator function.  Default: malloc. */
-  GumboAllocatorFunction allocator;
-
-  /** A memory deallocator function. Default: free. */
-  GumboDeallocatorFunction deallocator;
-
-  /**
-   * An opaque object that's passed in as the first argument to all callbacks
-   * used by this library.  Default: NULL.
-   */
-  void* userdata;
-
   /**
    * The tab-stop size, for computing positions in source code that uses tabs.
    * Default: 8.
@@ -803,9 +791,22 @@ GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t buffer_length);
 
 /** Release the memory used for the parse tree & parse errors. */
-void gumbo_destroy_output(
-    const GumboOptions* options, GumboOutput* output);
+void gumbo_destroy_output(GumboOutput* output);
 
+/** Release the memory used by a single node */
+void gumbo_destroy_node(GumboNode* node);
+
+/**
+ * Set the memory allocator to be used by the library.
+ * allocator_p needs to be a `realloc`-compatible API
+ */
+void gumbo_memory_set_allocator(void *(*allocator_p)(void *, size_t));
+
+/**
+ * Set the memory free function to be used by the library.
+ * free_p needs to be a `free`-compatible API
+ */
+void gumbo_memory_set_free(void (*free_p)(void *));
 
 #ifdef __cplusplus
 }

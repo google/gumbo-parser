@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
       clock_t start_time = clock();
       for (int i = 0; i < kNumReps; ++i) {
         GumboOutput* output = gumbo_parse(contents.c_str());
-        gumbo_destroy_output(&kGumboDefaultOptions, output);
+        gumbo_destroy_output(output);
       }
       clock_t end_time = clock();
       std::cout << filename << ": "

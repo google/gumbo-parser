@@ -30,13 +30,13 @@ class GumboParserTest : public ::testing::Test {
 
   virtual ~GumboParserTest() {
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
   }
 
   virtual void Parse(const char* input) {
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
 
     output_ = gumbo_parse_with_options(&options_, input, strlen(input));
@@ -50,7 +50,7 @@ class GumboParserTest : public ::testing::Test {
     // This overload is so we can test/demonstrate that computing offsets from
     // the .data() member of an STL string works properly.
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
 
     output_ = gumbo_parse_with_options(&options_, input.data(), input.length());

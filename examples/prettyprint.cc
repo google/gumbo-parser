@@ -351,5 +351,5 @@ int main(int argc, char** argv) {
   GumboOutput* output = gumbo_parse_with_options(&options, contents.data(), contents.length());
   std::string indent_chars = "  ";
   std::cout << prettyprint(output->document, 0, indent_chars) << std::endl;
-  gumbo_destroy_output(&kGumboDefaultOptions, output);
+  gumbo_destroy_output(output);
 }
