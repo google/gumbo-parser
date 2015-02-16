@@ -1318,40 +1318,38 @@ static GumboQuirksModeEnum compute_quirks_mode(
 // names.  For example, "has an element in list scope" looks for an element of
 // the given qualified name within the nearest enclosing <ol> or <ul>, along
 // with a bunch of generic element types that serve to "firewall" their content
-// from the rest of the document.
-static bool has_an_element_in_specific_scope(GumboParser* parser, gumbo_tagset expected, bool negate, const gumbo_tagset tags) {
+// from the rest of the document. Note that because of the way the spec is written,
+// all elements are expected to be in the HTML namespace
+static bool has_an_element_in_specific_scope(GumboParser* parser,
+    int expected_size, const GumboTag *expected, bool negate, const gumbo_tagset tags) {
   GumboVector* open_elements = &parser->_parser_state->_open_elements;
   for (int i = open_elements->length; --i >= 0; ) {
     const GumboNode* node = open_elements->data[i];
-    if (node->type != GUMBO_NODE_ELEMENT && node->type != GUMBO_NODE_TEMPLATE) {
+    if (node->type != GUMBO_NODE_ELEMENT && node->type != GUMBO_NODE_TEMPLATE)
       continue;
+
+    GumboTag node_tag = node->v.element.tag;
+    GumboNamespaceEnum node_ns = node->v.element.tag_namespace;
+    for (int j = 0; j < expected_size; ++j) {
+      if (node_tag == expected[j] && node_ns == GUMBO_NAMESPACE_HTML)
+        return true;
     }
-    if (TAGSET_INCLUDES(expected, node->v.element.tag_namespace, node->v.element.tag)) {
-      return true;
-    }
-    bool found_qualname = false;
-    if (TAGSET_INCLUDES(tags, node->v.element.tag_namespace, node->v.element.tag)) {
-      found_qualname = true;
-    }
-    if (negate != found_qualname) {
+
+    bool found = TAGSET_INCLUDES(tags, node_ns, node_tag);
+    if (negate != found)
       return false;
-    }
   }
   return false;
 }
 
 // Checks for the presence of an open element of the specified tag type.
 static bool has_open_element(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int) tag] = (1 << (int) GUMBO_NAMESPACE_HTML);
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(HTML) } );
+  return has_an_element_in_specific_scope(parser, 1, &tag, false, (gumbo_tagset) { TAG(HTML) } );
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-scope
 static bool has_an_element_in_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int) tag] = (1 << (int) GUMBO_NAMESPACE_HTML);
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
+  return has_an_element_in_specific_scope(parser, 1, &tag, false, (gumbo_tagset) { TAG(APPLET),
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
         TAG(OBJECT), TAG(TEMPLATE), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
         TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
@@ -1388,19 +1386,17 @@ static bool has_node_in_scope(GumboParser* parser, const GumboNode* node) {
 
 // Like has_an_element_in_scope, but restricts the expected qualified name to a
 // range of possible qualified names instead of just a single one.
-static bool has_an_element_in_scope_with_tagname(GumboParser* parser, gumbo_tagset qualset) {
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
-        TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
-        TAG(OBJECT), TAG(TEMPLATE), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
-        TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
-        TAG_SVG(FOREIGNOBJECT), TAG_SVG(DESC), TAG_SVG(TITLE) });
+static bool has_an_element_in_scope_with_tagname(GumboParser* parser, int expected_len, const GumboTag expected[]) {
+  return has_an_element_in_specific_scope(parser, expected_len, expected, false, (gumbo_tagset) {
+      TAG(APPLET), TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
+      TAG(OBJECT), TAG(TEMPLATE), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
+      TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
+      TAG_SVG(FOREIGNOBJECT), TAG_SVG(DESC), TAG_SVG(TITLE) });
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-list-item-scope
 static bool has_an_element_in_list_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int)tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
+  return has_an_element_in_specific_scope(parser, 1, &tag, false, (gumbo_tagset) { TAG(APPLET),
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
         TAG(OBJECT), TAG(TEMPLATE), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
         TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
@@ -1410,9 +1406,7 @@ static bool has_an_element_in_list_scope(GumboParser* parser, GumboTag tag) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-button-scope
 static bool has_an_element_in_button_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(APPLET), 
+  return has_an_element_in_specific_scope(parser, 1, &tag, false, (gumbo_tagset) { TAG(APPLET),
         TAG(CAPTION), TAG(HTML), TAG(TABLE), TAG(TD), TAG(TH), TAG(MARQUEE),
         TAG(OBJECT), TAG(TEMPLATE), TAG_MATHML(MI), TAG_MATHML(MO), TAG_MATHML(MN),
         TAG_MATHML(MS), TAG_MATHML(MTEXT), TAG_MATHML(ANNOTATION_XML),
@@ -1421,17 +1415,13 @@ static bool has_an_element_in_button_scope(GumboParser* parser, GumboTag tag) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-table-scope
 static bool has_an_element_in_table_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
-  return has_an_element_in_specific_scope(parser, qualset, false, (gumbo_tagset) { TAG(HTML),
+  return has_an_element_in_specific_scope(parser, 1, &tag, false, (gumbo_tagset) { TAG(HTML),
         TAG(TABLE), TAG(TEMPLATE) });
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#has-an-element-in-select-scope
 static bool has_an_element_in_select_scope(GumboParser* parser, GumboTag tag) {
-  gumbo_tagset qualset = {0};
-  qualset[(int) tag] = (1 << (int)(GUMBO_NAMESPACE_HTML));
-  return has_an_element_in_specific_scope(parser, qualset, true, (gumbo_tagset) { TAG(OPTGROUP), TAG(OPTION) });
+  return has_an_element_in_specific_scope(parser, 1, &tag, true, (gumbo_tagset) { TAG(OPTGROUP), TAG(OPTION) });
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#generate-implied-end-tags
@@ -2572,10 +2562,11 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
       return false;
     }
     return implicitly_close_tags(parser, token, GUMBO_NAMESPACE_HTML, token_tag);
- } else if (tag_in(token, kEndTag, (gumbo_tagset) { TAG(H1), TAG(H2), TAG(H3),
-         TAG(H4), TAG(H5), TAG(H6) })) {
-    if (!has_an_element_in_scope_with_tagname(parser, (gumbo_tagset) { TAG(H1), TAG(H2), TAG(H3), TAG(H4),
-            TAG(H5), TAG(H6) })) {
+ } else if (tag_in(token, kEndTag, (gumbo_tagset) {
+       TAG(H1), TAG(H2), TAG(H3), TAG(H4), TAG(H5), TAG(H6) })) {
+    if (!has_an_element_in_scope_with_tagname(parser, 6, (GumboTag[]) {
+          GUMBO_TAG_H1, GUMBO_TAG_H2, GUMBO_TAG_H3,
+          GUMBO_TAG_H4, GUMBO_TAG_H5, GUMBO_TAG_H6})) {
       // No heading open; ignore the token entirely.
       parser_add_parse_error(parser, token);
       ignore_token(parser);
