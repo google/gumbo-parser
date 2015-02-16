@@ -365,6 +365,9 @@ typedef struct GumboInternalParserState {
   GumboNode* _head_element;
   GumboNode* _form_element;
 
+  // The element used as fragment context when parsing in fragment mode
+  GumboNode* _fragment_ctx;
+
   // The flag for when the spec says "Reprocess the current token in..."
   bool _reprocess_current_token;
 
@@ -491,6 +494,7 @@ static void parser_state_init(GumboParser* parser) {
   gumbo_vector_init(5, &parser_state->_template_insertion_modes);
   parser_state->_head_element = NULL;
   parser_state->_form_element = NULL;
+  parser_state->_fragment_ctx = NULL;
   parser_state->_current_token = NULL;
   parser_state->_closed_body_tag = false;
   parser_state->_closed_html_tag = false;
@@ -499,6 +503,8 @@ static void parser_state_init(GumboParser* parser) {
 
 static void parser_state_destroy(GumboParser* parser) {
   GumboParserState* state = parser->_parser_state;
+  if (state->_fragment_ctx)
+    gumbo_destroy_node(state->_fragment_ctx);
   gumbo_vector_destroy(&state->_active_formatting_elements);
   gumbo_vector_destroy(&state->_open_elements);
   gumbo_vector_destroy(&state->_template_insertion_modes);
@@ -508,6 +514,10 @@ static void parser_state_destroy(GumboParser* parser) {
 
 static GumboNode* get_document_node(GumboParser* parser) {
   return parser->_output->document;
+}
+
+static bool is_fragment_parser(const GumboParser *parser) {
+  return !!parser->_parser_state->_fragment_ctx;
 }
 
 // Returns the node at the bottom of the stack of open elements, or NULL if no
@@ -521,6 +531,13 @@ static GumboNode* get_current_node(GumboParser* parser) {
   assert(open_elements->length > 0);
   assert(open_elements->data != NULL);
   return open_elements->data[open_elements->length - 1];
+}
+
+static GumboNode* get_adjusted_current_node(GumboParser* parser) {
+  GumboParserState *state = parser->_parser_state;
+  if (state->_open_elements.length == 1 && state->_fragment_ctx)
+    return state->_fragment_ctx;
+  return get_current_node(parser);
 }
 
 // Returns true if the given needle is in the given array of literal
@@ -552,7 +569,11 @@ static void set_insertion_mode(GumboParser* parser, GumboInsertionMode mode) {
 static GumboInsertionMode get_appropriate_insertion_mode(const GumboParser* parser, int index) {
   const GumboVector* open_elements = &parser->_parser_state->_open_elements;
   const GumboNode* node = open_elements->data[index];
-  bool is_last = index == 0;
+  const bool is_last = index == 0;
+
+  if (is_last && is_fragment_parser(parser))
+    node = parser->_parser_state->_fragment_ctx;
+
   assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
   switch (node->v.element.tag) {
   case GUMBO_TAG_SELECT: {
@@ -572,8 +593,8 @@ static GumboInsertionMode get_appropriate_insertion_mode(const GumboParser* pars
   }
   case GUMBO_TAG_TD:
   case GUMBO_TAG_TH:
-      return is_last ?
-        GUMBO_INSERTION_MODE_INITIAL : GUMBO_INSERTION_MODE_IN_CELL;
+      if (!is_last) return GUMBO_INSERTION_MODE_IN_CELL;
+      break;
   case GUMBO_TAG_TR:
     return GUMBO_INSERTION_MODE_IN_ROW;
   case GUMBO_TAG_TBODY:
@@ -589,9 +610,8 @@ static GumboInsertionMode get_appropriate_insertion_mode(const GumboParser* pars
   case GUMBO_TAG_TEMPLATE:
     return get_current_template_insertion_mode(parser);
   case GUMBO_TAG_HEAD:
-      // return is_last ?  GUMBO_INSERTION_MODE_INITIAL : GUMBO_INSERTION_MODE_IN_HEAD;
-      return is_last ?
-        GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_IN_HEAD;
+      if (!is_last) return GUMBO_INSERTION_MODE_IN_HEAD;
+      break;
   case GUMBO_TAG_BODY:
     return GUMBO_INSERTION_MODE_IN_BODY;
   case GUMBO_TAG_FRAMESET:
@@ -600,9 +620,10 @@ static GumboInsertionMode get_appropriate_insertion_mode(const GumboParser* pars
       return parser->_parser_state->_head_element ?
         GUMBO_INSERTION_MODE_AFTER_HEAD : GUMBO_INSERTION_MODE_BEFORE_HEAD;
   default:
-      return is_last ?
-        GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_INITIAL;
+      break;
   }
+  return is_last ?
+    GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_INITIAL;
 }
 
 
@@ -966,7 +987,8 @@ static GumboNode* create_element(GumboParser* parser, GumboTag tag) {
   element->tag_namespace = GUMBO_NAMESPACE_HTML;
   element->original_tag = kGumboEmptyString;
   element->original_end_tag = kGumboEmptyString;
-  element->start_pos = parser->_parser_state->_current_token->position;
+  element->start_pos = (parser->_parser_state->_current_token) ?
+    parser->_parser_state->_current_token->position : kGumboEmptySourcePosition;
   element->end_pos = kGumboEmptySourcePosition;
   return node;
 }
@@ -3533,7 +3555,12 @@ static bool handle_after_body(GumboParser* parser, GumboToken* token) {
     ignore_token(parser);
     return false;
   } else if (tag_is(token, kEndTag, GUMBO_TAG_HTML)) {
-    // TODO(jdtang): Handle fragment parsing algorithm case.
+    /* fragment case: ignore the closing HTML token */
+    if (is_fragment_parser(parser)) {
+      parser_add_parse_error(parser, token);
+      ignore_token(parser);
+      return false;
+    }
     set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_AFTER_BODY);
     GumboNode* html = parser->_parser_state->_open_elements.data[0];
     assert(node_html_tag_is(html, GUMBO_TAG_HTML));
@@ -3574,9 +3601,8 @@ static bool handle_in_frameset(GumboParser* parser, GumboToken* token) {
       return false;
     }
     pop_current_node(parser);
-    // TODO(jdtang): Add a condition to ignore this for the fragment parsing
-    // algorithm.
-    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_FRAMESET)) {
+    if (!is_fragment_parser(parser) &&
+        !node_html_tag_is(get_current_node(parser), GUMBO_TAG_FRAMESET)) {
       set_insertion_mode(parser, GUMBO_INSERTION_MODE_AFTER_FRAMESET);
     }
     return true;
@@ -3750,18 +3776,32 @@ static bool handle_in_foreign_content(GumboParser* parser, GumboToken* token) {
          token_has_attribute(token, "color") ||
          token_has_attribute(token, "face") ||
          token_has_attribute(token, "size")))) {
+
+    /* Parse error */
     parser_add_parse_error(parser, token);
-    do {
-      pop_current_node(parser);
-    } while(!(is_mathml_integration_point(get_current_node(parser)) ||
-              is_html_integration_point(get_current_node(parser)) ||
-              get_current_node(parser)->v.element.tag_namespace ==
-              GUMBO_NAMESPACE_HTML));
-    parser->_parser_state->_reprocess_current_token = true;
-    return false;
-  } else if (token->type == GUMBO_TOKEN_START_TAG) {
+
+    /*
+     * Fragment case: If the parser was originally created for the HTML
+     * fragment parsing algorithm, then act as described in the "any other
+     * start tag" entry below.
+     */
+    if (!is_fragment_parser(parser)) {
+      do {
+        pop_current_node(parser);
+      } while(!(is_mathml_integration_point(get_current_node(parser)) ||
+                is_html_integration_point(get_current_node(parser)) ||
+                get_current_node(parser)->v.element.tag_namespace ==
+                GUMBO_NAMESPACE_HTML));
+      parser->_parser_state->_reprocess_current_token = true;
+      return false;
+    }
+
+    assert(token->type == GUMBO_TOKEN_START_TAG);
+  }
+
+  if (token->type == GUMBO_TOKEN_START_TAG) {
     const GumboNamespaceEnum current_namespace =
-        get_current_node(parser)->v.element.tag_namespace;
+        get_adjusted_current_node(parser)->v.element.tag_namespace;
     if (current_namespace == GUMBO_NAMESPACE_MATHML) {
       adjust_mathml_attributes(token);
     }
@@ -3850,7 +3890,7 @@ static bool handle_token(GumboParser* parser, GumboToken* token) {
     parser->_parser_state->_closed_html_tag = true;
   }
 
-  const GumboNode* current_node = get_current_node(parser);
+  const GumboNode* current_node = get_adjusted_current_node(parser);
   assert(!current_node ||
          current_node->type == GUMBO_NODE_ELEMENT ||
          current_node->type == GUMBO_NODE_TEMPLATE);
@@ -3881,6 +3921,59 @@ static bool handle_token(GumboParser* parser, GumboToken* token) {
   }
 }
 
+static void fragment_parser_init(GumboParser *parser, GumboTag fragment_ctx) {
+  GumboNode *root;
+
+  assert(fragment_ctx != GUMBO_TAG_LAST);
+
+  // 3
+  parser->_parser_state->_fragment_ctx = create_element(parser, fragment_ctx);
+
+  // 4
+  switch (fragment_ctx) {
+    case GUMBO_TAG_TITLE:
+    case GUMBO_TAG_TEXTAREA:
+      gumbo_tokenizer_set_state(parser, GUMBO_LEX_RCDATA);
+      break;
+
+    case GUMBO_TAG_STYLE:
+    case GUMBO_TAG_XMP:
+    case GUMBO_TAG_IFRAME:
+    case GUMBO_TAG_NOEMBED:
+    case GUMBO_TAG_NOFRAMES:
+      gumbo_tokenizer_set_state(parser, GUMBO_LEX_RAWTEXT);
+      break;
+
+    case GUMBO_TAG_SCRIPT:
+      gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT);
+      break;
+
+    case GUMBO_TAG_NOSCRIPT:
+      /* scripting is disabled in Gumbo, so leave the tokenizer
+       * in the default data state */
+      break;
+
+    case GUMBO_TAG_PLAINTEXT:
+      gumbo_tokenizer_set_state(parser, GUMBO_LEX_PLAINTEXT);
+      break;
+
+    default:
+      /* default data state */
+      break;
+  }
+
+  // 5. 6. 7.
+  root = insert_element_of_tag_type(parser, GUMBO_TAG_HTML, GUMBO_INSERTION_IMPLIED);
+  parser->_output->root = root;
+
+  // 8.
+  if (fragment_ctx == GUMBO_TAG_TEMPLATE)
+    push_template_insertion_mode(parser, GUMBO_INSERTION_MODE_IN_TEMPLATE);
+
+  // 10.
+  reset_insertion_mode_appropriately(parser);
+}
+
 GumboOutput* gumbo_parse(const char* buffer) {
   return gumbo_parse_with_options(
       &kGumboDefaultOptions, buffer, strlen(buffer));
@@ -3888,11 +3981,20 @@ GumboOutput* gumbo_parse(const char* buffer) {
 
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t length) {
+  return gumbo_parse_fragment(options, buffer, length, GUMBO_TAG_LAST);
+}
+
+GumboOutput* gumbo_parse_fragment(
+    const GumboOptions* options, const char* buffer, size_t length,
+    const GumboTag fragment_ctx) {
   GumboParser parser;
   parser._options = options;
   output_init(&parser);
   gumbo_tokenizer_state_init(&parser, buffer, length);
   parser_state_init(&parser);
+
+  if (fragment_ctx != GUMBO_TAG_LAST)
+    fragment_parser_init(&parser, fragment_ctx);
 
   GumboParserState* state = parser._parser_state;
   gumbo_debug("Parsing %.*s.\n", length, buffer);

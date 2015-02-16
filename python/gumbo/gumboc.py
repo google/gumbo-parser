@@ -246,6 +246,11 @@ class Namespace(Enum):
 
 
 class Tag(Enum):
+  @staticmethod
+  def from_str(tagname):
+    text_ptr = ctypes.c_char_p(tagname.encode('utf-8'))
+    return _tag_enum(text_ptr)
+
   _values_ = [
       'HTML',
       'HEAD',
@@ -398,6 +403,7 @@ class Tag(Enum):
       'SPACER',
       'TT',
       'UNKNOWN',
+      'LAST'
       ]
 
 
@@ -498,11 +504,6 @@ NodeVector._type_ = Node
 
 class Options(ctypes.Structure):
   _fields_ = [
-      # TODO(jdtang): Allow the Python API to set the allocator/deallocator
-      # function.  Right now these are treated as opaque void pointers.
-      ('allocator', ctypes.c_void_p),
-      ('deallocator', ctypes.c_void_p),
-      ('userdata', ctypes.c_void_p),
       ('tab_stop', ctypes.c_int),
       ('stop_on_first_error', ctypes.c_bool),
       ('max_errors', ctypes.c_int),
@@ -517,10 +518,10 @@ class Output(ctypes.Structure):
       ('errors', Vector),
       ]
 
-
 @contextlib.contextmanager
 def parse(text, **kwargs):
   options = Options()
+  container = kwargs.get("inner_html", Tag.LAST)
   for field_name, _ in Options._fields_:
     try:
       setattr(options, field_name, kwargs[field_name])
@@ -531,7 +532,7 @@ def parse(text, **kwargs):
   # call, it creates a temporary buffer which is destroyed when the call
   # completes, and then the original_text pointers point into invalid memory.
   text_ptr = ctypes.c_char_p(text.encode('utf-8'))
-  output = _parse_with_options(ctypes.byref(options), text_ptr, len(text))
+  output = _parse_fragment(ctypes.byref(options), text_ptr, len(text), container)
   try:
     yield output
   finally:
@@ -542,6 +543,10 @@ _DEFAULT_OPTIONS = Options.in_dll(_dll, 'kGumboDefaultOptions')
 _parse_with_options = _dll.gumbo_parse_with_options
 _parse_with_options.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t]
 _parse_with_options.restype = _Ptr(Output)
+
+_parse_fragment = _dll.gumbo_parse_fragment
+_parse_fragment.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t, Tag]
+_parse_fragment.restype = _Ptr(Output)
 
 _tag_from_original_text = _dll.gumbo_tag_from_original_text
 _tag_from_original_text.argtypes = [_Ptr(StringPiece)]
@@ -558,6 +563,10 @@ _destroy_output.restype = None
 _tagname = _dll.gumbo_normalized_tagname
 _tagname.argtypes = [Tag]
 _tagname.restype = ctypes.c_char_p
+
+_tag_enum = _dll.gumbo_tag_enum
+_tag_enum.argtypes = [ctypes.c_char_p]
+_tag_enum.restype = Tag
 
 __all__ = ['StringPiece', 'SourcePosition', 'AttributeNamespace', 'Attribute',
            'Vector', 'AttributeVector', 'NodeVector', 'QuirksMode', 'Document',

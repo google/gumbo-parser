@@ -123,11 +123,10 @@ class Html5libAdapterTest(unittest.TestCase):
     p = html5lib_adapter.HTMLParser(
             tree=TREEBUILDER(namespaceHTMLElements=True))
 
-    if not inner_html:
-      # TODO(jdtang): Need to implement fragment parsing.
-      document = p.parse(StringIO.StringIO(input))
+    if inner_html:
+      document = p.parseFragment(StringIO.StringIO(input), inner_html)
     else:
-      return
+      document = p.parse(StringIO.StringIO(input))
 
     with warnings.catch_warnings():
       # Etree serializer in html5lib uses a deprecated getchildren() API.
@@ -136,11 +135,6 @@ class Html5libAdapterTest(unittest.TestCase):
 
     expected = re.compile(r'^(\s*)<(\S+)>', re.M).sub(
         r'\1<html \2>', convertExpected(expected, 2))
-
-    # html5lib doesn't yet support the template tag, but it appears in the
-    # tests with the expectation that the template contents will be under the
-    # word 'contents', so we need to reformat that string a bit.
-    expected = reformatTemplateContents(expected)
 
     error_msg = '\n'.join(['\n\nInput:', input, '\nExpected:', expected,
                            '\nReceived:', output])
