@@ -3433,11 +3433,7 @@ static bool handle_in_select(GumboParser* parser, GumboToken* token) {
              tag_is(token, kEndTag, GUMBO_TAG_TEMPLATE)) {
     return handle_in_head(parser, token);
   } else if (token->type == GUMBO_TOKEN_EOF) {
-    if (get_current_node(parser) != parser->_output->root) {
-      parser_add_parse_error(parser, token);
-      return false;
-    }
-    return true;
+    return handle_in_body(parser, token);
   } else {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
