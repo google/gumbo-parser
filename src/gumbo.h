@@ -141,7 +141,7 @@ extern const GumboVector kGumboEmptyVector;
  * Returns the first index at which an element appears in this vector (testing
  * by pointer equality), or -1 if it never does.
  */
-int gumbo_vector_index_of(GumboVector* vector, void* element);
+int gumbo_vector_index_of(GumboVector* vector, const void* element);
 
 
 /**
@@ -225,6 +225,7 @@ typedef enum {
   GUMBO_TAG_MARK,
   GUMBO_TAG_RUBY,
   GUMBO_TAG_RT,
+  GUMBO_TAG_RTC,
   GUMBO_TAG_RP,
   GUMBO_TAG_BDI,
   GUMBO_TAG_BDO,
@@ -461,10 +462,16 @@ typedef enum {
   GUMBO_NODE_TEXT,
   /** CDATA node. v will be a GumboText. */
   GUMBO_NODE_CDATA,
-  /** Comment node.  v. will be a GumboText, excluding comment delimiters. */
+  /** Comment node.  v will be a GumboText, excluding comment delimiters. */
   GUMBO_NODE_COMMENT,
   /** Text node, where all contents is whitespace.  v will be a GumboText. */
-  GUMBO_NODE_WHITESPACE
+  GUMBO_NODE_WHITESPACE,
+  /** Template node.  This is separate from GUMBO_NODE_ELEMENT because many
+   * client libraries will want to ignore the contents of template nodes, as
+   * the spec suggests.  Recursing on GUMBO_NODE_ELEMENT will do the right thing
+   * here, while clients that want to include template contents should also
+   * check for GUMBO_NODE_TEMPLATE.  v will be a GumboElement.  */
+  GUMBO_NODE_TEMPLATE
 } GumboNodeType;
 
 /**
