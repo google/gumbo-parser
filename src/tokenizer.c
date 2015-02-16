@@ -750,11 +750,9 @@ static void finish_tag_name(GumboParser* parser) {
   GumboTokenizerState* tokenizer = parser->_tokenizer_state;
   GumboTagState* tag_state = &tokenizer->_tag_state;
 
-  const char* temp;
-  copy_over_tag_buffer(parser, &temp);
-  tag_state->_tag = gumbo_tag_enum(temp);
+  tag_state->_tag = gumbo_tagn_enum(
+		tag_state->_buffer.data, tag_state->_buffer.length);
   reinitialize_tag_buffer(parser);
-  gumbo_free((void*) temp);
 }
 
 // Adds an ERR_DUPLICATE_ATTR parse error to the parser's error struct.
@@ -840,13 +838,9 @@ static void finish_attribute_value(GumboParser* parser) {
 static bool is_appropriate_end_tag(GumboParser* parser) {
   GumboTagState* tag_state = &parser->_tokenizer_state->_tag_state;
   assert(!tag_state->_is_start_tag);
-  // Null terminate the current string buffer, so it can be passed to
-  // gumbo_tag_enum, but don't increment the length in case we need to dump the
-  // buffer as character tokens.
-  gumbo_string_buffer_append_codepoint('\0', &tag_state->_buffer);
-  --tag_state->_buffer.length;
   return tag_state->_last_start_tag != GUMBO_TAG_LAST &&
-      tag_state->_last_start_tag == gumbo_tag_enum(tag_state->_buffer.data);
+      tag_state->_last_start_tag ==
+	  gumbo_tagn_enum(tag_state->_buffer.data, tag_state->_buffer.length);
 }
 
 void gumbo_tokenizer_state_init(
