@@ -653,6 +653,14 @@ GumboOutput* gumbo_parse(const char* buffer);
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t buffer_length);
 
+/**
+ * Parse a chunk of HTML with the given fragment context. If `fragment_ctx`
+ * is `GUMBO_TAG_LAST`, the fragment will be parsed as a full document.
+ */
+GumboOutput* gumbo_parse_fragment(
+    const GumboOptions* options, const char* buffer, size_t length,
+    const GumboTag fragment_ctx);
+
 /** Release the memory used for the parse tree & parse errors. */
 void gumbo_destroy_output(
     const GumboOptions* options, GumboOutput* output);

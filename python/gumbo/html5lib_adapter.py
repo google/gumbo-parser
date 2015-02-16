@@ -70,12 +70,12 @@ def _convert_element(source_node):
       }
 
 
-def _insert_root(treebuilder, source_node):
+def _insert_root(treebuilder, source_node, pop_element = True):
   treebuilder.insertRoot(_convert_element(source_node))
   for child_node in source_node.children:
     _insert_node(treebuilder, child_node)
-  treebuilder.openElements.pop()
-
+  if pop_element:
+    treebuilder.openElements.pop()
 
 def _insert_node(treebuilder, source_node):
   assert source_node.type != gumboc.NodeType.DOCUMENT
@@ -115,3 +115,19 @@ class HTMLParser(object):
         else:
           assert 'Only comments and <html> nodes allowed at the root'
       return self.tree.getDocument()
+
+  def parseFragment(self, text_or_file, inner_html, **kwargs):
+    try:
+      text = text_or_file.read()
+    except AttributeError:
+      # Assume a string.
+      text = text_or_file
+    inner_html = gumboc.Tag.from_str(inner_html)
+
+    with gumboc.parse(text, inner_html=inner_html, **kwargs) as output:
+      for node in output.contents.document.contents.children:
+        if node.type in (gumboc.NodeType.ELEMENT, gumboc.NodeType.TEMPLATE):
+          _insert_root(self.tree, output.contents.root.contents, False)
+        else:
+          assert 'Malformed fragment parse (??)'
+      return self.tree.getFragment()
