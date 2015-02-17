@@ -320,7 +320,7 @@ static int ensure_lowercase(int c) {
 }
 
 static GumboTokenType get_char_token_type(bool is_in_cdata, int c) {
-  if (is_in_cdata && c != -1) {
+  if (is_in_cdata && c > 0) {
     return GUMBO_TOKEN_CDATA;
   }
 

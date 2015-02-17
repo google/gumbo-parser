@@ -1554,7 +1554,8 @@ TEST_F(GumboParserTest, CDataUnsafe) {
   GumboNode* cdata = GetChild(svg, 0);
   ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
   // \xEF\xBF\xBD = unicode replacement char
-  EXPECT_STREQ("fillertext", cdata->v.text.text);
+  EXPECT_STREQ("\xEF\xBF\xBD" "filler\xEF\xBF\xBD" "text\xEF\xBF\xBD",
+      cdata->v.text.text);
 }
 
 TEST_F(GumboParserTest, CDataInBody) {
