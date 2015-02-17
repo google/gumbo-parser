@@ -450,6 +450,24 @@ TEST_F(GumboTokenizerTest, ScriptDoubleEscaped) {
   EXPECT_EQ('>', token_.v.character);
 }
 
+TEST_F(GumboTokenizerTest, CData) {
+  // SetInput uses strlen and so can't handle nulls.
+  text_ = "<![CDATA[\0filler\0text\0]]>";
+  gumbo_tokenizer_state_destroy(&parser_);
+  gumbo_tokenizer_state_init(
+      &parser_, text_, sizeof("<![CDATA[\0filler\0text\0]]>") - 1);
+  gumbo_tokenizer_set_is_current_node_foreign(&parser_, true);
+
+  EXPECT_TRUE(gumbo_lex(&parser_, &token_));
+  EXPECT_EQ(GUMBO_TOKEN_CDATA, token_.type);
+  EXPECT_EQ(0, token_.v.character);
+
+  gumbo_token_destroy(&parser_, &token_);
+  EXPECT_TRUE(gumbo_lex(&parser_, &token_));
+  EXPECT_EQ(GUMBO_TOKEN_CDATA, token_.type);
+  EXPECT_EQ('f', token_.v.character);
+}
+
 TEST_F(GumboTokenizerTest, StyleHasTagEmbedded) {
   SetInput("<style>/* For <head> */</style>");
   Advance(1);

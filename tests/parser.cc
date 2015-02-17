@@ -1538,7 +1538,11 @@ TEST_F(GumboParserTest, CData) {
 }
 
 TEST_F(GumboParserTest, CDataUnsafe) {
-  Parse("<svg><![CDATA[\0filler\0text\0]]>");
+  // Can't use Parse() because of the strlen
+  output_ = gumbo_parse_with_options(
+      &options_, "<svg><![CDATA[\0filler\0text\0]]>",
+      sizeof("<svg><![CDATA[\0filler\0text\0]]>") - 1);
+  root_ = output_->document;
 
   GumboNode* body;
   GetAndAssertBody(root_, &body);
