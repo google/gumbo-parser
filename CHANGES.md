@@ -1,3 +1,17 @@
+Gumbo 0.9.3 (2015-02-17)
+
+* Bugfix for &AElig; entities (rgrove)
+* Fix CDATA handling; CDATA sections now generate a GUMBO_NODE_CDATA node rather
+than plain text.
+* Fix get_title example to handle whitespace nodes (gsnedders)
+* Visual Studio compilation fixes (fishioon)
+* Take the namespace into account when determining whether a node matches a
+certain tag (aroben)
+* Replace the varargs tag functions with a tagset bytevector, for a 20-30%
+speedup in overall parse time (kevinhendricks, vmg)
+* Add MacOS X support to Travis CI, and fix the deployment/DLL issues this
+uncovered (nostrademons, kevinhendricks, vmg)
+
 Gumbo 0.9.2 (2014-09-21)
 
 * Performance improvements: Ragel-based char ref decoder and DFA-based UTF8
@@ -9,7 +23,7 @@ Gumbo 0.9.2 (2014-09-21)
 * Fix duplicate attributes when parsing <isindex> tags.
 * Don't leave semicolons behind when consuming entity references (rgrove)
 * Internally rename some functions in preparation for an amalgamation file
-* (jdeng)
+(jdeng)
 * Add proper cflags for gyp builds (skabbes)
 
 Gumbo 0.9.1 (2014-08-07)
