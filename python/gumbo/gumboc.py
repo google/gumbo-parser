@@ -26,6 +26,7 @@ import sys
 import contextlib
 import ctypes
 import os.path
+import gumboc_tags
 
 _name_of_lib = 'libgumbo.so'
 if sys.platform.startswith('darwin'):
@@ -246,158 +247,12 @@ class Namespace(Enum):
 
 
 class Tag(Enum):
-  _values_ = [
-      'HTML',
-      'HEAD',
-      'TITLE',
-      'BASE',
-      'LINK',
-      'META',
-      'STYLE',
-      'SCRIPT',
-      'NOSCRIPT',
-      'TEMPLATE',
-      'BODY',
-      'ARTICLE',
-      'SECTION',
-      'NAV',
-      'ASIDE',
-      'H1',
-      'H2',
-      'H3',
-      'H4',
-      'H5',
-      'H6',
-      'HGROUP',
-      'HEADER',
-      'FOOTER',
-      'ADDRESS',
-      'P',
-      'HR',
-      'PRE',
-      'BLOCKQUOTE',
-      'OL',
-      'UL',
-      'LI',
-      'DL',
-      'DT',
-      'DD',
-      'FIGURE',
-      'FIGCAPTION',
-      'MAIN',
-      'DIV',
-      'A',
-      'EM',
-      'STRONG',
-      'SMALL',
-      'S',
-      'CITE',
-      'Q',
-      'DFN',
-      'ABBR',
-      'DATA',
-      'TIME',
-      'CODE',
-      'VAR',
-      'SAMP',
-      'KBD',
-      'SUB',
-      'SUP',
-      'I',
-      'B',
-      'U',
-      'MARK',
-      'RUBY',
-      'RT',
-      'RP',
-      'BDI',
-      'BDO',
-      'SPAN',
-      'BR',
-      'WBR',
-      'INS',
-      'DEL',
-      'IMAGE',
-      'IMG',
-      'IFRAME',
-      'EMBED',
-      'OBJECT',
-      'PARAM',
-      'VIDEO',
-      'AUDIO',
-      'SOURCE',
-      'TRACK',
-      'CANVAS',
-      'MAP',
-      'AREA',
-      'MATH',
-      'MI',
-      'MO',
-      'MN',
-      'MS',
-      'MTEXT',
-      'MGLYPH',
-      'MALIGNMARK',
-      'ANNOTATION_XML',
-      'SVG',
-      'FOREIGNOBJECT',
-      'DESC',
-      'TABLE',
-      'CAPTION',
-      'COLGROUP',
-      'COL',
-      'TBODY',
-      'THEAD',
-      'TFOOT',
-      'TR',
-      'TD',
-      'TH',
-      'FORM',
-      'FIELDSET',
-      'LEGEND',
-      'LABEL',
-      'INPUT',
-      'BUTTON',
-      'SELECT',
-      'DATALIST',
-      'OPTGROUP',
-      'OPTION',
-      'TEXTAREA',
-      'KEYGEN',
-      'OUTPUT',
-      'PROGRESS',
-      'METER',
-      'DETAILS',
-      'SUMMARY',
-      'MENU',
-      'MENUITEM',
-      'APPLET',
-      'ACRONYM',
-      'BGSOUND',
-      'DIR',
-      'FRAME',
-      'FRAMESET',
-      'NOFRAMES',
-      'ISINDEX',
-      'LISTING',
-      'XMP',
-      'NEXTID',
-      'NOEMBED',
-      'PLAINTEXT',
-      'RB',
-      'STRIKE',
-      'BASEFONT',
-      'BIG',
-      'BLINK',
-      'CENTER',
-      'FONT',
-      'MARQUEE',
-      'MULTICOL',
-      'NOBR',
-      'SPACER',
-      'TT',
-      'UNKNOWN',
-      ]
+  @staticmethod
+  def from_str(tagname):
+    text_ptr = ctypes.c_char_p(tagname.encode('utf-8'))
+    return _tag_enum(text_ptr)
+
+  _values_ = gumboc_tags.TagNames + ['UNKNOWN', 'LAST']
 
 
 class Element(ctypes.Structure):
@@ -444,7 +299,8 @@ class Text(ctypes.Structure):
 
 
 class NodeType(Enum):
-  _values_ = ['DOCUMENT', 'ELEMENT', 'TEXT', 'CDATA', 'COMMENT', 'WHITESPACE']
+  _values_ = ['DOCUMENT', 'ELEMENT', 'TEXT', 'CDATA',
+              'COMMENT', 'WHITESPACE', 'TEMPLATE']
 
 
 class NodeUnion(ctypes.Union):
@@ -463,7 +319,7 @@ class Node(ctypes.Structure):
     # __getattr__, so we factor it out to a helper.
     if self.type == NodeType.DOCUMENT:
       return self.v.document
-    elif self.type == NodeType.ELEMENT:
+    elif self.type in (NodeType.ELEMENT, NodeType.TEMPLATE):
       return self.v.element
     else:
       return self.v.text
@@ -496,11 +352,6 @@ NodeVector._type_ = Node
 
 class Options(ctypes.Structure):
   _fields_ = [
-      # TODO(jdtang): Allow the Python API to set the allocator/deallocator
-      # function.  Right now these are treated as opaque void pointers.
-      ('allocator', ctypes.c_void_p),
-      ('deallocator', ctypes.c_void_p),
-      ('userdata', ctypes.c_void_p),
       ('tab_stop', ctypes.c_int),
       ('stop_on_first_error', ctypes.c_bool),
       ('max_errors', ctypes.c_int),
@@ -515,10 +366,10 @@ class Output(ctypes.Structure):
       ('errors', Vector),
       ]
 
-
 @contextlib.contextmanager
 def parse(text, **kwargs):
   options = Options()
+  container = kwargs.get("inner_html", Tag.LAST)
   for field_name, _ in Options._fields_:
     try:
       setattr(options, field_name, kwargs[field_name])
@@ -529,17 +380,21 @@ def parse(text, **kwargs):
   # call, it creates a temporary buffer which is destroyed when the call
   # completes, and then the original_text pointers point into invalid memory.
   text_ptr = ctypes.c_char_p(text.encode('utf-8'))
-  output = _parse_with_options(ctypes.byref(options), text_ptr, len(text))
+  output = _parse_fragment(ctypes.byref(options), text_ptr, len(text), container)
   try:
     yield output
   finally:
-    _destroy_output(ctypes.byref(options), output)
+    _destroy_output(output)
 
 _DEFAULT_OPTIONS = Options.in_dll(_dll, 'kGumboDefaultOptions')
 
 _parse_with_options = _dll.gumbo_parse_with_options
 _parse_with_options.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t]
 _parse_with_options.restype = _Ptr(Output)
+
+_parse_fragment = _dll.gumbo_parse_fragment
+_parse_fragment.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t, Tag]
+_parse_fragment.restype = _Ptr(Output)
 
 _tag_from_original_text = _dll.gumbo_tag_from_original_text
 _tag_from_original_text.argtypes = [_Ptr(StringPiece)]
@@ -550,12 +405,16 @@ _normalize_svg_tagname.argtypes = [_Ptr(StringPiece)]
 _normalize_svg_tagname.restype = ctypes.c_char_p
 
 _destroy_output = _dll.gumbo_destroy_output
-_destroy_output.argtypes = [_Ptr(Options), _Ptr(Output)]
+_destroy_output.argtypes = [_Ptr(Output)]
 _destroy_output.restype = None
 
 _tagname = _dll.gumbo_normalized_tagname
 _tagname.argtypes = [Tag]
 _tagname.restype = ctypes.c_char_p
+
+_tag_enum = _dll.gumbo_tag_enum
+_tag_enum.argtypes = [ctypes.c_char_p]
+_tag_enum.restype = Tag
 
 __all__ = ['StringPiece', 'SourcePosition', 'AttributeNamespace', 'Attribute',
            'Vector', 'AttributeVector', 'NodeVector', 'QuirksMode', 'Document',

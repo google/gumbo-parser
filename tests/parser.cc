@@ -30,13 +30,13 @@ class GumboParserTest : public ::testing::Test {
 
   virtual ~GumboParserTest() {
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
   }
 
   virtual void Parse(const char* input) {
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
 
     output_ = gumbo_parse_with_options(&options_, input, strlen(input));
@@ -50,7 +50,7 @@ class GumboParserTest : public ::testing::Test {
     // This overload is so we can test/demonstrate that computing offsets from
     // the .data() member of an STL string works properly.
     if (output_) {
-      gumbo_destroy_output(&options_, output_);
+      gumbo_destroy_output(output_);
     }
 
     output_ = gumbo_parse_with_options(&options_, input.data(), input.length());
@@ -1491,6 +1491,10 @@ TEST_F(GumboParserTest, AdoptionAgency2) {
   EXPECT_STREQ("3", text3->v.text.text);
 }
 
+TEST_F(GumboParserTest, AdoptionAgency3) {
+  Parse("<div><a><b><u><i><code><div></a>");
+}
+
 TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   Parse("<ul>\n"
         "  <li>First\n"
@@ -1520,6 +1524,57 @@ TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   ASSERT_EQ(GUMBO_NODE_ELEMENT, li2->type);
   EXPECT_EQ(GUMBO_TAG_LI, GetTag(li2));
   ASSERT_EQ(1, GetChildCount(li2));
+}
+
+TEST_F(GumboParserTest, CData) {
+  Parse("<svg><![CDATA[this is text]]></svg>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  EXPECT_STREQ("this is text", cdata->v.text.text);
+}
+
+TEST_F(GumboParserTest, CDataUnsafe) {
+  // Can't use Parse() because of the strlen
+  output_ = gumbo_parse_with_options(
+      &options_, "<svg><![CDATA[\0filler\0text\0]]>",
+      sizeof("<svg><![CDATA[\0filler\0text\0]]>") - 1);
+  root_ = output_->document;
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  // \xEF\xBF\xBD = unicode replacement char
+  EXPECT_STREQ("\xEF\xBF\xBD" "filler\xEF\xBF\xBD" "text\xEF\xBF\xBD",
+      cdata->v.text.text);
+}
+
+TEST_F(GumboParserTest, CDataInBody) {
+  Parse("<div><![CDATA[this is text]]></div>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* div = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(div));
+
+  GumboNode* cdata = GetChild(div, 0);
+  ASSERT_EQ(GUMBO_NODE_COMMENT, cdata->type);
+  EXPECT_STREQ("[CDATA[this is text]]", cdata->v.text.text);
 }
 
 TEST_F(GumboParserTest, FormattingTagsInHeading) {
@@ -1800,6 +1855,37 @@ TEST_F(GumboParserTest, TdInMathml) {
   EXPECT_EQ(GUMBO_TAG_TD, td->v.element.tag);
   EXPECT_EQ(GUMBO_NAMESPACE_MATHML, td->v.element.tag_namespace);
   ASSERT_EQ(0, GetChildCount(td));
+}
+
+TEST_F(GumboParserTest, TestTemplateInForeignContent) {
+  Parse("<template><svg><template>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  EXPECT_EQ(0, GetChildCount(body));
+
+  GumboNode* html = GetChild(root_, 0);
+  ASSERT_EQ(2, GetChildCount(html));
+
+  GumboNode* head = GetChild(html, 0);
+  ASSERT_EQ(1, GetChildCount(head));
+
+  GumboNode* template_node = GetChild(head, 0);
+  ASSERT_EQ(GUMBO_NODE_TEMPLATE, template_node->type);
+  EXPECT_EQ(GUMBO_TAG_TEMPLATE, template_node->v.element.tag);
+  ASSERT_EQ(1, GetChildCount(template_node));
+
+  GumboNode* svg_node = GetChild(template_node, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, svg_node->type);
+  EXPECT_EQ(GUMBO_TAG_SVG, svg_node->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_SVG, svg_node->v.element.tag_namespace);
+  ASSERT_EQ(1, GetChildCount(svg_node));
+
+  GumboNode* svg_template = GetChild(svg_node, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, svg_template->type);
+  EXPECT_EQ(GUMBO_TAG_TEMPLATE, svg_template->v.element.tag);
+  EXPECT_EQ(GUMBO_NAMESPACE_SVG, svg_template->v.element.tag_namespace);
+  EXPECT_EQ(0, GetChildCount(svg_template));
 }
 
 }  // namespace

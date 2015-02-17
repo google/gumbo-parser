@@ -91,6 +91,22 @@ def convertExpected(data, stripChars):
       rv.append(line)
   return "\n".join(rv)
 
+def reformatTemplateContents(expected):
+ lines = expected.split('\n')
+ retval = []
+ template_indents = []
+ for line in lines:
+   indent = len(line) - len(line.strip())
+   if 'content' in line:
+     template_indents.append(indent)
+     continue
+   elif template_indents and indent <= template_indents[-1]:
+     template_indents.pop()
+   elif template_indents:
+     line = line[2 * len(template_indents):]
+   retval.append(line)
+ return '\n'.join(retval)
+
 
 class Html5libAdapterTest(unittest.TestCase):
   """Adapter between Gumbo and the html5lib tests.
@@ -106,11 +122,11 @@ class Html5libAdapterTest(unittest.TestCase):
   def impl(self, inner_html, input, expected, errors):
     p = html5lib_adapter.HTMLParser(
             tree=TREEBUILDER(namespaceHTMLElements=True))
-    if not inner_html:
-      # TODO(jdtang): Need to implement fragment parsing.
-      document = p.parse(StringIO.StringIO(input))
+
+    if inner_html:
+      document = p.parseFragment(StringIO.StringIO(input), inner_html)
     else:
-      return
+      document = p.parse(StringIO.StringIO(input))
 
     with warnings.catch_warnings():
       # Etree serializer in html5lib uses a deprecated getchildren() API.

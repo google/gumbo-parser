@@ -188,7 +188,7 @@ static std::string serialize_contents(GumboNode* node) {
         contents.append(substitute_xml_entities_into_text(std::string(child->v.text.text)));
       }
 
-    } else if (child->type == GUMBO_NODE_ELEMENT) {
+    } else if (child->type == GUMBO_NODE_ELEMENT || child->type == GUMBO_NODE_TEMPLATE) {
       contents.append(serialize(child));
 
     } else if (child->type == GUMBO_NODE_WHITESPACE) {
@@ -283,5 +283,5 @@ int main(int argc, char** argv) {
 
   GumboOutput* output = gumbo_parse_with_options(&options, contents.data(), contents.length());
   std::cout << serialize(output->document) << std::endl;
-  gumbo_destroy_output(&kGumboDefaultOptions, output);
+  gumbo_destroy_output(output);
 }

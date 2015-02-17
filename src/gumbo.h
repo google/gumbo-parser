@@ -141,7 +141,7 @@ extern const GumboVector kGumboEmptyVector;
  * Returns the first index at which an element appears in this vector (testing
  * by pointer equality), or -1 if it never does.
  */
-int gumbo_vector_index_of(GumboVector* vector, void* element);
+int gumbo_vector_index_of(GumboVector* vector, const void* element);
 
 
 /**
@@ -157,171 +157,8 @@ int gumbo_vector_index_of(GumboVector* vector, void* element);
  * strings.
  */
 typedef enum {
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#the-root-element
-  GUMBO_TAG_HTML,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#document-metadata
-  GUMBO_TAG_HEAD,
-  GUMBO_TAG_TITLE,
-  GUMBO_TAG_BASE,
-  GUMBO_TAG_LINK,
-  GUMBO_TAG_META,
-  GUMBO_TAG_STYLE,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/scripting-1.html#scripting-1
-  GUMBO_TAG_SCRIPT,
-  GUMBO_TAG_NOSCRIPT,
-  GUMBO_TAG_TEMPLATE,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/sections.html#sections
-  GUMBO_TAG_BODY,
-  GUMBO_TAG_ARTICLE,
-  GUMBO_TAG_SECTION,
-  GUMBO_TAG_NAV,
-  GUMBO_TAG_ASIDE,
-  GUMBO_TAG_H1,
-  GUMBO_TAG_H2,
-  GUMBO_TAG_H3,
-  GUMBO_TAG_H4,
-  GUMBO_TAG_H5,
-  GUMBO_TAG_H6,
-  GUMBO_TAG_HGROUP,
-  GUMBO_TAG_HEADER,
-  GUMBO_TAG_FOOTER,
-  GUMBO_TAG_ADDRESS,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/grouping-content.html#grouping-content
-  GUMBO_TAG_P,
-  GUMBO_TAG_HR,
-  GUMBO_TAG_PRE,
-  GUMBO_TAG_BLOCKQUOTE,
-  GUMBO_TAG_OL,
-  GUMBO_TAG_UL,
-  GUMBO_TAG_LI,
-  GUMBO_TAG_DL,
-  GUMBO_TAG_DT,
-  GUMBO_TAG_DD,
-  GUMBO_TAG_FIGURE,
-  GUMBO_TAG_FIGCAPTION,
-  GUMBO_TAG_MAIN,
-  GUMBO_TAG_DIV,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/text-level-semantics.html#text-level-semantics
-  GUMBO_TAG_A,
-  GUMBO_TAG_EM,
-  GUMBO_TAG_STRONG,
-  GUMBO_TAG_SMALL,
-  GUMBO_TAG_S,
-  GUMBO_TAG_CITE,
-  GUMBO_TAG_Q,
-  GUMBO_TAG_DFN,
-  GUMBO_TAG_ABBR,
-  GUMBO_TAG_DATA,
-  GUMBO_TAG_TIME,
-  GUMBO_TAG_CODE,
-  GUMBO_TAG_VAR,
-  GUMBO_TAG_SAMP,
-  GUMBO_TAG_KBD,
-  GUMBO_TAG_SUB,
-  GUMBO_TAG_SUP,
-  GUMBO_TAG_I,
-  GUMBO_TAG_B,
-  GUMBO_TAG_U,
-  GUMBO_TAG_MARK,
-  GUMBO_TAG_RUBY,
-  GUMBO_TAG_RT,
-  GUMBO_TAG_RP,
-  GUMBO_TAG_BDI,
-  GUMBO_TAG_BDO,
-  GUMBO_TAG_SPAN,
-  GUMBO_TAG_BR,
-  GUMBO_TAG_WBR,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/edits.html#edits
-  GUMBO_TAG_INS,
-  GUMBO_TAG_DEL,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/embedded-content-1.html#embedded-content-1
-  GUMBO_TAG_IMAGE,
-  GUMBO_TAG_IMG,
-  GUMBO_TAG_IFRAME,
-  GUMBO_TAG_EMBED,
-  GUMBO_TAG_OBJECT,
-  GUMBO_TAG_PARAM,
-  GUMBO_TAG_VIDEO,
-  GUMBO_TAG_AUDIO,
-  GUMBO_TAG_SOURCE,
-  GUMBO_TAG_TRACK,
-  GUMBO_TAG_CANVAS,
-  GUMBO_TAG_MAP,
-  GUMBO_TAG_AREA,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-map-element.html#mathml
-  GUMBO_TAG_MATH,
-  GUMBO_TAG_MI,
-  GUMBO_TAG_MO,
-  GUMBO_TAG_MN,
-  GUMBO_TAG_MS,
-  GUMBO_TAG_MTEXT,
-  GUMBO_TAG_MGLYPH,
-  GUMBO_TAG_MALIGNMARK,
-  GUMBO_TAG_ANNOTATION_XML,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-map-element.html#svg-0
-  GUMBO_TAG_SVG,
-  GUMBO_TAG_FOREIGNOBJECT,
-  GUMBO_TAG_DESC,
-  // SVG title tags will have GUMBO_TAG_TITLE as with HTML.
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/tabular-data.html#tabular-data
-  GUMBO_TAG_TABLE,
-  GUMBO_TAG_CAPTION,
-  GUMBO_TAG_COLGROUP,
-  GUMBO_TAG_COL,
-  GUMBO_TAG_TBODY,
-  GUMBO_TAG_THEAD,
-  GUMBO_TAG_TFOOT,
-  GUMBO_TAG_TR,
-  GUMBO_TAG_TD,
-  GUMBO_TAG_TH,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/forms.html#forms
-  GUMBO_TAG_FORM,
-  GUMBO_TAG_FIELDSET,
-  GUMBO_TAG_LEGEND,
-  GUMBO_TAG_LABEL,
-  GUMBO_TAG_INPUT,
-  GUMBO_TAG_BUTTON,
-  GUMBO_TAG_SELECT,
-  GUMBO_TAG_DATALIST,
-  GUMBO_TAG_OPTGROUP,
-  GUMBO_TAG_OPTION,
-  GUMBO_TAG_TEXTAREA,
-  GUMBO_TAG_KEYGEN,
-  GUMBO_TAG_OUTPUT,
-  GUMBO_TAG_PROGRESS,
-  GUMBO_TAG_METER,
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/interactive-elements.html#interactive-elements
-  GUMBO_TAG_DETAILS,
-  GUMBO_TAG_SUMMARY,
-  GUMBO_TAG_MENU,
-  GUMBO_TAG_MENUITEM,
-  // Non-conforming elements that nonetheless appear in the HTML5 spec.
-  // http://www.whatwg.org/specs/web-apps/current-work/multipage/obsolete.html#non-conforming-features
-  GUMBO_TAG_APPLET,
-  GUMBO_TAG_ACRONYM,
-  GUMBO_TAG_BGSOUND,
-  GUMBO_TAG_DIR,
-  GUMBO_TAG_FRAME,
-  GUMBO_TAG_FRAMESET,
-  GUMBO_TAG_NOFRAMES,
-  GUMBO_TAG_ISINDEX,
-  GUMBO_TAG_LISTING,
-  GUMBO_TAG_XMP,
-  GUMBO_TAG_NEXTID,
-  GUMBO_TAG_NOEMBED,
-  GUMBO_TAG_PLAINTEXT,
-  GUMBO_TAG_RB,
-  GUMBO_TAG_STRIKE,
-  GUMBO_TAG_BASEFONT,
-  GUMBO_TAG_BIG,
-  GUMBO_TAG_BLINK,
-  GUMBO_TAG_CENTER,
-  GUMBO_TAG_FONT,
-  GUMBO_TAG_MARQUEE,
-  GUMBO_TAG_MULTICOL,
-  GUMBO_TAG_NOBR,
-  GUMBO_TAG_SPACER,
-  GUMBO_TAG_TT,
+  // Load all the tags from an external source
+# include "tag_enum.h"
   // Used for all tags that don't have special handling in HTML.
   GUMBO_TAG_UNKNOWN,
   // A marker value to indicate the end of the enum, for iterating over it.
@@ -364,9 +201,10 @@ const char* gumbo_normalize_svg_tagname(const GumboStringPiece* tagname);
 
 /**
  * Converts a tag name string (which may be in upper or mixed case) to a tag
- * enum.
+ * enum. The `tag` version expects `tagname` to be NULL-terminated
  */
 GumboTag gumbo_tag_enum(const char* tagname);
+GumboTag gumbo_tagn_enum(const char* tagname, int length);
 
 /**
  * Attribute namespaces.
@@ -461,10 +299,16 @@ typedef enum {
   GUMBO_NODE_TEXT,
   /** CDATA node. v will be a GumboText. */
   GUMBO_NODE_CDATA,
-  /** Comment node.  v. will be a GumboText, excluding comment delimiters. */
+  /** Comment node.  v will be a GumboText, excluding comment delimiters. */
   GUMBO_NODE_COMMENT,
   /** Text node, where all contents is whitespace.  v will be a GumboText. */
-  GUMBO_NODE_WHITESPACE
+  GUMBO_NODE_WHITESPACE,
+  /** Template node.  This is separate from GUMBO_NODE_ELEMENT because many
+   * client libraries will want to ignore the contents of template nodes, as
+   * the spec suggests.  Recursing on GUMBO_NODE_ELEMENT will do the right thing
+   * here, while clients that want to include template contents should also
+   * check for GUMBO_NODE_TEMPLATE.  v will be a GumboElement.  */
+  GUMBO_NODE_TEMPLATE
 } GumboNodeType;
 
 /**
@@ -718,18 +562,6 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
 typedef struct GumboInternalOptions {
-  /** A memory allocator function.  Default: malloc. */
-  GumboAllocatorFunction allocator;
-
-  /** A memory deallocator function. Default: free. */
-  GumboDeallocatorFunction deallocator;
-
-  /**
-   * An opaque object that's passed in as the first argument to all callbacks
-   * used by this library.  Default: NULL.
-   */
-  void* userdata;
-
   /**
    * The tab-stop size, for computing positions in source code that uses tabs.
    * Default: 8.
@@ -795,10 +627,34 @@ GumboOutput* gumbo_parse(const char* buffer);
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t buffer_length);
 
-/** Release the memory used for the parse tree & parse errors. */
-void gumbo_destroy_output(
-    const GumboOptions* options, GumboOutput* output);
+/**
+ * Parse a chunk of HTML with the given fragment context. If `fragment_ctx`
+ * is `GUMBO_TAG_LAST`, the fragment will be parsed as a full document.
+ */
+GumboOutput* gumbo_parse_fragment(
+    const GumboOptions* options, const char* buffer, size_t length,
+    const GumboTag fragment_ctx);
 
+/** Release the memory used for the parse tree & parse errors. */
+void gumbo_destroy_output(GumboOutput* output);
+
+/** Create a new node object, unatached to any documents */
+GumboNode* gumbo_create_node(GumboNodeType type);
+
+/** Release the memory used by a single node */
+void gumbo_destroy_node(GumboNode* node);
+
+/**
+ * Set the memory allocator to be used by the library.
+ * allocator_p needs to be a `realloc`-compatible API
+ */
+void gumbo_memory_set_allocator(void *(*allocator_p)(void *, size_t));
+
+/**
+ * Set the memory free function to be used by the library.
+ * free_p needs to be a `free`-compatible API
+ */
+void gumbo_memory_set_free(void (*free_p)(void *));
 
 #ifdef __cplusplus
 }

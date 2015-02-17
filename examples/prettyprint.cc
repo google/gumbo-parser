@@ -210,7 +210,7 @@ static std::string prettyprint_contents(GumboNode* node, int lvl, const std::str
       contents.append(val);
 
 
-    } else if (child->type == GUMBO_NODE_ELEMENT) {
+    } else if ((child->type == GUMBO_NODE_ELEMENT) || (child->type == GUMBO_NODE_TEMPLATE)) {
 
       std::string val = prettyprint(child, lvl, indent_chars);
 
@@ -351,5 +351,5 @@ int main(int argc, char** argv) {
   GumboOutput* output = gumbo_parse_with_options(&options, contents.data(), contents.length());
   std::string indent_chars = "  ";
   std::cout << prettyprint(output->document, 0, indent_chars) << std::endl;
-  gumbo_destroy_output(&kGumboDefaultOptions, output);
+  gumbo_destroy_output(output);
 }

@@ -88,6 +88,6 @@ int main(int argc, const char** argv) {
       &kGumboDefaultOptions, input, input_length);
   const char* title = find_title(output->root);
   printf("%s\n", title);
-  gumbo_destroy_output(&kGumboDefaultOptions, output);
+  gumbo_destroy_output(output);
   free(input);
 }

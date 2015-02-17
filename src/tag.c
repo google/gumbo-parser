@@ -15,165 +15,15 @@
 // Author: jdtang@google.com (Jonathan Tang)
 
 #include "gumbo.h"
+#include "util.h"
 
 #include <assert.h>
 #include <ctype.h>
 #include <strings.h>    // For strcasecmp.
+#include <string.h>    // For strcasecmp.
 
-// NOTE(jdtang): Keep this in sync with the GumboTag enum in the header.
-// TODO(jdtang): Investigate whether there're efficiency benefits to putting the
-// most common tag names first, or to putting them in alphabetical order and
-// using a binary search.
 const char* kGumboTagNames[] = {
-  "html",
-  "head",
-  "title",
-  "base",
-  "link",
-  "meta",
-  "style",
-  "script",
-  "noscript",
-  "template",
-  "body",
-  "article",
-  "section",
-  "nav",
-  "aside",
-  "h1",
-  "h2",
-  "h3",
-  "h4",
-  "h5",
-  "h6",
-  "hgroup",
-  "header",
-  "footer",
-  "address",
-  "p",
-  "hr",
-  "pre",
-  "blockquote",
-  "ol",
-  "ul",
-  "li",
-  "dl",
-  "dt",
-  "dd",
-  "figure",
-  "figcaption",
-  "main",
-  "div",
-  "a",
-  "em",
-  "strong",
-  "small",
-  "s",
-  "cite",
-  "q",
-  "dfn",
-  "abbr",
-  "data",
-  "time",
-  "code",
-  "var",
-  "samp",
-  "kbd",
-  "sub",
-  "sup",
-  "i",
-  "b",
-  "u",
-  "mark",
-  "ruby",
-  "rt",
-  "rp",
-  "bdi",
-  "bdo",
-  "span",
-  "br",
-  "wbr",
-  "ins",
-  "del",
-  "image",
-  "img",
-  "iframe",
-  "embed",
-  "object",
-  "param",
-  "video",
-  "audio",
-  "source",
-  "track",
-  "canvas",
-  "map",
-  "area",
-  "math",
-  "mi",
-  "mo",
-  "mn",
-  "ms",
-  "mtext",
-  "mglyph",
-  "malignmark",
-  "annotation-xml",
-  "svg",
-  "foreignobject",
-  "desc",
-  "table",
-  "caption",
-  "colgroup",
-  "col",
-  "tbody",
-  "thead",
-  "tfoot",
-  "tr",
-  "td",
-  "th",
-  "form",
-  "fieldset",
-  "legend",
-  "label",
-  "input",
-  "button",
-  "select",
-  "datalist",
-  "optgroup",
-  "option",
-  "textarea",
-  "keygen",
-  "output",
-  "progress",
-  "meter",
-  "details",
-  "summary",
-  "menu",
-  "menuitem",
-  "applet",
-  "acronym",
-  "bgsound",
-  "dir",
-  "frame",
-  "frameset",
-  "noframes",
-  "isindex",
-  "listing",
-  "xmp",
-  "nextid",
-  "noembed",
-  "plaintext",
-  "rb",
-  "strike",
-  "basefont",
-  "big",
-  "blink",
-  "center",
-  "font",
-  "marquee",
-  "multicol",
-  "nobr",
-  "spacer",
-  "tt",
+# include "tag_strings.h"
   "",                   // TAG_UNKNOWN
   "",                   // TAG_LAST
 };
@@ -183,7 +33,6 @@ const char* gumbo_normalized_tagname(GumboTag tag) {
   return kGumboTagNames[tag];
 }
 
-// TODO(jdtang): Add test for this.
 void gumbo_tag_from_original_text(GumboStringPiece* text) {
   if (text->data == NULL) {
     return;
@@ -212,14 +61,34 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
   }
 }
 
-GumboTag gumbo_tag_enum(const char* tagname) {
-  for (int i = 0; i < GUMBO_TAG_LAST; ++i) {
-    // TODO(jdtang): strcasecmp is non-portable, so if we want to support
-    // non-GCC compilers, we'll need some #ifdef magic.  This source already has
-    // pretty significant issues with MSVC6 anyway.
-    if (strcasecmp(tagname, kGumboTagNames[i]) == 0) {
-      return i;
-    }
-  }
+/*
+ * Override the `tolower` implementation in the perfect hash
+ * to use ours. We need a custom `tolower` that only does ASCII
+ * characters and is locale-independent to remain truthy to the
+ * standard
+ */
+#define tolower(c) gumbo_tolower(c)
+#include "tag_perf.h"
+
+static int
+case_memcmp(const char *s1, const char *s2, int n)
+{
+	while (n--) {
+		unsigned char c1 = gumbo_tolower(*s1++);
+		unsigned char c2 = gumbo_tolower(*s2++);
+		if (c1 != c2)
+			return (int)c1 - (int)c2;
+	}
+	return 0;
+}
+
+GumboTag gumbo_tagn_enum(const char* tagname, int length) {
+  int position = perfhash((const unsigned char *)tagname, length);
+  if (position >= 0 && !case_memcmp(tagname, kGumboTagNames[position], length))
+    return (GumboTag)position;
   return GUMBO_TAG_UNKNOWN;
+}
+
+GumboTag gumbo_tag_enum(const char* tagname) {
+  return gumbo_tagn_enum(tagname, strlen(tagname));
 }
