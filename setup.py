@@ -1,6 +1,13 @@
 #!/usr/bin/env python
+import sys
 from setuptools import setup
 from setuptools.command.sdist import sdist
+
+_name_of_lib = 'libgumbo.so'
+if sys.platform.startswith('darwin'):
+    _name_of_lib = 'libgumbo.dylib'
+elif sys.platform.startswith('win'):
+    _name_of_lib = 'gumbo.dll'
 
 class CustomSdistCommand(sdist):
     """Customized Sdist command, to copy libgumbo.so into the Python directory
@@ -8,7 +15,8 @@ class CustomSdistCommand(sdist):
     def run(self):
         try:
             import shutil
-            shutil.copyfile('.libs/libgumbo.so', 'python/gumbo/libgumbo.so')
+            shutil.copyfile('.libs/' + _name_of_lib,
+                'python/gumbo/' + _name_of_lib)
             sdist.run(self)
         except IOError as e:
             print(e)
@@ -172,6 +180,6 @@ setup(name='gumbo',
       classifiers=CLASSIFIERS,
       packages=['gumbo'],
       package_dir={'': 'python'},
-      package_data={'gumbo': ['libgumbo.so']},
+      package_data={'gumbo': [_name_of_lib]},
       cmdclass={ 'sdist': CustomSdistCommand },
       zip_safe=False)
