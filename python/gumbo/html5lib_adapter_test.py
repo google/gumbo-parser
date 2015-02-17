@@ -96,17 +96,17 @@ def reformatTemplateContents(expected):
  retval = []
  template_indents = []
  for line in lines:
-   indent = len(line) - len(line.strip())
-   if 'content' in line:
+   line_stripped = line.strip()
+   indent = len(line) - len(line_stripped)
+   if line_stripped == 'content':
      template_indents.append(indent)
      continue
-   elif template_indents and indent <= template_indents[-1]:
-     template_indents.pop()
-   elif template_indents:
+   while template_indents and indent <= template_indents[-1]:
+       template_indents.pop()
+   if template_indents:
      line = line[2 * len(template_indents):]
    retval.append(line)
  return '\n'.join(retval)
-
 
 class Html5libAdapterTest(unittest.TestCase):
   """Adapter between Gumbo and the html5lib tests.

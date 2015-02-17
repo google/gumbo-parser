@@ -1462,7 +1462,7 @@ static bool has_an_element_in_select_scope(GumboParser* parser, GumboTag tag) {
 static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
   for (;
        node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(DD), TAG(DT),
-             TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RB), TAG(RT), TAG(RTC) }) &&
+             TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RB), TAG(RT), /* TAG(RTC) */ }) &&
        !node_html_tag_is(get_current_node(parser), exception);
        pop_current_node(parser));
 }
@@ -1776,13 +1776,20 @@ static void remove_from_parent(GumboParser* parser, GumboNode* node) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-end.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser
 // Also described in the "in body" handling for end formatting tags.
-static bool adoption_agency_algorithm(
-    GumboParser* parser, GumboToken* token, GumboTag closing_tag) {
+static bool adoption_agency_algorithm(GumboParser* parser, GumboToken* token, GumboTag subject) {
   GumboParserState* state = parser->_parser_state;
   gumbo_debug("Entering adoption agency algorithm.\n");
-  // Steps 1-3 & 16:
+  // Step 1.
+  GumboNode* current_node = get_current_node(parser);
+  if (current_node->v.element.tag_namespace == GUMBO_NAMESPACE_HTML &&
+      current_node->v.element.tag == subject &&
+      gumbo_vector_index_of(&state->_active_formatting_elements, current_node) == -1) {
+    pop_current_node(parser);
+    return false;
+  }
+  // Steps 2-4 & 20:
   for (int i = 0; i < 8; ++i) {
-    // Step 4.
+    // Step 5.
     GumboNode* formatting_node = NULL;
     int formatting_node_in_open_elements = -1;
     for (int j = state->_active_formatting_elements.length; --j >= 0; ) {
@@ -1792,13 +1799,13 @@ static bool adoption_agency_algorithm(
         // Last scope marker; abort the algorithm.
         return false;
       }
-      if (current_node->type == GUMBO_NODE_ELEMENT && current_node->v.element.tag == closing_tag) {
+      if (node_html_tag_is(current_node, subject)) {
         // Found it.
         formatting_node = current_node;
         formatting_node_in_open_elements = gumbo_vector_index_of(
-            &state->_open_elements, formatting_node);
+                                                                 &state->_open_elements, formatting_node);
         gumbo_debug("Formatting element of tag %s at %d.\n",
-                    gumbo_normalized_tagname(closing_tag),
+                    gumbo_normalized_tagname(subject),
                     formatting_node_in_open_elements);
         break;
       }
@@ -1811,18 +1818,23 @@ static bool adoption_agency_algorithm(
       return false;
     }
 
+    // Step 6
     if (formatting_node_in_open_elements == -1) {
       gumbo_debug("Formatting node not on stack of open elements.\n");
+      parser_add_parse_error(parser, token);
       gumbo_vector_remove(parser, formatting_node,
                           &state->_active_formatting_elements);
       return false;
     }
 
+    // Step 7
     if (!has_an_element_in_scope(parser, formatting_node->v.element.tag)) {
       parser_add_parse_error(parser, token);
       gumbo_debug("Element not in scope.\n");
       return false;
     }
+
+    // Step 8
     if (formatting_node != get_current_node(parser)) {
       parser_add_parse_error(parser, token);  // But continue onwards.
     }
@@ -1830,20 +1842,20 @@ static bool adoption_agency_algorithm(
     assert(!node_html_tag_is(formatting_node, GUMBO_TAG_HTML));
     assert(!node_html_tag_is(formatting_node, GUMBO_TAG_BODY));
 
-    // Step 5 & 6.
+    // Step 9 & 10
     GumboNode* furthest_block = NULL;
     for (int j = formatting_node_in_open_elements;
          j < state->_open_elements.length; ++j) {
       assert(j > 0);
       GumboNode* current = state->_open_elements.data[j];
       if (is_special_node(current)) {
-        // Step 5.
+        // Step 9.
         furthest_block = current;
         break;
       }
     }
     if (!furthest_block) {
-      // Step 6.
+      // Step 10.
       while (get_current_node(parser) != formatting_node) {
         pop_current_node(parser);
       }
@@ -1856,32 +1868,35 @@ static bool adoption_agency_algorithm(
     assert(!node_html_tag_is(furthest_block, GUMBO_TAG_HTML));
     assert(furthest_block);
 
-    // Step 7.
+    // Step 11.
     // Elements may be moved and reparented by this algorithm, so
     // common_ancestor is not necessarily the same as formatting_node->parent.
     GumboNode* common_ancestor =
-        state->_open_elements.data[gumbo_vector_index_of(
-            &state->_open_elements, formatting_node) - 1];
+      state->_open_elements.data[gumbo_vector_index_of(
+                                                       &state->_open_elements, formatting_node) - 1];
     gumbo_debug("Common ancestor tag = %s, furthest block tag = %s.\n",
                 gumbo_normalized_tagname(common_ancestor->v.element.tag),
                 gumbo_normalized_tagname(furthest_block->v.element.tag));
 
-    // Step 8.
+    // Step 12.
     int bookmark = gumbo_vector_index_of(
-        &state->_active_formatting_elements, formatting_node);;
-    // Step 9.
+                                         &state->_active_formatting_elements, formatting_node) + 1;
+    gumbo_debug("Bookmark at %d.\n", bookmark);
+    // Step 13.
     GumboNode* node = furthest_block;
     GumboNode* last_node = furthest_block;
     // Must be stored explicitly, in case node is removed from the stack of open
     // elements, to handle step 9.4.
     int saved_node_index = gumbo_vector_index_of(&state->_open_elements, node);
     assert(saved_node_index > 0);
-    // Step 9.1-9.3 & 9.11.
-    for (int j = 0; j < 3; ++j) {
-      // Step 9.4.
+    // Step 13.1.
+    for (int j = 0;;) {
+      // Step 13.2.
+      ++j;
+      // Step 13.3.
       int node_index = gumbo_vector_index_of(&state->_open_elements, node);
       gumbo_debug(
-          "Current index: %d, last index: %d.\n", node_index, saved_node_index);
+                  "Current index: %d, last index: %d.\n", node_index, saved_node_index);
       if (node_index == -1) {
         node_index = saved_node_index;
       }
@@ -1890,35 +1905,56 @@ static bool adoption_agency_algorithm(
       assert(node_index < state->_open_elements.capacity);
       node = state->_open_elements.data[node_index];
       assert(node->parent);
-      // Step 9.5.
-      if (gumbo_vector_index_of(
-          &state->_active_formatting_elements, node) == -1) {
-        gumbo_vector_remove_at(parser, node_index, &state->_open_elements);
-        continue;
-      } else if (node == formatting_node) {
-        // Step 9.6.
+      if (node == formatting_node) {
+        // Step 13.4.
         break;
       }
-      // Step 9.7.
-      int formatting_index = gumbo_vector_index_of(
-          &state->_active_formatting_elements, node);
+      int formatting_index =
+        gumbo_vector_index_of(&state->_active_formatting_elements, node);
+      if (j > 3 && formatting_index != -1) {
+        // Step 13.5.
+        gumbo_debug(
+                    "Removing formatting element at %d.\n", formatting_index);
+        gumbo_vector_remove_at(
+                               parser,
+                               formatting_index,
+                               &state->_active_formatting_elements);
+        // Removing the element shifts all indices over by one, so we may need
+        // to move the bookmark.
+        if (formatting_index < bookmark) {
+          --bookmark;
+          gumbo_debug("Moving bookmark to %d.\n", bookmark);
+        }
+        continue;
+      }
+      if (formatting_index == -1) {
+        // Step 13.6.
+        gumbo_vector_remove_at(parser, node_index, &state->_open_elements);
+        continue;
+      }
+      // Step 13.7.
+      // "common ancestor as the intended parent" doesn't actually mean insert
+      // it into the common ancestor; that happens below.
       node = clone_node(parser, node, GUMBO_INSERTION_ADOPTION_AGENCY_CLONED);
+      assert(formatting_index >= 0);
       state->_active_formatting_elements.data[formatting_index] = node;
+      assert(node_index >= 0);
       state->_open_elements.data[node_index] = node;
-      // Step 9.8.
+      // Step 13.8.
       if (last_node == furthest_block) {
         bookmark = formatting_index + 1;
+        gumbo_debug("Bookmark moved to %d.\n", bookmark);
         assert(bookmark <= state->_active_formatting_elements.length);
       }
-      // Step 9.9.
+      // Step 13.9.
       last_node->parse_flags |= GUMBO_INSERTION_ADOPTION_AGENCY_MOVED;
       remove_from_parent(parser, last_node);
       append_node(parser, node, last_node);
-      // Step 9.10.
+      // Step 13.10.
       last_node = node;
-    }
+    } // Step 13.11.
 
-    // Step 10.
+    // Step 14.
     gumbo_debug("Removing %s node from parent ",
                 gumbo_normalized_tagname(last_node->v.element.tag));
     remove_from_parent(parser, last_node);
@@ -1929,18 +1965,18 @@ static bool adoption_agency_algorithm(
                 gumbo_normalized_tagname(location.target->v.element.tag));
     insert_node(parser, last_node, location);
 
-    // Step 11.
+    // Step 15.
     GumboNode* new_formatting_node = clone_node(
-        parser, formatting_node, GUMBO_INSERTION_ADOPTION_AGENCY_CLONED);
+                                                parser, formatting_node, GUMBO_INSERTION_ADOPTION_AGENCY_CLONED);
     formatting_node->parse_flags |= GUMBO_INSERTION_IMPLICIT_END_TAG;
 
-    // Step 12.  Instead of appending nodes one-by-one, we swap the children
+    // Step 16.  Instead of appending nodes one-by-one, we swap the children
     // vector of furthest_block with the empty children of new_formatting_node,
     // reducing memory traffic and allocations.  We still have to reset their
     // parent pointers, though.
     GumboVector temp = new_formatting_node->v.element.children;
     new_formatting_node->v.element.children =
-        furthest_block->v.element.children;
+      furthest_block->v.element.children;
     furthest_block->v.element.children = temp;
 
     temp = new_formatting_node->v.element.children;
@@ -1949,36 +1985,39 @@ static bool adoption_agency_algorithm(
       child->parent = new_formatting_node;
     }
 
-    // Step 13.
+    // Step 17.
     append_node(parser, furthest_block, new_formatting_node);
 
-    // Step 14.
+    // Step 18.
     // If the formatting node was before the bookmark, it may shift over all
     // indices after it, so we need to explicitly find the index and possibly
     // adjust the bookmark.
     int formatting_node_index = gumbo_vector_index_of(
-        &state->_active_formatting_elements, formatting_node);
+                                                      &state->_active_formatting_elements, formatting_node);
     assert(formatting_node_index != -1);
     if (formatting_node_index < bookmark) {
+      gumbo_debug(
+                  "Formatting node at %d is before bookmark at %d; decrementing.\n",
+                  formatting_node_index, bookmark);
       --bookmark;
     }
     gumbo_vector_remove_at(
-        parser, formatting_node_index, &state->_active_formatting_elements);
+                           parser, formatting_node_index, &state->_active_formatting_elements);
     assert(bookmark >= 0);
     assert(bookmark <= state->_active_formatting_elements.length);
     gumbo_vector_insert_at(parser, new_formatting_node, bookmark,
                            &state->_active_formatting_elements);
 
-    // Step 15.
+    // Step 19.
     gumbo_vector_remove(
-        parser, formatting_node, &state->_open_elements);
+                        parser, formatting_node, &state->_open_elements);
     int insert_at = gumbo_vector_index_of(
-        &state->_open_elements, furthest_block) + 1;
+                                          &state->_open_elements, furthest_block) + 1;
     assert(insert_at >= 0);
     assert(insert_at <= state->_open_elements.length);
     gumbo_vector_insert_at(
-        parser, new_formatting_node, insert_at, &state->_open_elements);
-  }
+                           parser, new_formatting_node, insert_at, &state->_open_elements);
+  } // Step 20.
   return true;
 }
 
@@ -2435,7 +2474,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     for (int i = 0; i < state->_open_elements.length; ++i) {
       if (!node_tag_in_set(state->_open_elements.data[i], (gumbo_tagset) { TAG(DD),
               TAG(DT), TAG(LI), TAG(OPTGROUP), TAG(OPTION), TAG(P), TAG(RB), TAG(RP),
-              TAG(RT), TAG(RTC), TAG(TBODY), TAG(TD), TAG(TFOOT), TAG(TH), TAG(THEAD),
+              TAG(RT), /* TAG(RTC),*/ TAG(TBODY), TAG(TD), TAG(TFOOT), TAG(TH), TAG(THEAD),
               TAG(TR), TAG(BODY), TAG(HTML) })) {
         parser_add_parse_error(parser, token);
         success = false;
@@ -2865,7 +2904,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     reconstruct_active_formatting_elements(parser);
     insert_element_from_token(parser, token);
     return true;
-  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(RB), TAG(RP), TAG(RTC) })) {
+  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(RB), TAG(RP) /*, TAG(RTC)*/ })) {
     bool success = true;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
       generate_implied_end_tags(parser, GUMBO_TAG_LAST);
@@ -2880,10 +2919,10 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_RT)) {
     bool success = true;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      generate_implied_end_tags(parser, GUMBO_TAG_RTC);
+      generate_implied_end_tags(parser, GUMBO_TAG_LAST /* GUMBO_TAG_RTC */);
     }
-    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RUBY) &&
-        (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RTC))) {
+    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RUBY))
+      /* && (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RTC)))*/ {
       parser_add_parse_error(parser, token);
       success = false;
     }

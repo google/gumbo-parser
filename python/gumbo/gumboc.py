@@ -309,7 +309,6 @@ class Tag(Enum):
       'MARK',
       'RUBY',
       'RT',
-      'RTC',
       'RP',
       'BDI',
       'BDO',
