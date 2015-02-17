@@ -25,8 +25,27 @@ extern "C" {
 
 struct GumboInternalParser;
 
-// Release the memory used for an GumboAttribute, including the attribute
-// itself.
+/*
+ * Search for a GumboAttribute object in a vector of
+ * attributes. Matching is performed case-insensitively
+ */
+GumboAttribute* gumbo_get_attribute(const GumboVector* attributes, const char* name);
+
+/*
+ * Set the "value" of the given GumboAttribute object
+ */
+void gumbo_set_attribute_value(GumboAttribute *attr, const char *value);
+
+/*
+ * Add an attribute to an existing vector of attributes;
+ * if the attribute already exists, it will be updated in-place
+ */
+void gumbo_set_attribute(GumboVector *attributes, const char *name, const char *value);
+
+/*
+ * Release the memory used for an GumboAttribute, including the attribute
+ * itself.
+ */
 void gumbo_destroy_attribute(GumboAttribute* attribute);
 
 #ifdef __cplusplus
