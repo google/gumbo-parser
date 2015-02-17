@@ -556,6 +556,21 @@ TEST_F(Utf8Test, MatchesCaseInsensitive) {
   EXPECT_EQ(-1, utf8iterator_current(&input_));
 }
 
+TEST_F(Utf8Test, MatchFollowedByNullByte) {
+  // Can't use ResetText, as the implicit strlen will choke on the null.
+  text_ = "CDATA\0f";
+  utf8iterator_init(&parser_, text_, 7, &input_);
+
+  EXPECT_TRUE(utf8iterator_maybe_consume_match(
+        &input_, "cdata", sizeof("cdata") - 1, false));
+
+  EXPECT_EQ(0, utf8iterator_current(&input_));
+  EXPECT_EQ('\0', *utf8iterator_get_char_pointer(&input_));
+  utf8iterator_next(&input_);
+  EXPECT_EQ('f', utf8iterator_current(&input_));
+  EXPECT_EQ('f', *utf8iterator_get_char_pointer(&input_));
+}
+
 TEST_F(Utf8Test, MarkReset) {
   ResetText("this is a test");
   Advance(5);
