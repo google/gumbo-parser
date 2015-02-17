@@ -449,7 +449,7 @@ static void set_frameset_not_ok(GumboParser* parser) {
   parser->_parser_state->_frameset_ok = false;
 }
 
-static GumboNode* create_node(GumboNodeType type) {
+GumboNode* gumbo_create_node(GumboNodeType type) {
   GumboNode* node = gumbo_malloc(sizeof(GumboNode));
   node->parent = NULL;
   node->index_within_parent = -1;
@@ -459,7 +459,7 @@ static GumboNode* create_node(GumboNodeType type) {
 }
 
 static GumboNode* new_document_node(void) {
-  GumboNode* document_node = create_node(GUMBO_NODE_DOCUMENT);
+  GumboNode* document_node = gumbo_create_node(GUMBO_NODE_DOCUMENT);
   document_node->parse_flags = GUMBO_INSERTION_BY_PARSER;
   gumbo_vector_init(1, &document_node->v.document.children);
 
@@ -881,7 +881,7 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
   assert(buffer_state->_type == GUMBO_NODE_WHITESPACE ||
          buffer_state->_type == GUMBO_NODE_TEXT ||
          buffer_state->_type == GUMBO_NODE_CDATA);
-  GumboNode* text_node = create_node(buffer_state->_type);
+  GumboNode* text_node = gumbo_create_node(buffer_state->_type);
   GumboText* text_node_data = &text_node->v.text;
   text_node_data->text = gumbo_string_buffer_to_string(&buffer_state->_buffer);
   text_node_data->original_text.data = buffer_state->_start_original_text;
@@ -948,7 +948,7 @@ static GumboNode* pop_current_node(GumboParser* parser) {
 static void append_comment_node(
     GumboParser* parser, GumboNode* node, const GumboToken* token) {
   maybe_flush_text_node_buffer(parser);
-  GumboNode* comment = create_node(GUMBO_NODE_COMMENT);
+  GumboNode* comment = gumbo_create_node(GUMBO_NODE_COMMENT);
   comment->type = GUMBO_NODE_COMMENT;
   comment->parse_flags = GUMBO_INSERTION_NORMAL;
   comment->v.text.text = token->v.text;
@@ -981,7 +981,7 @@ void clear_stack_to_table_body_context(GumboParser* parser) {
 
 // Creates a parser-inserted element in the HTML namespace and returns it.
 static GumboNode* create_element(GumboParser* parser, GumboTag tag) {
-  GumboNode* node = create_node(GUMBO_NODE_ELEMENT);
+  GumboNode* node = gumbo_create_node(GUMBO_NODE_ELEMENT);
   GumboElement* element = &node->v.element;
   gumbo_vector_init(1, &element->children);
   gumbo_vector_init(0, &element->attributes);
@@ -1006,7 +1006,7 @@ static GumboNode* create_element_from_token(
       start_tag->tag == GUMBO_TAG_TEMPLATE)
         ? GUMBO_NODE_TEMPLATE : GUMBO_NODE_ELEMENT;
 
-  GumboNode* node = create_node(type);
+  GumboNode* node = gumbo_create_node(type);
   GumboElement* element = &node->v.element;
   gumbo_vector_init(1, &element->children);
   element->attributes = start_tag->attributes;
