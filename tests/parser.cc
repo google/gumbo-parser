@@ -1522,6 +1522,57 @@ TEST_F(GumboParserTest, ImplicitlyCloseLists) {
   ASSERT_EQ(1, GetChildCount(li2));
 }
 
+TEST_F(GumboParserTest, CData) {
+  Parse("<svg><![CDATA[this is text]]></svg>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  EXPECT_STREQ("this is text", cdata->v.text.text);
+}
+
+TEST_F(GumboParserTest, CDataUnsafe) {
+  // Can't use Parse() because of the strlen
+  output_ = gumbo_parse_with_options(
+      &options_, "<svg><![CDATA[\0filler\0text\0]]>",
+      sizeof("<svg><![CDATA[\0filler\0text\0]]>") - 1);
+  root_ = output_->document;
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* svg = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(svg));
+
+  GumboNode* cdata = GetChild(svg, 0);
+  ASSERT_EQ(GUMBO_NODE_CDATA, cdata->type);
+  // \xEF\xBF\xBD = unicode replacement char
+  EXPECT_STREQ("\xEF\xBF\xBD" "filler\xEF\xBF\xBD" "text\xEF\xBF\xBD",
+      cdata->v.text.text);
+}
+
+TEST_F(GumboParserTest, CDataInBody) {
+  Parse("<div><![CDATA[this is text]]></div>");
+
+  GumboNode* body;
+  GetAndAssertBody(root_, &body);
+  ASSERT_EQ(1, GetChildCount(body));
+
+  GumboNode* div = GetChild(body, 0);
+  ASSERT_EQ(1, GetChildCount(div));
+
+  GumboNode* cdata = GetChild(div, 0);
+  ASSERT_EQ(GUMBO_NODE_COMMENT, cdata->type);
+  EXPECT_STREQ("[CDATA[this is text]]", cdata->v.text.text);
+}
+
 TEST_F(GumboParserTest, FormattingTagsInHeading) {
   Parse("<h2>This is <b>old</h2>text");
 
