@@ -60,7 +60,6 @@ u
 mark
 ruby
 rt
-rtc
 rp
 bdi
 bdo
@@ -148,3 +147,4 @@ multicol
 nobr
 spacer
 tt
+rtc
