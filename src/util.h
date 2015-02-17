@@ -57,6 +57,16 @@ static inline void gumbo_free(void *ptr)
   gumbo_user_free(ptr);
 }
 
+static inline int gumbo_tolower(int c)
+{
+  return c | ((c >= 'A' && c <= 'Z') << 5);
+}
+
+static inline bool gumbo_isalpha(int c)
+{
+  return (c | 0x20) >= 'a' && (c | 0x20) <= 'z';
+}
+
 // Debug wrapper for printf, to make it easier to turn off debugging info when
 // required.
 void gumbo_debug(const char* format, ...);
