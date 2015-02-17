@@ -459,7 +459,7 @@ TEST_F(GumboTokenizerTest, CData) {
   gumbo_tokenizer_set_is_current_node_foreign(&parser_, true);
 
   EXPECT_TRUE(gumbo_lex(&parser_, &token_));
-  EXPECT_EQ(GUMBO_TOKEN_CDATA, token_.type);
+  EXPECT_EQ(GUMBO_TOKEN_NULL, token_.type);
   EXPECT_EQ(0, token_.v.character);
 
   gumbo_token_destroy(&parser_, &token_);

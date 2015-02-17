@@ -1021,6 +1021,7 @@ static GumboNode* insert_foreign_element(
 static void insert_text_token(GumboParser* parser, GumboToken* token) {
   assert(token->type == GUMBO_TOKEN_WHITESPACE ||
          token->type == GUMBO_TOKEN_CHARACTER ||
+         token->type == GUMBO_TOKEN_NULL ||
          token->type == GUMBO_TOKEN_CDATA);
   TextNodeBufferState* buffer_state = &parser->_parser_state->_text_node;
   if (buffer_state->_buffer.length == 0) {
@@ -3490,7 +3491,6 @@ static bool handle_in_foreign_content(GumboParser* parser, GumboToken* token) {
   switch (token->type) {
     case GUMBO_TOKEN_NULL:
       parser_add_parse_error(parser, token);
-      token->type = GUMBO_TOKEN_CHARACTER;
       token->v.character = kUtf8ReplacementChar;
       insert_text_token(parser, token);
       return false;
