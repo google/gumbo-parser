@@ -375,7 +375,8 @@ class Output(ctypes.Structure):
 @contextlib.contextmanager
 def parse(text, **kwargs):
   options = Options()
-  container = kwargs.get("inner_html", Tag.LAST)
+  context_tag = kwargs.get('container', Tag.LAST)
+  context_namespace = kwargs.get('container_namespace', Namespace.HTML)
   for field_name, _ in Options._fields_:
     try:
       setattr(options, field_name, kwargs[field_name])
@@ -386,7 +387,9 @@ def parse(text, **kwargs):
   # call, it creates a temporary buffer which is destroyed when the call
   # completes, and then the original_text pointers point into invalid memory.
   text_ptr = ctypes.c_char_p(text.encode('utf-8'))
-  output = _parse_fragment(ctypes.byref(options), text_ptr, len(text), container)
+  output = _parse_fragment(
+      ctypes.byref(options), text_ptr, len(text),
+      context_tag, context_namespace)
   try:
     yield output
   finally:
@@ -399,7 +402,8 @@ _parse_with_options.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t]
 _parse_with_options.restype = _Ptr(Output)
 
 _parse_fragment = _dll.gumbo_parse_fragment
-_parse_fragment.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t, Tag]
+_parse_fragment.argtypes = [
+    _Ptr(Options), ctypes.c_char_p, ctypes.c_size_t, Tag, Namespace]
 _parse_fragment.restype = _Ptr(Output)
 
 _tag_from_original_text = _dll.gumbo_tag_from_original_text

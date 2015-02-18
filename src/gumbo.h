@@ -659,7 +659,7 @@ GumboOutput* gumbo_parse_with_options(
  */
 GumboOutput* gumbo_parse_fragment(
     const GumboOptions* options, const char* buffer, size_t length,
-    const GumboTag fragment_ctx);
+    const GumboTag fragment_ctx, const GumboNamespaceEnum fragment_namespace);
 
 /** Release the memory used for the parse tree & parse errors. */
 void gumbo_destroy_output(

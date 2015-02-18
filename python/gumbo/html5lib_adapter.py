@@ -116,15 +116,22 @@ class HTMLParser(object):
           assert 'Only comments and <html> nodes allowed at the root'
       return self.tree.getDocument()
 
-  def parseFragment(self, text_or_file, inner_html, **kwargs):
+  def parseFragment(self, text_or_file, container, **kwargs):
     try:
       text = text_or_file.read()
     except AttributeError:
       # Assume a string.
       text = text_or_file
-    inner_html = gumboc.Tag.from_str(inner_html)
+    if ' ' in container:
+      container_ns, container = container.split(' ')
+    else:
+      container_ns = "html"
 
-    with gumboc.parse(text, inner_html=inner_html, **kwargs) as output:
+    with gumboc.parse(
+        text,
+        container=gumboc.Tag.from_str(container),
+        container_namespace=getattr(gumboc.Namespace, container_ns.upper()),
+        **kwargs) as output:
       for node in output.contents.document.contents.children:
         if node.type in (gumboc.NodeType.ELEMENT, gumboc.NodeType.TEMPLATE):
           _insert_root(self.tree, output.contents.root.contents, False)

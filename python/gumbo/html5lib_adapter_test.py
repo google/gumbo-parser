@@ -124,7 +124,8 @@ class Html5libAdapterTest(unittest.TestCase):
             tree=TREEBUILDER(namespaceHTMLElements=True))
 
     if inner_html:
-      document = p.parseFragment(StringIO.StringIO(input), inner_html)
+      document = p.parseFragment(
+          StringIO.StringIO(input), inner_html.replace('math ', 'mathml '))
     else:
       document = p.parse(StringIO.StringIO(input))
 
