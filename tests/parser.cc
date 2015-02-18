@@ -1900,7 +1900,7 @@ TEST_F(GumboParserTest, TestTemplateInForeignContent) {
 }
 
 TEST_F(GumboParserTest, FragmentWithNamespace) {
-  ParseFragment("<div></div>", GUMBO_TAG_MS, GUMBO_NAMESPACE_MATHML);
+  ParseFragment("<div></div>", GUMBO_TAG_TITLE, GUMBO_NAMESPACE_SVG);
 
   EXPECT_EQ(1, GetChildCount(root_));
   GumboNode* html = GetChild(root_, 0);

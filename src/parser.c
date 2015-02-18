@@ -4001,36 +4001,39 @@ static void fragment_parser_init(
     fragment_namespace;
 
   // 4
-  switch (fragment_ctx) {
-    case GUMBO_TAG_TITLE:
-    case GUMBO_TAG_TEXTAREA:
-      gumbo_tokenizer_set_state(parser, GUMBO_LEX_RCDATA);
-      break;
+  if (fragment_namespace == GUMBO_NAMESPACE_HTML) {
+    // Non-HTML namespaces always start in the DATA state.
+    switch (fragment_ctx) {
+      case GUMBO_TAG_TITLE:
+      case GUMBO_TAG_TEXTAREA:
+        gumbo_tokenizer_set_state(parser, GUMBO_LEX_RCDATA);
+        break;
 
-    case GUMBO_TAG_STYLE:
-    case GUMBO_TAG_XMP:
-    case GUMBO_TAG_IFRAME:
-    case GUMBO_TAG_NOEMBED:
-    case GUMBO_TAG_NOFRAMES:
-      gumbo_tokenizer_set_state(parser, GUMBO_LEX_RAWTEXT);
-      break;
+      case GUMBO_TAG_STYLE:
+      case GUMBO_TAG_XMP:
+      case GUMBO_TAG_IFRAME:
+      case GUMBO_TAG_NOEMBED:
+      case GUMBO_TAG_NOFRAMES:
+        gumbo_tokenizer_set_state(parser, GUMBO_LEX_RAWTEXT);
+        break;
 
-    case GUMBO_TAG_SCRIPT:
-      gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT);
-      break;
+      case GUMBO_TAG_SCRIPT:
+        gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT);
+        break;
 
-    case GUMBO_TAG_NOSCRIPT:
-      /* scripting is disabled in Gumbo, so leave the tokenizer
-       * in the default data state */
-      break;
+      case GUMBO_TAG_NOSCRIPT:
+        /* scripting is disabled in Gumbo, so leave the tokenizer
+         * in the default data state */
+        break;
 
-    case GUMBO_TAG_PLAINTEXT:
-      gumbo_tokenizer_set_state(parser, GUMBO_LEX_PLAINTEXT);
-      break;
+      case GUMBO_TAG_PLAINTEXT:
+        gumbo_tokenizer_set_state(parser, GUMBO_LEX_PLAINTEXT);
+        break;
 
-    default:
-      /* default data state */
-      break;
+      default:
+        /* default data state */
+        break;
+    }
   }
 
   // 5. 6. 7.
