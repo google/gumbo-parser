@@ -135,6 +135,10 @@ class Html5libAdapterTest(unittest.TestCase):
 
     expected = re.compile(r'^(\s*)<(\S+)>', re.M).sub(
         r'\1<html \2>', convertExpected(expected, 2))
+    # html5lib doesn't yet support the template tag, but it appears in the
+    # tests with the expectation that the template contents will be under the
+    # word 'contents', so we need to reformat that string a bit.
+    expected = reformatTemplateContents(expected)
 
     error_msg = '\n'.join(['\n\nInput:', input, '\nExpected:', expected,
                            '\nReceived:', output])
