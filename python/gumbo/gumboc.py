@@ -22,24 +22,28 @@ Pythonic API.
 
 __author__ = 'jdtang@google.com (Jonathan Tang)'
 
+import sys
 import contextlib
 import ctypes
 import os.path
 
+_name_of_lib = 'libgumbo.so'
+if sys.platform.startswith('darwin'):
+  _name_of_lib = 'libgumbo.dylib'
+elif sys.platform.startswith('win'):
+  _name_of_lib = "gumbo.dll"
+
 try:
   # First look for a freshly-built .so in the .libs directory, for development.
   _dll = ctypes.cdll.LoadLibrary(os.path.join(
-      os.path.dirname(__file__), '..', '..', '.libs', 'libgumbo.so'))
+      os.path.dirname(__file__), '..', '..', '.libs', _name_of_lib))
 except OSError:
   # PyPI or setuptools install, look in the current directory.
   _dll = ctypes.cdll.LoadLibrary(os.path.join(
-      os.path.dirname(__file__), 'libgumbo.so'))
+      os.path.dirname(__file__), _name_of_lib))
 except OSError:
-  # System library, on unix
-  _dll = ctypes.cdll.LoadLibrary('libgumbo.so')
-except OSError:
-  # MacOS X
-  _dll = ctypes.cdll.LoadLibrary('libgumbo.dylib')
+  # System library, on unix or mac osx
+  _dll = ctypes.cdll.LoadLibrary(_name_of_lib)
 
 # Some aliases for common types.
 _bitvector = ctypes.c_uint
@@ -498,13 +502,10 @@ class Options(ctypes.Structure):
       # function.  Right now these are treated as opaque void pointers.
       ('allocator', ctypes.c_void_p),
       ('deallocator', ctypes.c_void_p),
+      ('userdata', ctypes.c_void_p),
       ('tab_stop', ctypes.c_int),
       ('stop_on_first_error', ctypes.c_bool),
-      ('max_utf8_decode_errors', ctypes.c_int),
-      # The following two options will likely be removed from the C API, and
-      # should be removed from the Python API when that happens too.
-      ('verbatim_mode', ctypes.c_bool),
-      ('preserve_entities', ctypes.c_bool),
+      ('max_errors', ctypes.c_int),
       ]
 
 

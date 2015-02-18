@@ -189,6 +189,20 @@ TEST_F(GumboTokenizerTest, DoctypeSystem) {
   EXPECT_STREQ("DTD_location", doc_type->system_identifier);
 }
 
+TEST_F(GumboTokenizerTest, DoctypeUnterminated) {
+  SetInput("<!DOCTYPE a PUBLIC''");
+  EXPECT_FALSE(gumbo_lex(&parser_, &token_));
+  ASSERT_EQ(GUMBO_TOKEN_DOCTYPE, token_.type);
+  EXPECT_EQ(0, token_.position.offset);
+
+  GumboTokenDocType* doc_type = &token_.v.doc_type;
+  EXPECT_TRUE(doc_type->force_quirks);
+  EXPECT_TRUE(doc_type->has_public_identifier);
+  EXPECT_FALSE(doc_type->has_system_identifier);
+  EXPECT_STREQ("a", doc_type->name);
+  EXPECT_STREQ("", doc_type->system_identifier);
+}
+
 TEST_F(GumboTokenizerTest, RawtextEnd) {
   SetInput("<title>x ignores <tag></title>");
   EXPECT_TRUE(gumbo_lex(&parser_, &token_));
@@ -434,6 +448,24 @@ TEST_F(GumboTokenizerTest, ScriptDoubleEscaped) {
   EXPECT_TRUE(gumbo_lex(&parser_, &token_));
   EXPECT_EQ(GUMBO_TOKEN_CHARACTER, token_.type);
   EXPECT_EQ('>', token_.v.character);
+}
+
+TEST_F(GumboTokenizerTest, CData) {
+  // SetInput uses strlen and so can't handle nulls.
+  text_ = "<![CDATA[\0filler\0text\0]]>";
+  gumbo_tokenizer_state_destroy(&parser_);
+  gumbo_tokenizer_state_init(
+      &parser_, text_, sizeof("<![CDATA[\0filler\0text\0]]>") - 1);
+  gumbo_tokenizer_set_is_current_node_foreign(&parser_, true);
+
+  EXPECT_TRUE(gumbo_lex(&parser_, &token_));
+  EXPECT_EQ(GUMBO_TOKEN_NULL, token_.type);
+  EXPECT_EQ(0, token_.v.character);
+
+  gumbo_token_destroy(&parser_, &token_);
+  EXPECT_TRUE(gumbo_lex(&parser_, &token_));
+  EXPECT_EQ(GUMBO_TOKEN_CDATA, token_.type);
+  EXPECT_EQ('f', token_.v.character);
 }
 
 TEST_F(GumboTokenizerTest, StyleHasTagEmbedded) {
