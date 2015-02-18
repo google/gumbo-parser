@@ -14,8 +14,9 @@ Goals & features:
 * Robust and resilient to bad input.
 * Simple API that can be easily wrapped by other languages.
 * Support for source locations and pointers back to the original text.
+* Support for fragment parsing.
 * Relatively lightweight, with no outside dependencies.
-* Passes all [html5lib-0.95 tests][].
+* Passes all [html5lib tests][], including the template tag.
 * Tested on over 2.5 billion pages from Google's index.
 
 Non-goals:
@@ -26,21 +27,29 @@ Non-goals:
 * Support for encodings other than UTF-8.  For the most part, client code
   can convert the input stream to UTF-8 text using another library before
   processing.
-* Security.  Gumbo was initially designed for a product that worked with
-  trusted input files only.  We're working to harden this and make sure that it
-  behaves as expected even on malicious input, but for now, Gumbo should only be
-  run on trusted input or within a sandbox.
+* Mutability.  Gumbo is intentionally designed to turn an HTML document into a
+  parse tree, and free that parse tree all at once.  It's not designed to
+  persistently store nodes or subtrees outside of the parse tree, or to perform
+  arbitrary DOM mutations within your program.  If you need this functionality,
+  we recommend translating the Gumbo parse tree into a mutable DOM
+  representation more suited for the particular needs of your program before
+  operating on it.
 * C89 support.  Most major compilers support C99 by now; the major exception
   (Microsoft Visual Studio) should be able to compile this in C++ mode with
   relatively few changes.  (Bug reports welcome.)
+* ~~Security.  Gumbo was initially designed for a product that worked with
+  trusted input files only.  We're working to harden this and make sure that it
+  behaves as expected even on malicious input, but for now, Gumbo should only be
+  run on trusted input or within a sandbox.~~ Gumbo underwent a number of
+  security fixes and passed Google's security review as of version 0.9.1.
 
 Wishlist (aka "We couldn't get these into the original release, but are
 hoping to add them soon"):
 
-* Support for recent HTML5 spec changes to support the template tag.
-* Support for fragment parsing.
 * Full-featured error reporting.
-* Bindings in other languages.
+* Additional performance improvements.
+* DOM wrapper library/libraries (possibly within other language bindings)
+* Query libraries, to extract information from parse trees using CSS or XPATH.
 
 Installation
 ============
@@ -197,7 +206,7 @@ other repositories:
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
-[html5lib-0.95 tests]: https://github.com/html5lib/html5lib-tests
+[html5lib tests]: https://github.com/html5lib/html5lib-tests
 [googletest]: https://code.google.com/p/googletest/
 [semantic versioning]: http://semver.org/
 [HTML::Gumbo]: https://metacpan.org/pod/HTML::Gumbo
