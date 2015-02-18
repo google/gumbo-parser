@@ -46,6 +46,17 @@ class GumboParserTest : public ::testing::Test {
     root_ = output_->document;
   }
 
+  virtual void ParseFragment(
+      const char* input, GumboTag context, GumboNamespaceEnum context_ns) {
+    if (output_) {
+      gumbo_destroy_output(&options_, output_);
+    }
+
+    output_ = gumbo_parse_fragment(
+        &options_, input, strlen(input), context, context_ns);
+    root_ = output_->document;
+  }
+
   virtual void Parse(const std::string& input) {
     // This overload is so we can test/demonstrate that computing offsets from
     // the .data() member of an STL string works properly.
@@ -1886,6 +1897,16 @@ TEST_F(GumboParserTest, TestTemplateInForeignContent) {
   EXPECT_EQ(GUMBO_TAG_TEMPLATE, svg_template->v.element.tag);
   EXPECT_EQ(GUMBO_NAMESPACE_SVG, svg_template->v.element.tag_namespace);
   EXPECT_EQ(0, GetChildCount(svg_template));
+}
+
+TEST_F(GumboParserTest, FragmentWithNamespace) {
+  ParseFragment("<div></div>", GUMBO_TAG_MS, GUMBO_NAMESPACE_MATHML);
+
+  EXPECT_EQ(1, GetChildCount(root_));
+  GumboNode* div = GetChild(root_, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, div->type);
+  EXPECT_EQ(GUMBO_TAG_DIV, div->v.element.tag);
+  EXPECT_EQ(0, GetChildCount(div));
 }
 
 }  // namespace
