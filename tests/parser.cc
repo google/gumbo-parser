@@ -1903,7 +1903,12 @@ TEST_F(GumboParserTest, FragmentWithNamespace) {
   ParseFragment("<div></div>", GUMBO_TAG_MS, GUMBO_NAMESPACE_MATHML);
 
   EXPECT_EQ(1, GetChildCount(root_));
-  GumboNode* div = GetChild(root_, 0);
+  GumboNode* html = GetChild(root_, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, html->type);
+  EXPECT_EQ(GUMBO_TAG_HTML, html->v.element.tag);
+  EXPECT_EQ(1, GetChildCount(html));
+
+  GumboNode* div = GetChild(html, 0);
   ASSERT_EQ(GUMBO_NODE_ELEMENT, div->type);
   EXPECT_EQ(GUMBO_TAG_DIV, div->v.element.tag);
   EXPECT_EQ(0, GetChildCount(div));
