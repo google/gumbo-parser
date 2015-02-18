@@ -76,7 +76,7 @@ libgumbo_la_SOURCES = \
 				src/util.h \
 				src/vector.c \
 				src/vector.h
-include_HEADERS = src/gumbo.h
+include_HEADERS = src/gumbo.h src/tag_enum.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gumbo.pc
