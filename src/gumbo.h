@@ -684,6 +684,19 @@ struct GumboInternalNode {
   /** Pointer back to parent node.  Not owned. */
   GumboNode* parent;
 
+  /**
+   * Pointer to next node in document order.  This is the next node by start tag
+   * position in the document, or by position of the tag that forces the parser
+   * to insert it for parser-inserted nodes.  It's necessary to maintain API
+   * compatibility with some other libraries, eg. BeautifulSoup.  Not owned.
+   */
+  GumboNode* next;
+
+  /**
+   * Pointer to previous node in document order.
+   */
+  GumboNode* prev;
+
   /** The index within the parent's children vector of this node. */
   size_t index_within_parent;
 
