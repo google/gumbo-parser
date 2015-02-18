@@ -76,3 +76,5 @@ clean_text
 find_links
 get_title
 positions_of_class
+prettyprint
+serialize
