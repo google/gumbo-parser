@@ -114,6 +114,20 @@ class CtypesTest(unittest.TestCase):
     self.assertEquals(gumboc.Tag.A, gumboc.Tag.A)
     self.assertEquals(hash(gumboc.Tag.A.value), hash(gumboc.Tag.A))
 
+  def testFragment(self):
+    with gumboc.parse(
+        '<div></div>',
+        container=gumboc.Tag.MS,
+        container_namespace=gumboc.Namespace.MATHML) as output:
+      root = output.contents.root.contents
+      self.assertEquals(1, len(root.children))
+      div = root.children[0]
+      self.assertEquals(gumboc.NodeType.ELEMENT, div.type)
+      self.assertEquals(gumboc.Tag.DIV, div.tag)
+      self.assertEquals(gumboc.Namespace.HTML, div.tag_namespace)
+
+
+
 
 if __name__ == '__main__':
   unittest.main()
