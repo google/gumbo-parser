@@ -1477,33 +1477,23 @@ static bool has_an_element_in_select_scope(GumboParser* parser, GumboTag tag) {
 // Pass GUMBO_TAG_LAST to not exclude any of them.
 static void generate_implied_end_tags(GumboParser* parser, GumboTag exception) {
   for (;
-       node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(DD), TAG(DT),
-             TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RB), TAG(RT), /* TAG(RTC) */ }) &&
+       node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(DD),
+         TAG(DT), TAG(LI), TAG(OPTION), TAG(OPTGROUP), TAG(P), TAG(RP), TAG(RB),
+         TAG(RT), TAG(RTC)  }) &&
        !node_html_tag_is(get_current_node(parser), exception);
        pop_current_node(parser));
 }
 
-
-
-
-
-#if 0
-// I can not find this clause anywhere in the current W3C spec for html5 syntax
-
 // This is the "generate all implied end tags thoroughly" clause of the spec.
+// https://html.spec.whatwg.org/multipage/syntax.html#closing-elements-that-have-implied-end-tags
 static void generate_all_implied_end_tags_thoroughly(GumboParser* parser) {
   for (;
        node_tag_in_set(get_current_node(parser), (gumbo_tagset) { TAG(CAPTION),
              TAG(COLGROUP), TAG(DD), TAG(DT), TAG(LI), TAG(OPTION), TAG(OPTGROUP),
-             TAG(P), TAG(RP), TAG(RT), TAG(TBODY), TAG(TD), TAG(TFOOT),
-             TAG(TH), TAG(HEAD), TAG(TR) });
+             TAG(P), TAG(RP), TAG(RT), TAG(RTC), TAG(TBODY), TAG(TD),
+             TAG(TFOOT), TAG(TH), TAG(HEAD), TAG(TR) });
        pop_current_node(parser));
 }
-#endif
-
-
-
-
 
 // This factors out the clauses relating to "act as if an end tag token with tag
 // name "table" had been seen.  Returns true if there's a table element in table
@@ -2230,9 +2220,7 @@ static bool handle_in_head(GumboParser* parser, GumboToken* token) {
       ignore_token(parser);
       return false;
     }
-    // can not find the next line in the spec
-    // generate_all_implied_end_tags_thoroughly(parser);
-    generate_implied_end_tags(parser, GUMBO_TAG_LAST);
+    generate_all_implied_end_tags_thoroughly(parser);
     bool success = true;
     if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_TEMPLATE)) {
       parser_add_parse_error(parser, token);
@@ -2496,10 +2484,11 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     }
     bool success = true;
     for (int i = 0; i < state->_open_elements.length; ++i) {
-      if (!node_tag_in_set(state->_open_elements.data[i], (gumbo_tagset) { TAG(DD),
-              TAG(DT), TAG(LI), TAG(OPTGROUP), TAG(OPTION), TAG(P), TAG(RB), TAG(RP),
-              TAG(RT), /* TAG(RTC),*/ TAG(TBODY), TAG(TD), TAG(TFOOT), TAG(TH), TAG(THEAD),
-              TAG(TR), TAG(BODY), TAG(HTML) })) {
+      if (!node_tag_in_set(state->_open_elements.data[i], (gumbo_tagset) {
+            TAG(DD), TAG(DT), TAG(LI), TAG(OPTGROUP), TAG(OPTION), TAG(P),
+            TAG(RB), TAG(RP), TAG(RT), TAG(RTC), TAG(TBODY), TAG(TD),
+            TAG(TFOOT), TAG(TH), TAG(THEAD), TAG(TR),
+            TAG(BODY), TAG(HTML) })) {
         parser_add_parse_error(parser, token);
         success = false;
         break;
@@ -2928,25 +2917,17 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     reconstruct_active_formatting_elements(parser);
     insert_element_from_token(parser, token);
     return true;
-  } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(RB), TAG(RP) /*, TAG(RTC)*/ })) {
+  } else if (tag_in(token, kStartTag, (gumbo_tagset) {
+        TAG(RB), TAG(RP), TAG(RT), TAG(RTC) })) {
     bool success = true;
+    GumboTag exception = tag_in(token, kStartTag, (gumbo_tagset) {
+        TAG(RT), TAG(RP) }) ? GUMBO_TAG_RTC : GUMBO_TAG_LAST;
     if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      generate_implied_end_tags(parser, GUMBO_TAG_LAST);
+      generate_implied_end_tags(parser, exception);
     }
-    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RUBY)) {
-      parser_add_parse_error(parser, token);
-      success = false;
-    }
-    insert_element_from_token(parser, token);
-    return success;
-
-  } else if (tag_is(token, kStartTag, GUMBO_TAG_RT)) {
-    bool success = true;
-    if (has_an_element_in_scope(parser, GUMBO_TAG_RUBY)) {
-      generate_implied_end_tags(parser, GUMBO_TAG_LAST /* GUMBO_TAG_RTC */);
-    }
-    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RUBY))
-      /* && (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RTC)))*/ {
+    if (!node_html_tag_is(get_current_node(parser), GUMBO_TAG_RUBY) &&
+        !(exception == GUMBO_TAG_LAST ||
+          node_html_tag_is(get_current_node(parser), GUMBO_TAG_RTC))) {
       parser_add_parse_error(parser, token);
       success = false;
     }
@@ -3591,18 +3572,6 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
     }
     parser_add_parse_error(parser, token);
     while(!node_html_tag_is(pop_current_node(parser), GUMBO_TAG_TEMPLATE));
-
-#if 0
-
-    // I can not see anywhere in the spec where you do not pop off foreign namespace elements
-
-    for (GumboNode* popped = pop_current_node(parser);
-         popped->v.element.tag_namespace != GUMBO_NAMESPACE_HTML ||
-           !node_html_tag_is(popped, GUMBO_TAG_TEMPLATE);
-         popped = pop_current_node(parser));
-
-#endif
-
     clear_active_formatting_elements(parser);
     pop_template_insertion_mode(parser);
     reset_insertion_mode_appropriately(parser);

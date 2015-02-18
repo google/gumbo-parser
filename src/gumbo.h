@@ -324,6 +324,10 @@ typedef enum {
   GUMBO_TAG_TT,
   // Used for all tags that don't have special handling in HTML.
   GUMBO_TAG_UNKNOWN,
+  // Tags added to the spec after public release.  We add to the end of the enum
+  // (even if it splits up related tags) so that we don't risk invalidating
+  // enums in other language bindings.
+  GUMBO_TAG_RTC,
   // A marker value to indicate the end of the enum, for iterating over it.
   // Also used as the terminator for varargs functions that take tags.
   GUMBO_TAG_LAST,
