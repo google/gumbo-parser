@@ -21,5 +21,6 @@ script:
   - python python/gumbo/html5lib_adapter_test.py
   - python python/gumbo/soup_adapter_test.py
   - sudo make install
+  - g++ examples/clean_text.cc `pkg-config --cflags --libs gumbo`
   - sudo python setup.py sdist install
   - python -c 'import gumbo; gumbo.parse("Foo")'
