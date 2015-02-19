@@ -2818,7 +2818,7 @@ static StateResult handle_cdata_state(
     tokenizer->_reconsume_current_input = true;
     reset_token_start_point(tokenizer);
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_DATA);
-    tokenizer->_is_in_cdata = true;
+    tokenizer->_is_in_cdata = false;
     return NEXT_CHAR;
   } else {
     return emit_current_char(parser, output);
