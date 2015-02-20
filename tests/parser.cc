@@ -26,12 +26,15 @@ namespace {
 class GumboParserTest : public ::testing::Test {
  protected:
   GumboParserTest() :
-    options_(kGumboDefaultOptions), output_(NULL), root_(NULL) {}
+    options_(kGumboDefaultOptions), output_(NULL), root_(NULL) {
+    InitLeakDetection(&options_, &malloc_stats_);
+  }
 
   virtual ~GumboParserTest() {
     if (output_) {
       gumbo_destroy_output(&options_, output_);
     }
+    EXPECT_EQ(malloc_stats_.objects_allocated, malloc_stats_.objects_freed);
   }
 
   virtual void Parse(const char* input) {
@@ -69,6 +72,7 @@ class GumboParserTest : public ::testing::Test {
     SanityCheckPointers(input.data(), input.length(), output_->root, 1000);
   }
 
+  MallocStats malloc_stats_;
   GumboOptions options_;
   GumboOutput* output_;
   GumboNode* root_;
