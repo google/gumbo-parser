@@ -1253,12 +1253,17 @@ static bool is_open_element(GumboParser* parser, const GumboNode* node) {
 // clone shares no structure with the original node: all owned strings and
 // values are fresh copies.
 GumboNode* clone_node(
-    GumboParser* parser, const GumboNode* node, GumboParseFlags reason) {
+    GumboParser* parser, GumboNode* node, GumboParseFlags reason) {
   assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
   GumboNode* new_node = gumbo_parser_allocate(parser, sizeof(GumboNode));
   *new_node = *node;
   new_node->parent = NULL;
   new_node->index_within_parent = -1;
+  // Fix up the next/prev pointers so that it appears directly after the node it
+  // was cloned from.
+  new_node->next = node->next;
+  new_node->prev = node;
+  node->next = new_node;
   // Clear the GUMBO_INSERTION_IMPLICIT_END_TAG flag, as the cloned node may
   // have a separate end tag.
   new_node->parse_flags &= ~GUMBO_INSERTION_IMPLICIT_END_TAG;
@@ -1293,7 +1298,7 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
 
   // Step 2 & 3
   int i = elements->length - 1;
-  const GumboNode* element = elements->data[i];
+  GumboNode* element = elements->data[i];
   if (element == &kActiveFormattingScopeMarker ||
       is_open_element(parser, element)) {
     return;
