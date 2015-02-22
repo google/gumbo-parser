@@ -70,6 +70,11 @@ void gumbo_string_buffer_append_string(
 char* gumbo_string_buffer_to_string(
     struct GumboInternalParser* parser, GumboStringBuffer* input);
 
+// Reinitialize this string buffer.  This clears it by setting length=0.  It
+// does not zero out the buffer itself.
+void gumbo_string_buffer_clear(
+    struct GumboInternalParser* parser, GumboStringBuffer* input);
+
 // Deallocates this GumboStringBuffer.
 void gumbo_string_buffer_destroy(
     struct GumboInternalParser* parser, GumboStringBuffer* buffer);
