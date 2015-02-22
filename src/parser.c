@@ -2873,6 +2873,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     // touching the attributes.
     ignore_token(parser);
 
+    // The name attribute, if present, should be destroyed since it's ignored
+    // when copying over.  The action attribute should be kept since it's moved
+    // to the form.
+    if (name_attr) {
+      gumbo_destroy_attribute(parser, name_attr);
+    }
+
     GumboAttribute* name =
         gumbo_parser_allocate(parser, sizeof(GumboAttribute));
     GumboStringPiece name_str = GUMBO_STRING("name");
