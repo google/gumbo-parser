@@ -105,6 +105,13 @@ char* gumbo_string_buffer_to_string(
 void gumbo_string_buffer_clear(
     struct GumboInternalParser* parser, GumboStringBuffer* input) {
   input->length = 0;
+  if (input->capacity > kDefaultStringBufferSize * 8) {
+    // This approach to clearing means that the buffer can grow unbounded and
+    // tie up memory that may be needed for parsing the rest of the document, so
+    // we free and reinitialize the buffer if its grown more than 3 doublings.
+    gumbo_string_buffer_destroy(parser, input);
+    gumbo_string_buffer_init(parser, input);
+  }
 }
 
 void gumbo_string_buffer_destroy(
