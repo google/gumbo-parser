@@ -26,7 +26,9 @@
 
 struct GumboInternalParser;
 
-static const size_t kDefaultStringBufferSize = 10;
+// Size chosen via statistical analysis of ~60K websites.
+// 99% of text nodes and 98% of attribute names/values fit in this initial size.
+static const size_t kDefaultStringBufferSize = 5;
 
 static void maybe_resize_string_buffer(
     struct GumboInternalParser* parser, size_t additional_chars,
