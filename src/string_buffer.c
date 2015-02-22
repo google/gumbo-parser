@@ -102,6 +102,11 @@ char* gumbo_string_buffer_to_string(
   return buffer;
 }
 
+void gumbo_string_buffer_clear(
+    struct GumboInternalParser* parser, GumboStringBuffer* input) {
+  input->length = 0;
+}
+
 void gumbo_string_buffer_destroy(
     struct GumboInternalParser* parser, GumboStringBuffer* buffer) {
   gumbo_parser_deallocate(parser, buffer->data);
