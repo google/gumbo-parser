@@ -21,12 +21,15 @@
 
 #include "util.h"
 
+unsigned int gChunksAllocated;
+
 void arena_init(GumboArena* arena) {
   assert(arena != NULL);
   arena->head = malloc(sizeof(GumboArenaChunk));
   arena->head->next = NULL;
   arena->allocation_ptr = arena->head->data;
   gumbo_debug("Initializing arena @%x\n", arena->head);
+  gChunksAllocated = 1;
 }
 
 void arena_destroy(GumboArena* arena) {
@@ -50,10 +53,15 @@ void* gumbo_arena_malloc(void* userdata, size_t size) {
     new_chunk->next = current_chunk;
     arena->head = new_chunk;
     arena->allocation_ptr = new_chunk->data;
+    ++gChunksAllocated;
   }
   void* obj = arena->allocation_ptr;
   arena->allocation_ptr += aligned_size;
   return obj;
+}
+
+unsigned int gumbo_arena_chunks_allocated() {
+  return gChunksAllocated;
 }
 
 void arena_free(void* userdata, void* obj) {

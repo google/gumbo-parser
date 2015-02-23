@@ -611,6 +611,8 @@ typedef struct GumboInternalArena {
 
 void* gumbo_arena_malloc(void* userdata, size_t size);
 
+unsigned int gumbo_arena_chunks_allocated();
+
 /** The output struct containing the results of the parse. */
 typedef struct GumboInternalOutput {
   /**
