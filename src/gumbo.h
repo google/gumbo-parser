@@ -576,18 +576,6 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
 typedef struct GumboInternalOptions {
-  /** A memory allocator function.  Default: malloc. */
-  GumboAllocatorFunction allocator;
-
-  /** A memory deallocator function. Default: free. */
-  GumboDeallocatorFunction deallocator;
-
-  /**
-   * An opaque object that's passed in as the first argument to all callbacks
-   * used by this library.  Default: NULL.
-   */
-  void* userdata;
-
   /**
    * The tab-stop size, for computing positions in source code that uses tabs.
    * Default: 8.
@@ -613,6 +601,16 @@ typedef struct GumboInternalOptions {
 /** Default options struct; use this with gumbo_parse_with_options. */
 extern const GumboOptions kGumboDefaultOptions;
 
+/** Base struct for an arena. */
+struct GumboInternalArenaChunk;
+
+typedef struct GumboInternalArena {
+  struct GumboInternalArenaChunk* head;
+  char* allocation_ptr;
+} GumboArena;
+
+void* gumbo_arena_malloc(void* userdata, size_t size);
+
 /** The output struct containing the results of the parse. */
 typedef struct GumboInternalOutput {
   /**
@@ -635,6 +633,13 @@ typedef struct GumboInternalOutput {
    * reported so we can work out something appropriate for your use-case.
    */
   GumboVector /* GumboError */ errors;
+
+  /**
+   * Arena for default memory allocation.  This is initialized on parse start
+   * when using the default memory allocator; it consumes little memory (a
+   * couple pointers) when a custom memory allocator is supplied.
+   */
+  GumboArena arena;
 } GumboOutput;
 
 /**

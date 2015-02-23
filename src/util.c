@@ -32,12 +32,10 @@
 const GumboSourcePosition kGumboEmptySourcePosition = { 0, 0, 0 };
 
 void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
-  return parser->_options->allocator(parser->_options->userdata, num_bytes);
+  return gumbo_arena_malloc(&parser->_output->arena, num_bytes);
 }
 
-void gumbo_parser_deallocate(GumboParser* parser, void* ptr) {
-  parser->_options->deallocator(parser->_options->userdata, ptr);
-}
+void gumbo_parser_deallocate(GumboParser* parser, void* ptr) {}
 
 char* gumbo_copy_stringz(GumboParser* parser, const char* str) {
   char* buffer = gumbo_parser_allocate(parser, strlen(str) + 1);

@@ -50,6 +50,8 @@ lib_LTLIBRARIES = libgumbo.la
 libgumbo_la_CFLAGS = -Wall
 libgumbo_la_LDFLAGS = -version-info 1:0:0 -no-undefined
 libgumbo_la_SOURCES = \
+				src/arena.c \
+				src/arena.h \
 				src/attribute.c \
 				src/attribute.h \
 				src/char_ref.c \

@@ -21,6 +21,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "arena.h"
 #include "attribute.h"
 #include "error.h"
 #include "gumbo.h"
@@ -56,18 +57,7 @@ static bool handle_in_template(GumboParser*, GumboToken*);
 static GumboNode* destroy_node(GumboParser*, GumboNode*);
 
 
-static void* malloc_wrapper(void* unused, size_t size) {
-  return malloc(size);
-}
-
-static void free_wrapper(void* unused, void* ptr) {
-  free(ptr);
-}
-
 const GumboOptions kGumboDefaultOptions = {
-  &malloc_wrapper,
-  &free_wrapper,
-  NULL,
   8,
   false,
   -1,
@@ -501,11 +491,9 @@ static GumboNode* new_document_node(GumboParser* parser) {
   return document_node;
 }
 
-static void output_init(GumboParser* parser) {
-  GumboOutput* output = gumbo_parser_allocate(parser, sizeof(GumboOutput));
+static void output_init(GumboParser* parser, GumboOutput* output) {
   output->root = NULL;
   output->document = new_document_node(parser);
-  parser->_output = output;
   gumbo_init_errors(parser);
 }
 
@@ -4055,10 +4043,16 @@ GumboOutput* gumbo_parse_fragment(
     const GumboTag fragment_ctx, const GumboNamespaceEnum fragment_namespace) {
   GumboParser parser;
   parser._options = options;
+  // Must come first, since all the other init functions allocate memory.  The
+  // arena is stored in the GumboOutput structure, so that must be allocated
+  // manually.
+  parser._output = malloc(sizeof(GumboOutput));
+  arena_init(&parser._output->arena);
+  // Next initialize the parser state.
   parser_state_init(&parser);
   // Must come after parser_state_init, since creating the document node must
   // reference parser_state->_current_node.
-  output_init(&parser);
+  output_init(&parser, parser._output);
   // And this must come after output_init, because initializing the tokenizer
   // reads the first character and that may cause a UTF-8 decode error
   // (inserting into output->errors) if that's invalid.
@@ -4155,18 +4149,6 @@ GumboOutput* gumbo_parse_fragment(
 }
 
 void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output) {
-  // Need a dummy GumboParser because the allocator comes along with the
-  // options object.
-  GumboParser parser;
-  parser._parser_state = NULL;
-  parser._options = options;
-  GumboNode* current = output->document;
-  while (current) {
-    current = destroy_node(&parser, current);
-  }
-  for (int i = 0; i < output->errors.length; ++i) {
-    gumbo_error_destroy(&parser, output->errors.data[i]);
-  }
-  gumbo_vector_destroy(&parser, &output->errors);
-  gumbo_parser_deallocate(&parser, output);
+  arena_destroy(&output->arena);
+  free(output);
 }
