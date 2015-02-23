@@ -29,12 +29,12 @@ extern "C" {
 // This should allow ~50% of webpages to parse in a single arena chunk, and the
 // vast majority to use no more than 5, while still keeping typical memory usage
 // well under a meg.
-#define CHUNK_SIZE 400000
-#define ALIGNMENT 8
+#define ARENA_CHUNK_SIZE 399992
+#define ARENA_ALIGNMENT 8
 
 typedef struct GumboInternalArenaChunk {
   struct GumboInternalArenaChunk* next;
-  char data[CHUNK_SIZE];
+  char data[ARENA_CHUNK_SIZE];
 } GumboArenaChunk;
 
 // Initialize an arena, allocating the first chunk for it.

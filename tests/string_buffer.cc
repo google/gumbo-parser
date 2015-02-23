@@ -47,7 +47,7 @@ class GumboStringBufferTest : public GumboTest {
 
 TEST_F(GumboStringBufferTest, Reserve) {
   gumbo_string_buffer_reserve(&parser_, 21, &buffer_);
-  EXPECT_EQ(24, buffer_.capacity);
+  EXPECT_EQ(32, buffer_.capacity);
   strcpy(buffer_.data, "01234567890123456789");
   buffer_.length = 20;
   NullTerminateBuffer();

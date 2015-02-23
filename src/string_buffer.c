@@ -27,8 +27,10 @@
 struct GumboInternalParser;
 
 // Size chosen via statistical analysis of ~60K websites.
-// 99% of text nodes and 98% of attribute names/values fit in this initial size.
-static const size_t kDefaultStringBufferSize = 6;
+// 99% of text nodes and 98% of attribute names/values fit within 5 characters.
+// Since the arena allocator only ever returns word-aligned chunks, however, it
+// makes no sense to use less than 8 chars.
+static const size_t kDefaultStringBufferSize = 8;
 
 static void maybe_resize_string_buffer(
     struct GumboInternalParser* parser, size_t additional_chars,

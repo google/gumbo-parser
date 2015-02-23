@@ -42,7 +42,9 @@ void arena_destroy(GumboArena* arena) {
 void* gumbo_arena_malloc(void* userdata, size_t size) {
   GumboArena* arena = userdata;
   GumboArenaChunk* current_chunk = arena->head;
-  if (arena->allocation_ptr >= current_chunk->data + CHUNK_SIZE - size) {
+  size_t aligned_size = (size + ARENA_ALIGNMENT - 1) & ~(ARENA_ALIGNMENT - 1);
+  if (arena->allocation_ptr >=
+      current_chunk->data + ARENA_CHUNK_SIZE - aligned_size) {
     GumboArenaChunk* new_chunk = malloc(sizeof(GumboArenaChunk));
     gumbo_debug("Allocating new arena chunk @%x\n", new_chunk);
     new_chunk->next = current_chunk;
@@ -50,7 +52,7 @@ void* gumbo_arena_malloc(void* userdata, size_t size) {
     arena->allocation_ptr = new_chunk->data;
   }
   void* obj = arena->allocation_ptr;
-  arena->allocation_ptr += (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
+  arena->allocation_ptr += aligned_size;
   return obj;
 }
 
