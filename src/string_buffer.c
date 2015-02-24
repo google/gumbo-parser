@@ -21,7 +21,8 @@
 #include <string.h>
 #include <strings.h>
 
-#include "arena.h"
+#include "gumbo.h"
+#include "parser.h"
 #include "string_piece.h"
 #include "util.h"
 
@@ -42,8 +43,8 @@ static bool maybe_resize_string_buffer(
     new_capacity *= 2;
   }
   if (new_capacity != buffer->capacity) {
-    if (new_capacity > ARENA_CHUNK_SIZE) {
-      if (buffer->capacity == ARENA_CHUNK_SIZE) {
+    if (new_capacity > parser->_options->arena_chunk_size) {
+      if (buffer->capacity == parser->_options->arena_chunk_size) {
         // If we have already resized the buffer to the maximum chunk size, then
         // we're out of memory, and we ignore any more writes to the buffer.
         gumbo_set_out_of_memory(parser);
@@ -52,7 +53,7 @@ static bool maybe_resize_string_buffer(
       // Otherwise, this is the first time we've hit the new max.  Resize the
       // allocation to take up a whole chunk, but don't set an error condition
       // and let writes proceed.
-      new_capacity = ARENA_CHUNK_SIZE;
+      new_capacity = parser->_options->arena_chunk_size;
     }
     char* new_data = gumbo_parser_allocate(parser, new_capacity);
     memcpy(new_data, buffer->data, buffer->length);

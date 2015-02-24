@@ -596,6 +596,17 @@ typedef struct GumboInternalOptions {
    * Default: -1
    */
   int max_errors;
+
+  /**
+   * The memory size of new arena chunks.  The default (800K) is enough to parse
+   * ~60% of webpages in a single chunk; 95% will parse in under 2M.  However,
+   * individual allocations cannot exceed the size of a single chunk; a small
+   * percentage (< 1/1000) of pages have very long text blocks that will be
+   * truncated by this, with the out_of_memory flag set.  If you really need
+   * precise data for them and have extra memory to spend, try increasing this
+   * setting as necessary.
+   */
+  size_t arena_chunk_size;
 } GumboOptions;
 
 /** Default options struct; use this with gumbo_parse_with_options. */
@@ -608,8 +619,6 @@ typedef struct GumboInternalArena {
   struct GumboInternalArenaChunk* head;
   char* allocation_ptr;
 } GumboArena;
-
-void* gumbo_arena_malloc(void* userdata, size_t size);
 
 unsigned int gumbo_arena_chunks_allocated();
 

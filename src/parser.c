@@ -61,6 +61,7 @@ const GumboOptions kGumboDefaultOptions = {
   8,
   false,
   -1,
+  799992,
 };
 
 static const GumboStringPiece kDoctypeHtml = GUMBO_STRING("html");
@@ -4050,7 +4051,7 @@ GumboOutput* gumbo_parse_fragment(
   // arena is stored in the GumboOutput structure, so that must be allocated
   // manually.
   parser._output = malloc(sizeof(GumboOutput));
-  arena_init(&parser._output->arena);
+  arena_init(&parser._output->arena, options->arena_chunk_size);
   // Next initialize the parser state.
   parser_state_init(&parser);
   // Must come after parser_state_init, since creating the document node must
@@ -4074,6 +4075,11 @@ GumboOutput* gumbo_parse_fragment(
 
   GumboToken token;
   bool has_error = false;
+
+  if (setjmp(parser._out_of_memory_jmp)) {
+    parser._output->out_of_memory = true;
+    return parser._output;
+  }
 
   do {
     if (state->_reprocess_current_token) {

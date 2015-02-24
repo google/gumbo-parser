@@ -23,12 +23,15 @@
 
 unsigned int gChunksAllocated;
 
-void arena_init(GumboArena* arena) {
+#define ARENA_ALIGNMENT 8
+
+void arena_init(GumboArena* arena, size_t chunk_size) {
   assert(arena != NULL);
-  arena->head = malloc(sizeof(GumboArenaChunk));
+  arena->head = malloc(chunk_size);
   arena->head->next = NULL;
   arena->allocation_ptr = arena->head->data;
-  gumbo_debug("Initializing arena @%x\n", arena->head);
+  gumbo_debug(
+      "Initializing arena with chunk size %d @%x\n", chunk_size, arena->head);
   gChunksAllocated = 1;
 }
 
@@ -42,14 +45,20 @@ void arena_destroy(GumboArena* arena) {
   }
 }
 
-void* gumbo_arena_malloc(void* userdata, size_t size) {
-  GumboArena* arena = userdata;
+void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size) {
   GumboArenaChunk* current_chunk = arena->head;
   size_t aligned_size = (size + ARENA_ALIGNMENT - 1) & ~(ARENA_ALIGNMENT - 1);
   if (arena->allocation_ptr >=
-      current_chunk->data + ARENA_CHUNK_SIZE - aligned_size) {
-    GumboArenaChunk* new_chunk = malloc(sizeof(GumboArenaChunk));
-    gumbo_debug("Allocating new arena chunk @%x\n", new_chunk);
+      current_chunk->data + chunk_size - aligned_size) {
+    if (size > chunk_size) {
+      return NULL;
+    }
+    GumboArenaChunk* new_chunk = malloc(chunk_size);
+    gumbo_debug(
+        "Allocating new arena chunk of size %d @%x\n", chunk_size, new_chunk);
+    if (!new_chunk) {
+      return NULL;
+    }
     new_chunk->next = current_chunk;
     arena->head = new_chunk;
     arena->allocation_ptr = new_chunk->data;

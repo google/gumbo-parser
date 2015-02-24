@@ -17,12 +17,14 @@
 #include "util.h"
 
 #include <assert.h>
+#include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "arena.h"
 #include "gumbo.h"
 #include "parser.h"
 
@@ -32,7 +34,14 @@
 const GumboSourcePosition kGumboEmptySourcePosition = { 0, 0, 0 };
 
 void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
-  return gumbo_arena_malloc(&parser->_output->arena, num_bytes);
+  void* result = arena_malloc(
+      &parser->_output->arena,
+      parser->_options->arena_chunk_size,
+      num_bytes);
+  if (result == NULL) {
+    longjmp(parser->_out_of_memory_jmp, num_bytes);
+  }
+  return result;
 }
 
 void gumbo_parser_deallocate(GumboParser* parser, void* ptr) {}

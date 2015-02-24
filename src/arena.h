@@ -23,27 +23,21 @@
 extern "C" {
 #endif
 
-// 400K is right around the median total memory allocation (on a corpus of ~60K
-// webpages taken from CommonCrawl), and allows up to 50K 8-byte allocations.
-// The 95th percentile is roughly 2M, which would give 5 arena chunks.
-// This should allow ~50% of webpages to parse in a single arena chunk, and the
-// vast majority to use no more than 5, while still keeping typical memory usage
-// well under a meg.
-#define ARENA_CHUNK_SIZE 399992
-#define ARENA_ALIGNMENT 8
-
 typedef struct GumboInternalArenaChunk {
   struct GumboInternalArenaChunk* next;
-  char data[ARENA_CHUNK_SIZE];
+  char data[];
 } GumboArenaChunk;
 
 // Initialize an arena, allocating the first chunk for it.
-void arena_init(GumboArena* arena);
+void arena_init(GumboArena* arena, size_t chunk_size);
 
 // Destroy an arena, freeing all memory used by it and all objects contained.
 void arena_destroy(GumboArena* arena);
 
-// gumbo_arena_malloc is defined in gumbo.h
+// Allocate an object in an arena.  chunk_size must remain constant between
+// allocations.  Returns NULL if either the program requests size > chunk_size
+// or the system malloc fails.
+void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size);
 
 // No-op free function for use as a custom allocator.
 void arena_free(void* arena, void* obj);
