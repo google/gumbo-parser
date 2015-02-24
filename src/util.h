@@ -51,6 +51,9 @@ void* gumbo_parser_allocate(
 // config options.
 void gumbo_parser_deallocate(struct GumboInternalParser* parser, void* ptr);
 
+// Sets the out-of-memory flag on the output.
+void gumbo_set_out_of_memory(struct GumboInternalParser* parser);
+
 // Debug wrapper for printf, to make it easier to turn off debugging info when
 // required.
 void gumbo_debug(const char* format, ...);

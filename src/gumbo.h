@@ -642,6 +642,19 @@ typedef struct GumboInternalOutput {
    * couple pointers) when a custom memory allocator is supplied.
    */
   GumboArena arena;
+
+  /**
+   * Flag set if an out-of-memory condition occurs.  This can either be because
+   * a stringbuffer or vector requested a single chunk larger than the arena
+   * chunk size, or because the system malloc failed.  (The latter is not
+   * implemented yet - on most modern OSes, malloc never returns NULL and
+   * instead overcommits virtual memory.)  Gumbo makes its best effort to
+   * recover from OOM errors: if the reason was that a buffer exceeded maximum
+   * chunk size, it truncates that buffer at the maximum chunk size, refuses to
+   * write to it anymore, and continues parsing.  If the system malloc fails, it
+   * returns the parse tree it's parsed up until that point.
+   */
+  bool out_of_memory;
 } GumboOutput;
 
 /**

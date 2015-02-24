@@ -21,6 +21,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "arena.h"
 #include "string_piece.h"
 #include "util.h"
 
@@ -32,7 +33,7 @@ struct GumboInternalParser;
 // makes no sense to use less than 8 chars.
 static const size_t kDefaultStringBufferSize = 8;
 
-static void maybe_resize_string_buffer(
+static bool maybe_resize_string_buffer(
     struct GumboInternalParser* parser, size_t additional_chars,
     GumboStringBuffer* buffer) {
   size_t new_length = buffer->length + additional_chars;
@@ -41,13 +42,29 @@ static void maybe_resize_string_buffer(
     new_capacity *= 2;
   }
   if (new_capacity != buffer->capacity) {
+    if (new_capacity > ARENA_CHUNK_SIZE) {
+      if (buffer->capacity == ARENA_CHUNK_SIZE) {
+        // If we have already resized the buffer to the maximum chunk size, then
+        // we're out of memory, and we ignore any more writes to the buffer.
+        gumbo_set_out_of_memory(parser);
+        return false;
+      }
+      // Otherwise, this is the first time we've hit the new max.  Resize the
+      // allocation to take up a whole chunk, but don't set an error condition
+      // and let writes proceed.
+      new_capacity = ARENA_CHUNK_SIZE;
+    }
     char* new_data = gumbo_parser_allocate(parser, new_capacity);
     memcpy(new_data, buffer->data, buffer->length);
     gumbo_parser_deallocate(parser, buffer->data);
     buffer->data = new_data;
     buffer->capacity = new_capacity;
   }
+  return true;
 }
+
+#define ENSURE_CAPACITY_OR_RETURN(capacity, buffer) \
+  if (!maybe_resize_string_buffer(parser, (capacity), (buffer))) { return; }
 
 void gumbo_string_buffer_init(
     struct GumboInternalParser* parser, GumboStringBuffer* output) {
@@ -56,10 +73,11 @@ void gumbo_string_buffer_init(
   output->capacity = kDefaultStringBufferSize;
 }
 
-void gumbo_string_buffer_reserve(
+bool gumbo_string_buffer_reserve(
     struct GumboInternalParser* parser, size_t min_capacity,
     GumboStringBuffer* output) {
-  maybe_resize_string_buffer(parser, min_capacity - output->length, output);
+  return maybe_resize_string_buffer(
+      parser, min_capacity - output->length, output);
 }
 
 void gumbo_string_buffer_append_codepoint(
@@ -81,7 +99,7 @@ void gumbo_string_buffer_append_codepoint(
     num_bytes = 3;
     prefix = 0xf0;
   }
-  maybe_resize_string_buffer(parser, num_bytes + 1, output);
+  ENSURE_CAPACITY_OR_RETURN(num_bytes + 1, output);
   output->data[output->length++] = prefix | (c >> (num_bytes * 6));
   for (int i = num_bytes - 1; i >= 0; --i) {
     output->data[output->length++] = 0x80 | (0x3f & (c >> (i * 6)));
@@ -91,16 +109,22 @@ void gumbo_string_buffer_append_codepoint(
 void gumbo_string_buffer_append_string(
     struct GumboInternalParser* parser, GumboStringPiece* str,
     GumboStringBuffer* output) {
-  maybe_resize_string_buffer(parser, str->length, output);
+  ENSURE_CAPACITY_OR_RETURN(str->length, output);
   memcpy(output->data + output->length, str->data, str->length);
   output->length += str->length;
 }
 
 char* gumbo_string_buffer_to_string(
     struct GumboInternalParser* parser, GumboStringBuffer* input) {
-  maybe_resize_string_buffer(parser, input->length + 1, input);
-  char* buffer = input->data;
-  buffer[input->length] = '\0';
+  char* buffer;
+  if (maybe_resize_string_buffer(parser, input->length + 1, input)) {
+    buffer = input->data;
+    buffer[input->length] = '\0';
+  } else {
+    // Out of memory: replace the last character.
+    buffer = input->data;
+    buffer[input->length - 1] = '\0';
+  }
   gumbo_string_buffer_init(parser, input);
   return buffer;
 }

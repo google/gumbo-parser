@@ -494,6 +494,9 @@ static GumboNode* new_document_node(GumboParser* parser) {
 static void output_init(GumboParser* parser, GumboOutput* output) {
   output->root = NULL;
   output->document = new_document_node(parser);
+  // Arena is initialized before this is called, so we have memory to initialize
+  // the parser state.
+  output->out_of_memory = false;
   gumbo_init_errors(parser);
 }
 

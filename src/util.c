@@ -43,6 +43,10 @@ char* gumbo_copy_stringz(GumboParser* parser, const char* str) {
   return buffer;
 }
 
+void gumbo_set_out_of_memory(GumboParser* parser) {
+  parser->_output->out_of_memory = true;
+}
+
 // Debug function to trace operation of the parser.  Pass --copts=-DGUMBO_DEBUG
 // to use.
 void gumbo_debug(const char* format, ...) {
