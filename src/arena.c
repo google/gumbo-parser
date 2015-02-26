@@ -51,12 +51,15 @@ void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size) {
   if (arena->allocation_ptr >=
       current_chunk->data + chunk_size - aligned_size) {
     if (size > chunk_size) {
+      gumbo_debug("Allocation size %d exceeds chunk size %d", size, chunk_size);
       return NULL;
     }
-    GumboArenaChunk* new_chunk = malloc(chunk_size);
-    gumbo_debug(
-        "Allocating new arena chunk of size %d @%x\n", chunk_size, new_chunk);
+    size_t memory_block_size = chunk_size + sizeof(GumboArenaChunk);
+    GumboArenaChunk* new_chunk = malloc(memory_block_size);
+    gumbo_debug("Allocating new arena chunk of size %d @%x\n",
+        memory_block_size, new_chunk);
     if (!new_chunk) {
+      gumbo_debug("Malloc failed.\n");
       return NULL;
     }
     new_chunk->next = current_chunk;
@@ -66,6 +69,7 @@ void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size) {
   }
   void* obj = arena->allocation_ptr;
   arena->allocation_ptr += aligned_size;
+  assert(arena->allocation_ptr <= arena->head->data + chunk_size);
   return obj;
 }
 
