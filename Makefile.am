@@ -37,14 +37,9 @@ clean-local:
 
 endif !HAVE_SHARED_LIBGTEST
 
-src/tag_strings.h: src/tag.in
-	@sed 's/\(.*\)/"\1",/g' <$< >$@
-
-src/tag_enum.h: src/tag.in
-	@sed 's/\(.*\)/GUMBO_TAG_\U\1,/g;s/-/_/g' <$< >$@
-
-python/gumbo/gumboc_tags.py: src/tag.in
-	@sed -e '1i TagNames = [' -e 's/\(.*\)/\t"\U\1",/g' -e 's/-/_/g' -e "\$$a]" <$< >$@
+gentags: src/tag.in
+	@python gentags.py $<
+	@mph -d2 -m2 -c1.33 <$< | emitc -s -l -i >src/tag_perf.h
 
 lib_LTLIBRARIES = libgumbo.la
 libgumbo_la_CFLAGS = -Wall
@@ -65,7 +60,9 @@ libgumbo_la_SOURCES = \
 				src/string_piece.h \
 				src/tag.c \
 				src/tag_enum.h \
+				src/tag_perf.h \
 				src/tag_strings.h \
+				src/tag_sizes.h \
 				src/token_type.h \
 				src/tokenizer.c \
 				src/tokenizer.h \
