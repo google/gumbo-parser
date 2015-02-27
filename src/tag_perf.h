@@ -52,7 +52,7 @@ static int T0[] = {
 	41, 63, 101, 63, 112, 96, 146, 90, 5, 132,
 	153, 95, 32, 15, 7, 80, 26, 57, 103, 191,
 	83, 126, 134, 169, 55, 90, 55, 74, 58, 69,
-	5, 99, 132, 58,
+	5, 99, 132, 58, 
 };
 
 static int T1[] = {
@@ -71,11 +71,14 @@ static int T1[] = {
 	84, 156, 187, 18, 18, 119, 79, 169, 168, 148,
 	88, 0, 122, 3, 169, 88, 139, 146, 88, 144,
 	86, 148, 5, 150, 17, 105, 81, 137, 98, 113,
-	120, 182, 69, 107,
+	120, 182, 69, 107, 
 };
 
-static int
-perfhash(const unsigned char *key, int len)
+#ifndef perfhash_tolower
+#define perfhash_tolower(c) tolower(c)
+#endif
+
+static int perfhash(const unsigned char *key, int len)
 {
 	int i;
 	int n;
@@ -85,9 +88,9 @@ perfhash(const unsigned char *key, int len)
 	if (len < 1 || len > 14)
 		return -1;
 
-	for (i=-45, n=0, f0=f1=0; n < len; ++n) {
+	for (i=-45, f0=f1=0, n=0; n<len; ++n) {
 		int c = kp[n];
-		c = tolower(c);
+		c = perfhash_tolower(c);
 		if (c < 45 || c > 121)
 			return -1;
 		f0 += T0[i + c];
