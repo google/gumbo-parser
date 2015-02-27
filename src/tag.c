@@ -18,9 +18,7 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdint.h>
-#include <strings.h>    // For strcasecmp.
-#include <string.h>    // For strcasecmp.
+#include <string.h>
 
 const char* kGumboTagNames[] = {
 # include "tag_strings.h"
@@ -28,7 +26,7 @@ const char* kGumboTagNames[] = {
   "",                   // TAG_LAST
 };
 
-static const uint8_t kGumboTagSizes[] = {
+static const unsigned char kGumboTagSizes[] = {
 # include "tag_sizes.h"
   0, // TAG_UNKNOWN
   0, // TAG_LAST
@@ -67,10 +65,8 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
   }
 }
 
-#include "tag_perf.h"
-
 static int
-case_memcmp(const char *s1, const char *s2, int n)
+case_memcmp(const char *s1, const char *s2, unsigned int n)
 {
 	while (n--) {
 		unsigned char c1 = tolower(*s1++);
@@ -81,12 +77,19 @@ case_memcmp(const char *s1, const char *s2, int n)
 	return 0;
 }
 
-GumboTag gumbo_tagn_enum(const char* tagname, int length) {
-  int position = perfhash((const unsigned char *)tagname, length);
-  if (position >= 0 &&
-      length == kGumboTagSizes[position] &&
-      !case_memcmp(tagname, kGumboTagNames[position], length))
-    return (GumboTag)position;
+#include "tag_gperf.h"
+#define TAG_MAP_SIZE (sizeof(kGumboTagMap)/sizeof(kGumboTagMap[0]))
+
+GumboTag gumbo_tagn_enum(const char* tagname, unsigned int length) {
+  if (length) {
+    unsigned int key = tag_hash(tagname, length);
+    if (key < TAG_MAP_SIZE) {
+      GumboTag tag = kGumboTagMap[key];
+      if (length == kGumboTagSizes[(int)tag] &&
+          !case_memcmp(tagname, kGumboTagNames[(int)tag], length))
+        return tag;
+    }
+  }
   return GUMBO_TAG_UNKNOWN;
 }
 

@@ -39,7 +39,7 @@ endif !HAVE_SHARED_LIBGTEST
 
 gentags: src/tag.in
 	@python gentags.py $<
-	@mph -d2 -m2 -c1.33 <$< | emitc -s -l -i >src/tag_perf.h
+	@gperf -LANSI-C --ignore-case -m200 $< |python genperf.py >src/tag_gperf.h
 
 lib_LTLIBRARIES = libgumbo.la
 libgumbo_la_CFLAGS = -Wall
@@ -60,7 +60,7 @@ libgumbo_la_SOURCES = \
 				src/string_piece.h \
 				src/tag.c \
 				src/tag_enum.h \
-				src/tag_perf.h \
+				src/tag_gperf.h \
 				src/tag_strings.h \
 				src/tag_sizes.h \
 				src/token_type.h \
