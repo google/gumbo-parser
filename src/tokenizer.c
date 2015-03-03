@@ -696,7 +696,7 @@ static void start_new_tag(GumboParser* parser, bool is_start_tag) {
 
   assert(tag_state->_attributes.data == NULL);
   // Initial size chosen by statistical analysis of a corpus of 60k webpages.
-  // 99.5% of elements have 0 elements, 93% of the remainder have 1.  These
+  // 99.5% of elements have 0 attributes, 93% of the remainder have 1.  These
   // numbers are a bit higher for more modern websites (eg. ~45% = 0, ~40% = 1
   // for the HTML5 Spec), but still have basically 99% of nodes with <= 2 attrs.
   gumbo_vector_init(parser, 1, &tag_state->_attributes);
