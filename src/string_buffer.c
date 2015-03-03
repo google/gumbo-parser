@@ -26,7 +26,11 @@
 
 struct GumboInternalParser;
 
-static const size_t kDefaultStringBufferSize = 10;
+// Size chosen via statistical analysis of ~60K websites.
+// 99% of text nodes and 98% of attribute names/values fit within 5 characters.
+// Since the arena allocator only ever returns word-aligned chunks, however, it
+// makes no sense to use less than 8 chars.
+static const size_t kDefaultStringBufferSize = 8;
 
 static void maybe_resize_string_buffer(
     struct GumboInternalParser* parser, size_t additional_chars,
@@ -94,10 +98,23 @@ void gumbo_string_buffer_append_string(
 
 char* gumbo_string_buffer_to_string(
     struct GumboInternalParser* parser, GumboStringBuffer* input) {
-  char* buffer = gumbo_parser_allocate(parser, input->length + 1);
-  memcpy(buffer, input->data, input->length);
+  maybe_resize_string_buffer(parser, input->length + 1, input);
+  char* buffer = input->data;
   buffer[input->length] = '\0';
+  gumbo_string_buffer_init(parser, input);
   return buffer;
+}
+
+void gumbo_string_buffer_clear(
+    struct GumboInternalParser* parser, GumboStringBuffer* input) {
+  input->length = 0;
+  if (input->capacity > kDefaultStringBufferSize * 8) {
+    // This approach to clearing means that the buffer can grow unbounded and
+    // tie up memory that may be needed for parsing the rest of the document, so
+    // we free and reinitialize the buffer if its grown more than 3 doublings.
+    gumbo_string_buffer_destroy(parser, input);
+    gumbo_string_buffer_init(parser, input);
+  }
 }
 
 void gumbo_string_buffer_destroy(

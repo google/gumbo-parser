@@ -25,7 +25,7 @@
 
 #include "gumbo.h"
 
-static const int kNumReps = 10;
+static const int kNumReps = 200;
 
 int main(int argc, char** argv) {
   if (argc != 1) {

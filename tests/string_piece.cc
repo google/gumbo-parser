@@ -74,13 +74,12 @@ TEST_F(GumboStringPieceTest, CaseNotEqual_Str2Shorter) {
 }
 
 TEST_F(GumboStringPieceTest, Copy) {
-  GumboParser parser;
-  parser._options = &kGumboDefaultOptions;
+  GumboParser* parser = &parser_;
   INIT_GUMBO_STRING(str1, "bar");
   GumboStringPiece str2;
-  gumbo_string_copy(&parser, &str2, &str1);
+  gumbo_string_copy(parser, &str2, &str1);
   EXPECT_TRUE(gumbo_string_equals(&str1, &str2));
-  gumbo_parser_deallocate(&parser, (void*) str2.data);
+  gumbo_parser_deallocate(parser, (void*) str2.data);
 }
 
 }  // namespace

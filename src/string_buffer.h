@@ -50,7 +50,8 @@ void gumbo_string_buffer_init(
 
 // Ensures that the buffer contains at least a certain amount of space.  Most
 // useful with snprintf and the other length-delimited string functions, which
-// may want to write directly into the buffer.
+// may want to write directly into the buffer.  Returns false on an allocation
+// failure - the client should *not* try to write to the buffer in this case.
 void gumbo_string_buffer_reserve(
     struct GumboInternalParser* parser, size_t min_capacity,
     GumboStringBuffer* output);
@@ -68,6 +69,11 @@ void gumbo_string_buffer_append_string(
 
 // Converts this string buffer to const char*, alloctaing a new buffer for it.
 char* gumbo_string_buffer_to_string(
+    struct GumboInternalParser* parser, GumboStringBuffer* input);
+
+// Reinitialize this string buffer.  This clears it by setting length=0.  It
+// does not zero out the buffer itself.
+void gumbo_string_buffer_clear(
     struct GumboInternalParser* parser, GumboStringBuffer* input);
 
 // Deallocates this GumboStringBuffer.

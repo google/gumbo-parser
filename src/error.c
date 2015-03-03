@@ -35,10 +35,11 @@ static const size_t kMessageBufferSize = 256;
 static int print_message(GumboParser* parser, GumboStringBuffer* output,
                          const char* format, ...) {
   va_list args;
-  va_start(args, format);
   int remaining_capacity = output->capacity - output->length;
+  va_start(args, format);
   int bytes_written = vsnprintf(output->data + output->length,
                                 remaining_capacity, format, args);
+  va_end(args);
 #ifdef _MSC_VER
   if (bytes_written == -1) {
     // vsnprintf returns -1 on MSVC++ if there's not enough capacity, instead of
@@ -47,6 +48,7 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
     // we retry (letting it fail and returning 0 if it doesn't), since there's
     // no way to smartly resize the buffer.
     gumbo_string_buffer_reserve(parser, output->capacity * 2, output);
+    va_start(args, format);
     int result = vsnprintf(output->data + output->length,
                            remaining_capacity, format, args);
     va_end(args);
@@ -55,7 +57,6 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
 #else
   // -1 in standard C99 indicates an encoding error.  Return 0 and do nothing.
   if (bytes_written == -1) {
-    va_end(args);
     return 0;
   }
 #endif
@@ -64,11 +65,12 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
     gumbo_string_buffer_reserve(
         parser, output->capacity + bytes_written, output);
     remaining_capacity = output->capacity - output->length;
+    va_start(args, format);
     bytes_written = vsnprintf(output->data + output->length,
                               remaining_capacity, format, args);
+    va_end(args);
   }
   output->length += bytes_written;
-  va_end(args);
   return bytes_written;
 }
 

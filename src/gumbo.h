@@ -576,18 +576,6 @@ typedef void (*GumboDeallocatorFunction)(void* userdata, void* ptr);
  * Use kGumboDefaultOptions for sensible defaults, and only set what you need.
  */
 typedef struct GumboInternalOptions {
-  /** A memory allocator function.  Default: malloc. */
-  GumboAllocatorFunction allocator;
-
-  /** A memory deallocator function. Default: free. */
-  GumboDeallocatorFunction deallocator;
-
-  /**
-   * An opaque object that's passed in as the first argument to all callbacks
-   * used by this library.  Default: NULL.
-   */
-  void* userdata;
-
   /**
    * The tab-stop size, for computing positions in source code that uses tabs.
    * Default: 8.
@@ -613,6 +601,16 @@ typedef struct GumboInternalOptions {
 /** Default options struct; use this with gumbo_parse_with_options. */
 extern const GumboOptions kGumboDefaultOptions;
 
+/** Base struct for an arena. */
+struct GumboInternalArenaChunk;
+
+typedef struct GumboInternalArena {
+  struct GumboInternalArenaChunk* head;
+  char* allocation_ptr;
+} GumboArena;
+
+unsigned int gumbo_arena_chunks_allocated();
+
 /** The output struct containing the results of the parse. */
 typedef struct GumboInternalOutput {
   /**
@@ -635,6 +633,26 @@ typedef struct GumboInternalOutput {
    * reported so we can work out something appropriate for your use-case.
    */
   GumboVector /* GumboError */ errors;
+
+  /**
+   * Arena for default memory allocation.  This is initialized on parse start
+   * when using the default memory allocator; it consumes little memory (a
+   * couple pointers) when a custom memory allocator is supplied.
+   */
+  GumboArena arena;
+
+  /**
+   * Flag set if an out-of-memory condition occurs.  This can either be because
+   * a stringbuffer or vector requested a single chunk larger than the arena
+   * chunk size, or because the system malloc failed.  (The latter is not
+   * implemented yet - on most modern OSes, malloc never returns NULL and
+   * instead overcommits virtual memory.)  Gumbo makes its best effort to
+   * recover from OOM errors: if the reason was that a buffer exceeded maximum
+   * chunk size, it truncates that buffer at the maximum chunk size, refuses to
+   * write to it anymore, and continues parsing.  If the system malloc fails, it
+   * returns the parse tree it's parsed up until that point.
+   */
+  bool out_of_memory;
 } GumboOutput;
 
 /**

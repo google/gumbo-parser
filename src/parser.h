@@ -20,6 +20,8 @@
 #ifndef GUMBO_PARSER_H_
 #define GUMBO_PARSER_H_
 
+#include <setjmp.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -48,6 +50,10 @@ typedef struct GumboInternalParser {
   // The internal parser state.  Initialized on parse start and destroyed on
   // parse end; end-users will never see a non-garbage value in this pointer.
   struct GumboInternalParserState* _parser_state;
+
+  // A jmp_buf to use in case of out-of-memory conditions.  This jumps back to
+  // gumbo_parse, which then returns after setting the out_of_memory flag.
+  jmp_buf _out_of_memory_jmp;
 } GumboParser;
 
 #ifdef __cplusplus
