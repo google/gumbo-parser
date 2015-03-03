@@ -341,8 +341,6 @@ Node._fields_ = [
     ('type', NodeType),
     # Set the type to Node later to avoid a circular dependency.
     ('parent', _Ptr(Node)),
-    ('next', _Ptr(Node)),
-    ('prev', _Ptr(Node)),
     ('index_within_parent', ctypes.c_size_t),
     # TODO(jdtang): Make a real list of enum constants for this.
     ('parse_flags', _bitvector),
