@@ -1243,11 +1243,6 @@ GumboNode* clone_node(
   *new_node = *node;
   new_node->parent = NULL;
   new_node->index_within_parent = -1;
-  // Fix up the next/prev pointers so that it appears directly after the node it
-  // was cloned from.
-  new_node->next = node->next;
-  new_node->prev = node;
-  node->next = new_node;
   // Clear the GUMBO_INSERTION_IMPLICIT_END_TAG flag, as the cloned node may
   // have a separate end tag.
   new_node->parse_flags &= ~GUMBO_INSERTION_IMPLICIT_END_TAG;
