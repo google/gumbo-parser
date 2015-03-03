@@ -74,22 +74,6 @@ class GumboParserTest : public ::testing::Test {
   GumboNode* root_;
 };
 
-TEST_F(GumboParserTest, OutOfMemory) {
-  std::string html("<ul>");
-  for (int i = 0; i < 1000; ++i) {
-    html += "<li>This should create a child vector larger than the chunk.";
-  }
-  html += "</ul>";
-
-  options_.arena_chunk_size = 4000;
-  Parse(html);
-
-  EXPECT_TRUE(output_->out_of_memory);
-  // The partial parse tree should still be constructed.
-  GumboNode* body;
-  GetAndAssertBody(root_, &body);
-}
-
 TEST_F(GumboParserTest, NullDocument) {
   Parse("");
   ASSERT_TRUE(root_);

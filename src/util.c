@@ -36,7 +36,6 @@ const GumboSourcePosition kGumboEmptySourcePosition = { 0, 0, 0 };
 void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
   void* result = arena_malloc(
       &parser->_output->arena,
-      parser->_options->arena_chunk_size,
       num_bytes);
   if (result == NULL) {
     longjmp(parser->_out_of_memory_jmp, num_bytes);

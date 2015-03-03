@@ -52,7 +52,7 @@ void gumbo_string_buffer_init(
 // useful with snprintf and the other length-delimited string functions, which
 // may want to write directly into the buffer.  Returns false on an allocation
 // failure - the client should *not* try to write to the buffer in this case.
-bool gumbo_string_buffer_reserve(
+void gumbo_string_buffer_reserve(
     struct GumboInternalParser* parser, size_t min_capacity,
     GumboStringBuffer* output);
 

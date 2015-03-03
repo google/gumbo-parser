@@ -23,21 +23,15 @@
 extern "C" {
 #endif
 
-typedef struct GumboInternalArenaChunk {
-  struct GumboInternalArenaChunk* next;
-  char data[];
-} GumboArenaChunk;
-
 // Initialize an arena, allocating the first chunk for it.
-void arena_init(GumboArena* arena, size_t chunk_size);
+void arena_init(GumboArena* arena);
 
 // Destroy an arena, freeing all memory used by it and all objects contained.
 void arena_destroy(GumboArena* arena);
 
 // Allocate an object in an arena.  chunk_size must remain constant between
-// allocations.  Returns NULL if either the program requests size > chunk_size
-// or the system malloc fails.
-void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size);
+// allocations.  Returns NULL if the system malloc fails.
+void* arena_malloc(GumboArena* arena, size_t size);
 
 // No-op free function for use as a custom allocator.
 void arena_free(void* arena, void* obj);

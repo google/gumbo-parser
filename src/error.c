@@ -47,9 +47,7 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
     // enough.  In this case, we'll double the buffer size and hope it fits when
     // we retry (letting it fail and returning 0 if it doesn't), since there's
     // no way to smartly resize the buffer.
-    if (!gumbo_string_buffer_reserve(parser, output->capacity * 2, output)) {
-      return 0; 
-    };
+    gumbo_string_buffer_reserve(parser, output->capacity * 2, output);
     va_start(args, format);
     int result = vsnprintf(output->data + output->length,
                            remaining_capacity, format, args);
@@ -64,10 +62,8 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
 #endif
 
   if (bytes_written > remaining_capacity) {
-    if (!gumbo_string_buffer_reserve(
-        parser, output->capacity + bytes_written, output)) {
-      return output->capacity;
-    }
+    gumbo_string_buffer_reserve(
+        parser, output->capacity + bytes_written, output);
     remaining_capacity = output->capacity - output->length;
     va_start(args, format);
     bytes_written = vsnprintf(output->data + output->length,
@@ -246,10 +242,8 @@ void gumbo_caret_diagnostic_to_string(
   gumbo_string_buffer_append_codepoint(parser, '\n', output);
   gumbo_string_buffer_append_string(parser, &original_line, output);
   gumbo_string_buffer_append_codepoint(parser, '\n', output);
-  if (!gumbo_string_buffer_reserve(
-      parser, output->length + error->position.column, output)) {
-    return;
-  }
+  gumbo_string_buffer_reserve(
+      parser, output->length + error->position.column, output);
   int num_spaces = error->position.column - 1;
   memset(output->data + output->length, ' ', num_spaces);
   output->length += num_spaces;

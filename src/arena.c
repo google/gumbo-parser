@@ -23,15 +23,27 @@
 
 unsigned int gChunksAllocated;
 
-#define ARENA_ALIGNMENT 8
+// Alignment of each returned allocation block.  We make sure everything is
+// pointer-aligned.
+#define ARENA_ALIGNMENT (sizeof(void*))
 
-void arena_init(GumboArena* arena, size_t chunk_size) {
+// Size of a single arena chunk.  Most recent Intel CPUs have a 256K L2 cache
+// on-core, so we try to size a chunk to fit in that with a little extra room
+// for the stack.  Measurements on a corpus of ~60K webpages indicate that
+// ...
+#define ARENA_CHUNK_SIZE 240000
+
+typedef struct GumboInternalArenaChunk {
+  struct GumboInternalArenaChunk* next;
+  char data[ARENA_CHUNK_SIZE];
+} GumboArenaChunk;
+
+void arena_init(GumboArena* arena) {
   assert(arena != NULL);
-  arena->head = malloc(chunk_size);
+  arena->head = malloc(sizeof(GumboArenaChunk));
   arena->head->next = NULL;
   arena->allocation_ptr = arena->head->data;
-  gumbo_debug(
-      "Initializing arena with chunk size %d @%x\n", chunk_size, arena->head);
+  gumbo_debug("Initializing arena @%x\n", arena->head);
   gChunksAllocated = 1;
 }
 
@@ -45,31 +57,41 @@ void arena_destroy(GumboArena* arena) {
   }
 }
 
-void* arena_malloc(GumboArena* arena, size_t chunk_size, size_t size) {
-  GumboArenaChunk* current_chunk = arena->head;
+static void* allocate_new_chunk(GumboArena* arena, size_t size) {
+  GumboArenaChunk* new_chunk = malloc(size);
+  gumbo_debug("Allocating new arena chunk of size %d @%x\n", size, new_chunk);
+  if (!new_chunk) {
+    gumbo_debug("Malloc failed.\n");
+    return NULL;
+  }
+  ++gChunksAllocated;
+  new_chunk->next = arena->head;
+  arena->head = new_chunk;
+  return new_chunk->data;
+}
+
+void* arena_malloc(GumboArena* arena, size_t size) {
   size_t aligned_size = (size + ARENA_ALIGNMENT - 1) & ~(ARENA_ALIGNMENT - 1);
   if (arena->allocation_ptr >=
-      current_chunk->data + chunk_size - aligned_size) {
-    if (size > chunk_size) {
-      gumbo_debug("Allocation size %d exceeds chunk size %d", size, chunk_size);
-      return NULL;
+      arena->head->data + ARENA_CHUNK_SIZE - aligned_size) {
+    if (size > ARENA_CHUNK_SIZE) {
+      // Big block requested; we allocate a chunk of memory of the requested
+      // size, add it to the list, and then immediately allocate another one.
+      gumbo_debug(
+          "Allocation size %d exceeds chunk size %d", size, ARENA_CHUNK_SIZE);
+      size_t total_chunk_size =
+        size + sizeof(GumboArenaChunk) - ARENA_CHUNK_SIZE;
+      void* result = allocate_new_chunk(arena, total_chunk_size);
+      arena->allocation_ptr =
+          allocate_new_chunk(arena, sizeof(GumboArenaChunk));
+      return result;
     }
-    size_t memory_block_size = chunk_size + sizeof(GumboArenaChunk);
-    GumboArenaChunk* new_chunk = malloc(memory_block_size);
-    gumbo_debug("Allocating new arena chunk of size %d @%x\n",
-        memory_block_size, new_chunk);
-    if (!new_chunk) {
-      gumbo_debug("Malloc failed.\n");
-      return NULL;
-    }
-    new_chunk->next = current_chunk;
-    arena->head = new_chunk;
-    arena->allocation_ptr = new_chunk->data;
-    ++gChunksAllocated;
+    // Normal operation: allocate the default arena chunk size.
+    arena->allocation_ptr = allocate_new_chunk(arena, sizeof(GumboArenaChunk));
   }
   void* obj = arena->allocation_ptr;
   arena->allocation_ptr += aligned_size;
-  assert(arena->allocation_ptr <= arena->head->data + chunk_size);
+  assert(arena->allocation_ptr <= arena->head->data + ARENA_CHUNK_SIZE);
   return obj;
 }
 

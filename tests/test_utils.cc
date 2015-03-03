@@ -150,7 +150,7 @@ GumboTest::GumboTest() :
   options_.max_errors = 100;
   parser_._options = &options_;
   parser_._output = static_cast<GumboOutput*>(calloc(1, sizeof(GumboOutput)));
-  arena_init(&parser_._output->arena, options_.arena_chunk_size);
+  arena_init(&parser_._output->arena);
   gumbo_init_errors(&parser_);
 }
 
