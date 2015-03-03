@@ -95,6 +95,7 @@ TEST_F(GumboStringBufferTest, AppendCodepoint_4Bytes) {
 }
 
 TEST_F(GumboStringBufferTest, ToString) {
+  gumbo_string_buffer_reserve(&parser_, 8, &buffer_);
   strcpy(buffer_.data, "012345");
   buffer_.length = 7;
 
