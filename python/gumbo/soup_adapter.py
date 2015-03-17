@@ -35,9 +35,10 @@ def _add_source_info(obj, original_text, start_pos, end_pos):
   obj.line = start_pos.line
   obj.col = start_pos.column
   obj.offset = start_pos.offset
-  obj.end_line = end_pos.line
-  obj.end_col = end_pos.column
-  obj.end_offset = end_pos.offset
+  if end_pos:
+    obj.end_line = end_pos.line
+    obj.end_col = end_pos.column
+    obj.end_offset = end_pos.offset
 
 
 def _convert_attrs(attrs):
@@ -69,6 +70,7 @@ def _add_element(soup, element):
 def _add_text(cls):
   def add_text_internal(soup, element):
     text = cls(_utf8(element.text))
+    _add_source_info(text, element.original_text, element.start_pos, None)
     return text
   return add_text_internal
 
@@ -88,8 +90,32 @@ def _add_node(soup, node):
   return _HANDLERS[node.type.value](soup, node.contents)
 
 
+def _add_next_prev_pointers(soup):
+  def _traverse(node):
+    # .findAll requires the .next pointer, which is what we're trying to add
+    # when we call this, and so we manually supply a generator to yield the
+    # nodes in DOM order.
+    yield node
+    try:
+      for child in node.contents:
+        for descendant in _traverse(child):
+          yield descendant
+    except AttributeError:
+      # Not an element.
+      return
+
+  nodes = sorted(_traverse(soup), key=lambda node: node.offset)
+  if nodes:
+    nodes[0].previous = None
+    nodes[-1].next = None
+  for i, node in enumerate(nodes[1:-1], 1):
+    nodes[i-1].next = node
+    node.previous = nodes[i-1]
+
+
 def parse(text, **kwargs):
   with gumboc.parse(text, **kwargs) as output:
     soup = BeautifulSoup.BeautifulSoup()
     soup.append(_add_node(soup, output.contents.root.contents))
+    _add_next_prev_pointers(soup)
     return soup
