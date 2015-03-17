@@ -55,8 +55,9 @@ class GumboParserTest : public ::testing::Test {
       gumbo_destroy_output(&options_, output_);
     }
 
-    output_ = gumbo_parse_fragment(
-        &options_, input, strlen(input), context, context_ns);
+    options_.fragment_context = context;
+    options_.fragment_namespace = context_ns;
+    output_ = gumbo_parse_with_options(&options_, input, strlen(input));
     root_ = output_->document;
   }
 
