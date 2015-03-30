@@ -193,6 +193,7 @@ other repositories:
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
 * Perl: [HTML::Gumbo] by Ruslan Zakirov
+* Julia: [Gumbo.jl] by James Porter
 
 [ruby-gumbo]: https://github.com/nevir/ruby-gumbo
 [nokogumbo]: https://github.com/rubys/nokogumbo
@@ -203,6 +204,7 @@ other repositories:
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 [GumboBindings]: https://github.com/rgripper/GumboBindings
 [GumboPHP]: https://github.com/BipSync/gumbo
+[Gumbo.jl]: https://github.com/porterjamesj/Gumbo.jl
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
