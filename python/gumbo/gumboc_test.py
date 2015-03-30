@@ -60,14 +60,6 @@ class CtypesTest(unittest.TestCase):
       self.assertEquals(gumboc.NodeType.TEXT, text_node.type)
       self.assertEquals('Test', text_node.text)
 
-      self.assertEquals(gumboc.Tag.HEAD, root.next.contents.tag)
-      self.assertEquals(gumboc.Tag.BODY, head.next.contents.tag)
-      self.assertEquals(gumboc.NodeType.TEXT, body.next.contents.type)
-      self.assertEquals(gumboc.Tag.BODY, text_node.prev.contents.tag)
-      self.assertEquals(gumboc.Tag.HEAD, body.prev.contents.tag)
-      self.assertEquals(gumboc.Tag.HTML, head.prev.contents.tag)
-      self.assertEquals(gumboc.NodeType.DOCUMENT, root.prev.contents.type)
-
   def testBufferThatGoesAway(self):
     for i in range(10):
       source = StringIO.StringIO('<foo bar=quux>1<p>2</foo>')

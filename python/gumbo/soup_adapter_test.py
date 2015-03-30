@@ -43,6 +43,8 @@ class SoupAdapterTest(unittest.TestCase):
     self.assertEquals(head, body.previousSibling)
     self.assertEquals(2, len(body))  # <ul> + trailing whitespace
     self.assertEquals(u'ul', body.contents[0].name)
+    self.assertEquals(body, head.next)
+    self.assertEquals(head, body.previous)
 
     list_items = body.findAll('li')
     self.assertEquals(4, len(list_items))
@@ -53,6 +55,8 @@ class SoupAdapterTest(unittest.TestCase):
     a2 = body.find('a', href='two.html')
     self.assertEquals(u'a', a2.name)
     self.assertEquals(u'Two', a2.contents[0])
+    self.assertEquals(a2, evens[0].next)
+    self.assertEquals(evens[0], a2.previous)
 
     li2 = a2.parent
     self.assertEquals(u'li', li2.name)
