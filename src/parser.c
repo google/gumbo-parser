@@ -71,6 +71,8 @@ const GumboOptions kGumboDefaultOptions = {
   8,
   false,
   -1,
+  GUMBO_TAG_LAST,
+  GUMBO_NAMESPACE_HTML
 };
 
 static const GumboStringPiece kDoctypeHtml = GUMBO_STRING("html");
@@ -4030,21 +4032,15 @@ GumboOutput* gumbo_parse(const char* buffer) {
 
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t length) {
-  return gumbo_parse_fragment(
-      options, buffer, length, GUMBO_TAG_LAST, GUMBO_NAMESPACE_HTML);
-}
-
-GumboOutput* gumbo_parse_fragment(
-    const GumboOptions* options, const char* buffer, size_t length,
-    const GumboTag fragment_ctx, const GumboNamespaceEnum fragment_namespace) {
   GumboParser parser;
   parser._options = options;
   output_init(&parser);
   gumbo_tokenizer_state_init(&parser, buffer, length);
   parser_state_init(&parser);
 
-  if (fragment_ctx != GUMBO_TAG_LAST) {
-    fragment_parser_init(&parser, fragment_ctx, fragment_namespace);
+  if (options->fragment_context != GUMBO_TAG_LAST) {
+    fragment_parser_init(
+        &parser, options->fragment_context, options->fragment_namespace);
   }
 
   GumboParserState* state = parser._parser_state;

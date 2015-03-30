@@ -109,8 +109,8 @@ class CtypesTest(unittest.TestCase):
   def testFragment(self):
     with gumboc.parse(
         '<div></div>',
-        container=gumboc.Tag.TITLE,
-        container_namespace=gumboc.Namespace.SVG) as output:
+        fragment_context=gumboc.Tag.TITLE,
+        fragment_namespace=gumboc.Namespace.SVG) as output:
       root = output.contents.root.contents
       self.assertEquals(1, len(root.children))
       div = root.children[0]
