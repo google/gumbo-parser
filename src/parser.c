@@ -3524,6 +3524,7 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
   if (token->type == GUMBO_TOKEN_WHITESPACE ||
       token->type == GUMBO_TOKEN_CHARACTER ||
       token->type == GUMBO_TOKEN_COMMENT ||
+      token->type == GUMBO_TOKEN_NULL ||
       token->type == GUMBO_TOKEN_DOCTYPE) {
     return handle_in_body(parser, token);
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(BASE), TAG(BASEFONT), TAG(BGSOUND),
