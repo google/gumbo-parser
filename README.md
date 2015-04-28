@@ -1,7 +1,7 @@
 Gumbo - A pure-C HTML5 parser.
 ============
 
-[![Build Status](https://travis-ci.org/google/gumbo-parser.svg?branch=master)](https://travis-ci.org/google/gumbo-parser)
+[![Build Status](https://travis-ci.org/google/gumbo-parser.svg?branch=master)](https://travis-ci.org/google/gumbo-parser) [![Build status](https://ci.appveyor.com/api/projects/status/mk25v8d4t2u4253x?svg=true)](https://ci.appveyor.com/project/lowjoel/gumbo-parser)
 
 Gumbo is an implementation of the [HTML5 parsing algorithm][] implemented
 as a pure C99 library with no outside dependencies.  It's designed to serve
