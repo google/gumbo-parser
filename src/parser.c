@@ -3468,7 +3468,9 @@ static bool handle_in_select(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_SELECT)) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
-    close_current_select(parser);
+    if (has_an_element_in_select_scope(parser, GUMBO_TAG_SELECT)) {
+      close_current_select(parser);
+    }
     return false;
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(INPUT), TAG(KEYGEN), TAG(TEXTAREA) })) {
     parser_add_parse_error(parser, token);
