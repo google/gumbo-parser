@@ -41,9 +41,7 @@ config.log
 config.status
 config.sub
 configure
-core
 depcomp
-gtest/
 gumbo.pc
 gumbo_test
 gumbo_test.log

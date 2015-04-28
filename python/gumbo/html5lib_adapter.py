@@ -129,8 +129,8 @@ class HTMLParser(object):
 
     with gumboc.parse(
         text,
-        container=gumboc.Tag.from_str(container),
-        container_namespace=getattr(gumboc.Namespace, container_ns.upper()),
+        fragment_context=gumboc.Tag.from_str(container),
+        fragment_namespace=getattr(gumboc.Namespace, container_ns.upper()),
         **kwargs) as output:
       for node in output.contents.document.contents.children:
         if node.type in (gumboc.NodeType.ELEMENT, gumboc.NodeType.TEMPLATE):

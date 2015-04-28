@@ -60,14 +60,6 @@ class CtypesTest(unittest.TestCase):
       self.assertEquals(gumboc.NodeType.TEXT, text_node.type)
       self.assertEquals('Test', text_node.text)
 
-      self.assertEquals(gumboc.Tag.HEAD, root.next.contents.tag)
-      self.assertEquals(gumboc.Tag.BODY, head.next.contents.tag)
-      self.assertEquals(gumboc.NodeType.TEXT, body.next.contents.type)
-      self.assertEquals(gumboc.Tag.BODY, text_node.prev.contents.tag)
-      self.assertEquals(gumboc.Tag.HEAD, body.prev.contents.tag)
-      self.assertEquals(gumboc.Tag.HTML, head.prev.contents.tag)
-      self.assertEquals(gumboc.NodeType.DOCUMENT, root.prev.contents.type)
-
   def testBufferThatGoesAway(self):
     for i in range(10):
       source = StringIO.StringIO('<foo bar=quux>1<p>2</foo>')
@@ -117,8 +109,8 @@ class CtypesTest(unittest.TestCase):
   def testFragment(self):
     with gumboc.parse(
         '<div></div>',
-        container=gumboc.Tag.TITLE,
-        container_namespace=gumboc.Namespace.SVG) as output:
+        fragment_context=gumboc.Tag.TITLE,
+        fragment_namespace=gumboc.Namespace.SVG) as output:
       root = output.contents.root.contents
       self.assertEquals(1, len(root.children))
       div = root.children[0]

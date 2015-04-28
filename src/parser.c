@@ -53,7 +53,7 @@ typedef char gumbo_tagset[GUMBO_TAG_LAST];
 static bool node_html_tag_is(const GumboNode*, GumboTag);
 static GumboInsertionMode get_current_template_insertion_mode(const GumboParser*);
 static bool handle_in_template(GumboParser*, GumboToken*);
-static GumboNode* destroy_node(GumboParser*, GumboNode*);
+static void destroy_node(GumboParser*, GumboNode*);
 
 
 static void* malloc_wrapper(void* unused, size_t size) {
@@ -71,6 +71,8 @@ const GumboOptions kGumboDefaultOptions = {
   8,
   false,
   -1,
+  GUMBO_TAG_LAST,
+  GUMBO_NAMESPACE_HTML
 };
 
 static const GumboStringPiece kDoctypeHtml = GUMBO_STRING("html");
@@ -411,10 +413,6 @@ typedef struct GumboInternalParserState {
   // The current token.
   GumboToken* _current_token;
 
-  // The current (most recently inserted) node.  This is used to link together
-  // nodes in document order.
-  GumboNode* _current_node;
-
   // The way that the spec is written, the </body> and </html> tags are *always*
   // implicit, because encountering one of those tokens merely switches the
   // insertion mode out of "in body".  So we have individual state flags for
@@ -467,17 +465,7 @@ static void set_frameset_not_ok(GumboParser* parser) {
 }
 
 static GumboNode* create_node(GumboParser* parser, GumboNodeType type) {
-  GumboParserState* state = parser->_parser_state;
   GumboNode* node = gumbo_parser_allocate(parser, sizeof(GumboNode));
-
-  node->next = NULL;
-  node->prev = state->_current_node;
-  if (state->_current_node != NULL) {
-    // May be null for the initial document node.
-    state->_current_node->next = node;
-  }
-  state->_current_node = node;
-
   node->parent = NULL;
   node->index_within_parent = -1;
   node->type = type;
@@ -526,7 +514,6 @@ static void parser_state_init(GumboParser* parser) {
   parser_state->_form_element = NULL;
   parser_state->_fragment_ctx = NULL;
   parser_state->_current_token = NULL;
-  parser_state->_current_node = NULL;
   parser_state->_closed_body_tag = false;
   parser_state->_closed_html_tag = false;
   parser->_parser_state = parser_state;
@@ -542,7 +529,6 @@ static void parser_state_destroy(GumboParser* parser) {
   gumbo_vector_destroy(parser, &state->_template_insertion_modes);
   gumbo_string_buffer_destroy(parser, &state->_text_node._buffer);
   gumbo_parser_deallocate(parser, state);
-  parser->_parser_state = NULL;
 }
 
 static GumboNode* get_document_node(GumboParser* parser) {
@@ -1252,7 +1238,7 @@ static bool is_open_element(GumboParser* parser, const GumboNode* node) {
 // clone shares no structure with the original node: all owned strings and
 // values are fresh copies.
 GumboNode* clone_node(
-    GumboParser* parser, const GumboNode* node, GumboParseFlags reason) {
+    GumboParser* parser, GumboNode* node, GumboParseFlags reason) {
   assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
   GumboNode* new_node = gumbo_parser_allocate(parser, sizeof(GumboNode));
   *new_node = *node;
@@ -1292,7 +1278,7 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
 
   // Step 2 & 3
   int i = elements->length - 1;
-  const GumboNode* element = elements->data[i];
+  GumboNode* element = elements->data[i];
   if (element == &kActiveFormattingScopeMarker ||
       is_open_element(parser, element)) {
     return;
@@ -2346,11 +2332,14 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
   }
 }
 
-static GumboNode* destroy_node(GumboParser* parser, GumboNode* node) {
+static void destroy_node(GumboParser* parser, GumboNode* node) {
   switch (node->type) {
     case GUMBO_NODE_DOCUMENT:
       {
         GumboDocument* doc = &node->v.document;
+        for (int i = 0; i < doc->children.length; ++i) {
+          destroy_node(parser, doc->children.data[i]);
+        }
         gumbo_parser_deallocate(parser, (void*) doc->children.data);
         gumbo_parser_deallocate(parser, (void*) doc->name);
         gumbo_parser_deallocate(parser, (void*) doc->public_identifier);
@@ -2363,6 +2352,9 @@ static GumboNode* destroy_node(GumboParser* parser, GumboNode* node) {
         gumbo_destroy_attribute(parser, node->v.element.attributes.data[i]);
       }
       gumbo_parser_deallocate(parser, node->v.element.attributes.data);
+      for (int i = 0; i < node->v.element.children.length; ++i) {
+        destroy_node(parser, node->v.element.children.data[i]);
+      }
       gumbo_parser_deallocate(parser, node->v.element.children.data);
       break;
     case GUMBO_NODE_TEXT:
@@ -2372,21 +2364,7 @@ static GumboNode* destroy_node(GumboParser* parser, GumboNode* node) {
       gumbo_parser_deallocate(parser, (void*) node->v.text.text);
       break;
   }
-  // Remove from the next/prev linked list.
-  GumboNode* prev = node->prev;
-  GumboNode* next = node->next;
-  if (prev != NULL) {
-    prev->next = next;
-  }
-  if (next != NULL) {
-    next->prev = prev;
-  }
-  if (parser->_parser_state && parser->_parser_state->_current_node == node) {
-    parser->_parser_state->_current_node = prev;
-  }
-
   gumbo_parser_deallocate(parser, node);
-  return next;
 }
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-inbody
@@ -2866,6 +2844,13 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     // point, so the call to ignore_token will free the memory for it without
     // touching the attributes.
     ignore_token(parser);
+
+    // The name attribute, if present, should be destroyed since it's ignored
+    // when copying over.  The action attribute should be kept since it's moved
+    // to the form.
+    if (name_attr) {
+      gumbo_destroy_attribute(parser, name_attr);
+    }
 
     GumboAttribute* name =
         gumbo_parser_allocate(parser, sizeof(GumboAttribute));
@@ -4046,26 +4031,15 @@ GumboOutput* gumbo_parse(const char* buffer) {
 
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t length) {
-  return gumbo_parse_fragment(
-      options, buffer, length, GUMBO_TAG_LAST, GUMBO_NAMESPACE_HTML);
-}
-
-GumboOutput* gumbo_parse_fragment(
-    const GumboOptions* options, const char* buffer, size_t length,
-    const GumboTag fragment_ctx, const GumboNamespaceEnum fragment_namespace) {
   GumboParser parser;
   parser._options = options;
-  parser_state_init(&parser);
-  // Must come after parser_state_init, since creating the document node must
-  // reference parser_state->_current_node.
   output_init(&parser);
-  // And this must come after output_init, because initializing the tokenizer
-  // reads the first character and that may cause a UTF-8 decode error
-  // (inserting into output->errors) if that's invalid.
   gumbo_tokenizer_state_init(&parser, buffer, length);
+  parser_state_init(&parser);
 
-  if (fragment_ctx != GUMBO_TAG_LAST) {
-    fragment_parser_init(&parser, fragment_ctx, fragment_namespace);
+  if (options->fragment_context != GUMBO_TAG_LAST) {
+    fragment_parser_init(
+        &parser, options->fragment_context, options->fragment_namespace);
   }
 
   GumboParserState* state = parser._parser_state;
@@ -4154,16 +4128,20 @@ GumboOutput* gumbo_parse_fragment(
   return parser._output;
 }
 
+void gumbo_destroy_node(GumboOptions* options, GumboNode* node) {
+  // Need a dummy GumboParser because the allocator comes along with the
+  // options object.
+  GumboParser parser;
+  parser._options = options;
+  destroy_node(&parser, node);
+}
+
 void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output) {
   // Need a dummy GumboParser because the allocator comes along with the
   // options object.
   GumboParser parser;
-  parser._parser_state = NULL;
   parser._options = options;
-  GumboNode* current = output->document;
-  while (current) {
-    current = destroy_node(&parser, current);
-  }
+  destroy_node(&parser, output->document);
   for (int i = 0; i < output->errors.length; ++i) {
     gumbo_error_destroy(&parser, output->errors.data[i]);
   }

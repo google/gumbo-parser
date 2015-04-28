@@ -341,8 +341,6 @@ Node._fields_ = [
     ('type', NodeType),
     # Set the type to Node later to avoid a circular dependency.
     ('parent', _Ptr(Node)),
-    ('next', _Ptr(Node)),
-    ('prev', _Ptr(Node)),
     ('index_within_parent', ctypes.c_size_t),
     # TODO(jdtang): Make a real list of enum constants for this.
     ('parse_flags', _bitvector),
@@ -361,6 +359,8 @@ class Options(ctypes.Structure):
       ('tab_stop', ctypes.c_int),
       ('stop_on_first_error', ctypes.c_bool),
       ('max_errors', ctypes.c_int),
+      ('fragment_context', Tag),
+      ('fragment_namespace', Namespace),
       ]
 
 
@@ -375,8 +375,6 @@ class Output(ctypes.Structure):
 @contextlib.contextmanager
 def parse(text, **kwargs):
   options = Options()
-  context_tag = kwargs.get('container', Tag.LAST)
-  context_namespace = kwargs.get('container_namespace', Namespace.HTML)
   for field_name, _ in Options._fields_:
     try:
       setattr(options, field_name, kwargs[field_name])
@@ -387,9 +385,7 @@ def parse(text, **kwargs):
   # call, it creates a temporary buffer which is destroyed when the call
   # completes, and then the original_text pointers point into invalid memory.
   text_ptr = ctypes.c_char_p(text.encode('utf-8'))
-  output = _parse_fragment(
-      ctypes.byref(options), text_ptr, len(text),
-      context_tag, context_namespace)
+  output = _parse_with_options(ctypes.byref(options), text_ptr, len(text))
   try:
     yield output
   finally:
@@ -400,11 +396,6 @@ _DEFAULT_OPTIONS = Options.in_dll(_dll, 'kGumboDefaultOptions')
 _parse_with_options = _dll.gumbo_parse_with_options
 _parse_with_options.argtypes = [_Ptr(Options), ctypes.c_char_p, ctypes.c_size_t]
 _parse_with_options.restype = _Ptr(Output)
-
-_parse_fragment = _dll.gumbo_parse_fragment
-_parse_fragment.argtypes = [
-    _Ptr(Options), ctypes.c_char_p, ctypes.c_size_t, Tag, Namespace]
-_parse_fragment.restype = _Ptr(Output)
 
 _tag_from_original_text = _dll.gumbo_tag_from_original_text
 _tag_from_original_text.argtypes = [_Ptr(StringPiece)]

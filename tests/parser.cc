@@ -26,12 +26,15 @@ namespace {
 class GumboParserTest : public ::testing::Test {
  protected:
   GumboParserTest() :
-    options_(kGumboDefaultOptions), output_(NULL), root_(NULL) {}
+    options_(kGumboDefaultOptions), output_(NULL), root_(NULL) {
+    InitLeakDetection(&options_, &malloc_stats_);
+  }
 
   virtual ~GumboParserTest() {
     if (output_) {
       gumbo_destroy_output(&options_, output_);
     }
+    EXPECT_EQ(malloc_stats_.objects_allocated, malloc_stats_.objects_freed);
   }
 
   virtual void Parse(const char* input) {
@@ -52,8 +55,9 @@ class GumboParserTest : public ::testing::Test {
       gumbo_destroy_output(&options_, output_);
     }
 
-    output_ = gumbo_parse_fragment(
-        &options_, input, strlen(input), context, context_ns);
+    options_.fragment_context = context;
+    options_.fragment_namespace = context_ns;
+    output_ = gumbo_parse_with_options(&options_, input, strlen(input));
     root_ = output_->document;
   }
 
@@ -69,6 +73,7 @@ class GumboParserTest : public ::testing::Test {
     SanityCheckPointers(input.data(), input.length(), output_->root, 1000);
   }
 
+  MallocStats malloc_stats_;
   GumboOptions options_;
   GumboOutput* output_;
   GumboNode* root_;
