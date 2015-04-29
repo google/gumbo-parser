@@ -1873,6 +1873,10 @@ TEST_F(GumboParserTest, TdInMathml) {
   ASSERT_EQ(0, GetChildCount(td));
 }
 
+TEST_F(GumboParserTest, SelectInForeignContent) {
+  Parse("<svg><select><foreignobject><select><select><select>");
+}
+
 TEST_F(GumboParserTest, TemplateInForeignContent) {
   Parse("<template><svg><template>");
 
