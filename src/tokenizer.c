@@ -356,12 +356,10 @@ static void clear_temporary_buffer(GumboParser* parser) {
   GumboTokenizerState* tokenizer = parser->_tokenizer_state;
   assert(!tokenizer->_temporary_buffer_emit);
   utf8iterator_mark(&tokenizer->_input);
-  gumbo_string_buffer_destroy(parser, &tokenizer->_temporary_buffer);
-  gumbo_string_buffer_init(parser, &tokenizer->_temporary_buffer);
+  gumbo_string_buffer_clear(parser, &tokenizer->_temporary_buffer);
   // The temporary buffer and script data buffer are the same object in the
   // spec, so the script data buffer should be cleared as well.
-  gumbo_string_buffer_destroy(parser, &tokenizer->_script_data_buffer);
-  gumbo_string_buffer_init(parser, &tokenizer->_script_data_buffer);
+  gumbo_string_buffer_clear(parser, &tokenizer->_script_data_buffer);
 }
 
 // Appends a codepoint to the temporary buffer.
@@ -697,7 +695,11 @@ static void start_new_tag(GumboParser* parser, bool is_start_tag) {
   gumbo_string_buffer_append_codepoint(parser, c, &tag_state->_buffer);
 
   assert(tag_state->_attributes.data == NULL);
-  gumbo_vector_init(parser, 4, &tag_state->_attributes);
+  // Initial size chosen by statistical analysis of a corpus of 60k webpages.
+  // 99.5% of elements have 0 attributes, 93% of the remainder have 1.  These
+  // numbers are a bit higher for more modern websites (eg. ~45% = 0, ~40% = 1
+  // for the HTML5 Spec), but still have basically 99% of nodes with <= 2 attrs.
+  gumbo_vector_init(parser, 1, &tag_state->_attributes);
   tag_state->_drop_next_attr_value = false;
   tag_state->_is_start_tag = is_start_tag;
   tag_state->_is_self_closing = false;
@@ -1591,8 +1593,7 @@ static StateResult handle_script_double_escaped_lt_state(
     int c, GumboToken* output) {
   if (c == '/') {
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_DOUBLE_ESCAPED_END);
-    gumbo_string_buffer_destroy(parser, &tokenizer->_script_data_buffer);
-    gumbo_string_buffer_init(parser, &tokenizer->_script_data_buffer);
+    gumbo_string_buffer_clear(parser, &tokenizer->_script_data_buffer);
     return emit_current_char(parser, output);
   } else {
     gumbo_tokenizer_set_state(parser, GUMBO_LEX_SCRIPT_DOUBLE_ESCAPED);

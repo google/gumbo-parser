@@ -924,8 +924,7 @@ static void maybe_flush_text_node_buffer(GumboParser* parser) {
     insert_node(parser, text_node, location);
   }
 
-  gumbo_string_buffer_destroy(parser, &buffer_state->_buffer);
-  gumbo_string_buffer_init(parser, &buffer_state->_buffer);
+  gumbo_string_buffer_clear(parser, &buffer_state->_buffer);
   buffer_state->_type = GUMBO_NODE_WHITESPACE;
   assert(buffer_state->_buffer.length == 0);
 }
@@ -3469,7 +3468,9 @@ static bool handle_in_select(GumboParser* parser, GumboToken* token) {
   } else if (tag_is(token, kStartTag, GUMBO_TAG_SELECT)) {
     parser_add_parse_error(parser, token);
     ignore_token(parser);
-    close_current_select(parser);
+    if (has_an_element_in_select_scope(parser, GUMBO_TAG_SELECT)) {
+      close_current_select(parser);
+    }
     return false;
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(INPUT), TAG(KEYGEN), TAG(TEXTAREA) })) {
     parser_add_parse_error(parser, token);

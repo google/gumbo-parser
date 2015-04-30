@@ -1,7 +1,7 @@
 Gumbo - A pure-C HTML5 parser.
 ============
 
-[![Build Status](https://travis-ci.org/google/gumbo-parser.svg?branch=master)](https://travis-ci.org/google/gumbo-parser)
+[![Build Status](https://travis-ci.org/google/gumbo-parser.svg?branch=master)](https://travis-ci.org/google/gumbo-parser) [![Build status](https://ci.appveyor.com/api/projects/status/k5xxn4bxf62ao2cp?svg=true)](https://ci.appveyor.com/project/nostrademons/gumbo-parser)
 
 Gumbo is an implementation of the [HTML5 parsing algorithm][] implemented
 as a pure C99 library with no outside dependencies.  It's designed to serve
@@ -194,6 +194,7 @@ various contributors in other repositories:
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
 * Perl: [HTML::Gumbo] by Ruslan Zakirov
+* Julia: [Gumbo.jl] by James Porter
 * C/Libxml: [gumbo-libxml] by Jonathan Tang
 
 [gumbo-query]: https://github.com/lazytiger/gumbo-query
@@ -206,6 +207,7 @@ various contributors in other repositories:
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 [GumboBindings]: https://github.com/rgripper/GumboBindings
 [GumboPHP]: https://github.com/BipSync/gumbo
+[Gumbo.jl]: https://github.com/porterjamesj/Gumbo.jl
 [gumbo-libxml]: https://github.com/nostrademons/gumbo-libxml
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
