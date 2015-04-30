@@ -175,12 +175,13 @@ an existing API (personally, I prefer BeautifulSoup) and write your program
 in terms of those.  The raw CTypes bindings should be considered building
 blocks for higher-level libraries and rarely referenced directly.
 
-External Bindings
-=================
+External Bindings and other wrappers
+====================================
 
-The following language bindings are maintained by various contributors in
-other repositories:
+The following language bindings or other tools/wrappers are maintained by
+various contributors in other repositories:
 
+* C++: [gumbo-query] by lazytiger
 * Ruby:
   * [ruby-gumbo] by Nicolas Martyanoff
   * [nokogumbo] by Sam Ruby
@@ -193,7 +194,9 @@ other repositories:
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
 * Perl: [HTML::Gumbo] by Ruslan Zakirov
+* C/Libxml: [gumbo-libxml] by Jonathan Tang
 
+[gumbo-query]: https://github.com/lazytiger/gumbo-query
 [ruby-gumbo]: https://github.com/nevir/ruby-gumbo
 [nokogumbo]: https://github.com/rubys/nokogumbo
 [node-gumbo-parser]: https://github.com/karlwestin/node-gumbo-parser
@@ -203,6 +206,7 @@ other repositories:
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 [GumboBindings]: https://github.com/rgripper/GumboBindings
 [GumboPHP]: https://github.com/BipSync/gumbo
+[gumbo-libxml]: https://github.com/nostrademons/gumbo-libxml
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
