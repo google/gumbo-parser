@@ -13960,8 +13960,6 @@ static const short _char_ref_eof_trans[] = {
 };
 
 static const int char_ref_start = 7623;
-static const int char_ref_first_final = 7623;
-static const int char_ref_error = 0;
 
 static const int char_ref_en_valid_named_ref = 7623;
 
@@ -13980,7 +13978,7 @@ static bool consume_named_ref(
   int cs, act;
 
   
-#line 13984 "char_ref.c"
+#line 13982 "char_ref.c"
 	{
 	cs = char_ref_start;
 	ts = 0;
@@ -13992,10 +13990,11 @@ static bool consume_named_ref(
   // Avoid unused variable warnings.
   (void) act;
   (void) ts;
+  (void) char_ref_en_valid_named_ref;
 
   start = p;
   
-#line 13999 "char_ref.c"
+#line 13998 "char_ref.c"
 	{
 	int _slen;
 	int _trans;
@@ -14017,7 +14016,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 14021 "char_ref.c"
+#line 14020 "char_ref.c"
 		}
 	}
 
@@ -23000,7 +22999,7 @@ _eof_trans:
 #line 2273 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xd7; {p++; goto _out; } }}
 	break;
-#line 23004 "char_ref.c"
+#line 23003 "char_ref.c"
 		}
 	}
 
@@ -23013,7 +23012,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 23017 "char_ref.c"
+#line 23016 "char_ref.c"
 		}
 	}
 
@@ -23033,7 +23032,7 @@ _again:
 	_out: {}
 	}
 
-#line 2487 "char_ref.rl"
+#line 2488 "char_ref.rl"
 
   if (cs >= 7623) {
     assert(output->first != kGumboNoChar);
