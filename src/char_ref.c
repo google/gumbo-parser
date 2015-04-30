@@ -232,8 +232,9 @@ static bool maybe_add_invalid_named_reference(
 #line 2465 "char_ref.rl"
 
 
+// clang-format off
 
-#line 237 "char_ref.c"
+#line 238 "char_ref.c"
 static const short _char_ref_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -13966,7 +13967,8 @@ static const int char_ref_error = 0;
 static const int char_ref_en_valid_named_ref = 7623;
 
 
-#line 2468 "char_ref.rl"
+#line 2469 "char_ref.rl"
+// clang-format on
 
 static bool consume_named_ref(
     struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
@@ -13979,8 +13981,9 @@ static bool consume_named_ref(
   const char *ts, *start;
   int cs, act;
 
+  // clang-format off
   
-#line 13984 "char_ref.c"
+#line 13987 "char_ref.c"
 	{
 	cs = char_ref_start;
 	ts = 0;
@@ -13988,14 +13991,14 @@ static bool consume_named_ref(
 	act = 0;
 	}
 
-#line 2481 "char_ref.rl"
+#line 2484 "char_ref.rl"
   // Avoid unused variable warnings.
   (void) act;
   (void) ts;
 
   start = p;
   
-#line 13999 "char_ref.c"
+#line 14002 "char_ref.c"
 	{
 	int _slen;
 	int _trans;
@@ -14017,7 +14020,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 14021 "char_ref.c"
+#line 14024 "char_ref.c"
 		}
 	}
 
@@ -23000,7 +23003,7 @@ _eof_trans:
 #line 2273 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xd7; {p++; goto _out; } }}
 	break;
-#line 23004 "char_ref.c"
+#line 23007 "char_ref.c"
 		}
 	}
 
@@ -23013,7 +23016,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 23017 "char_ref.c"
+#line 23020 "char_ref.c"
 		}
 	}
 
@@ -23033,7 +23036,8 @@ _again:
 	_out: {}
 	}
 
-#line 2487 "char_ref.rl"
+#line 2490 "char_ref.rl"
+  // clang-format on
 
   if (cs >= 7623) {
     assert(output->first != kGumboNoChar);

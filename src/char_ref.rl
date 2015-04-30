@@ -2464,7 +2464,9 @@ valid_named_ref := |*
 *|;
 }%%
 
+// clang-format off
 %% write data;
+// clang-format on
 
 static bool consume_named_ref(
     struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
@@ -2477,6 +2479,7 @@ static bool consume_named_ref(
   const char *ts, *start;
   int cs, act;
 
+  // clang-format off
   %% write init;
   // Avoid unused variable warnings.
   (void) act;
@@ -2484,6 +2487,7 @@ static bool consume_named_ref(
 
   start = p;
   %% write exec;
+  // clang-format on
 
   if (cs >= %%{ write first_final; }%%) {
     assert(output->first != kGumboNoChar);
