@@ -49,7 +49,7 @@ void* gumbo_vector_pop(struct GumboInternalParser* parser, GumboVector* vector);
 // Inserts an element at a specific index.  This is potentially O(N) time, but
 // is necessary for some of the spec's behavior.
 void gumbo_vector_insert_at(
-    struct GumboInternalParser* parser, void* element, int index,
+    struct GumboInternalParser* parser, void* element, unsigned int index,
     GumboVector* vector);
 
 // Removes an element from the vector, or does nothing if the element is not in
@@ -60,7 +60,7 @@ void gumbo_vector_remove(
 // Removes and returns an element at a specific index.  Note that this is
 // potentially O(N) time and should be used sparingly.
 void* gumbo_vector_remove_at(
-    struct GumboInternalParser* parser, int index, GumboVector* vector);
+    struct GumboInternalParser* parser, unsigned int index, GumboVector* vector);
 
 #ifdef __cplusplus
 }
