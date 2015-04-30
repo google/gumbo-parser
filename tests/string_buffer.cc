@@ -26,21 +26,15 @@
 namespace {
 
 #define INIT_GUMBO_STRING(varname, literal) \
-    GumboStringPiece varname = { literal, sizeof(literal) - 1 }
+  GumboStringPiece varname = {literal, sizeof(literal) - 1}
 
 class GumboStringBufferTest : public GumboTest {
  protected:
-  GumboStringBufferTest() {
-    gumbo_string_buffer_init(&parser_, &buffer_);
-  }
+  GumboStringBufferTest() { gumbo_string_buffer_init(&parser_, &buffer_); }
 
-  ~GumboStringBufferTest() {
-    gumbo_string_buffer_destroy(&parser_, &buffer_);
-  }
+  ~GumboStringBufferTest() { gumbo_string_buffer_destroy(&parser_, &buffer_); }
 
-  void NullTerminateBuffer() {
-    buffer_.data[buffer_.length++] = 0;
-  }
+  void NullTerminateBuffer() { buffer_.data[buffer_.length++] = 0; }
 
   GumboStringBuffer buffer_;
 };

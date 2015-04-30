@@ -26,14 +26,17 @@ namespace {
 
 class GumboVectorTest : public GumboTest {
  protected:
-  GumboVectorTest() : one_(1), two_(2), three_(3),
-      num_allocations_(0), bytes_allocated_(0), num_deallocations_(0) {
+  GumboVectorTest()
+      : one_(1),
+        two_(2),
+        three_(3),
+        num_allocations_(0),
+        bytes_allocated_(0),
+        num_deallocations_(0) {
     gumbo_vector_init(&parser_, 2, &vector_);
   }
 
-  ~GumboVectorTest() {
-    gumbo_vector_destroy(&parser_, &vector_);
-  }
+  ~GumboVectorTest() { gumbo_vector_destroy(&parser_, &vector_); }
 
   GumboVector vector_;
 
@@ -143,8 +146,8 @@ TEST_F(GumboVectorTest, RemoveAt) {
   gumbo_vector_add(&parser_, &one_, &vector_);
   gumbo_vector_add(&parser_, &two_, &vector_);
   gumbo_vector_add(&parser_, &three_, &vector_);
-  int result = *static_cast<int*>(
-      gumbo_vector_remove_at(&parser_, 1, &vector_));
+  int result =
+      *static_cast<int*>(gumbo_vector_remove_at(&parser_, 1, &vector_));
   EXPECT_EQ(2, result);
   EXPECT_EQ(2, vector_.length);
   int three = *static_cast<int*>(vector_.data[1]);

@@ -64,8 +64,8 @@ typedef struct GumboInternalToken {
     GumboTokenDocType doc_type;
     GumboTokenStartTag start_tag;
     GumboTag end_tag;
-    const char* text;    // For comments.
-    int character;      // For character, whitespace, null, and EOF tokens.
+    const char* text;  // For comments.
+    int character;     // For character, whitespace, null, and EOF tokens.
   } v;
 } GumboToken;
 

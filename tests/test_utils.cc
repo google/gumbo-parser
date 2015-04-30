@@ -27,9 +27,7 @@ int GetChildCount(GumboNode* node) {
   }
 }
 
-GumboTag GetTag(GumboNode* node) {
-  return node->v.element.tag;
-}
+GumboTag GetTag(GumboNode* node) { return node->v.element.tag; }
 
 GumboNode* GetChild(GumboNode* parent, int index) {
   if (parent->type == GUMBO_NODE_DOCUMENT) {
@@ -90,8 +88,8 @@ void GetAndAssertBody(GumboNode* root, GumboNode** body) {
   ASSERT_TRUE(*body != NULL);
 }
 
-void SanityCheckPointers(const char* input, size_t input_length,
-                         const GumboNode* node, int depth) {
+void SanityCheckPointers(
+    const char* input, size_t input_length, const GumboNode* node, int depth) {
   ASSERT_GE(input_length, (size_t) 0);
   ASSERT_TRUE(node != NULL);
   // There are some truly pathological HTML documents out there - the
@@ -180,11 +178,8 @@ void InitLeakDetection(GumboOptions* options, MallocStats* stats) {
   options->userdata = stats;
 }
 
-
-GumboTest::GumboTest() :
-    options_(kGumboDefaultOptions),
-    errors_are_expected_(false),
-    text_("")  {
+GumboTest::GumboTest()
+    : options_(kGumboDefaultOptions), errors_are_expected_(false), text_("") {
   InitLeakDetection(&options_, &malloc_stats_);
   options_.max_errors = 100;
   parser_._options = &options_;
@@ -199,9 +194,8 @@ GumboTest::~GumboTest() {
     // this; we only want to pretty-print errors that are not an expected
     // output of the test.
     for (int i = 0; i < parser_._output->errors.length && i < 1; ++i) {
-      gumbo_print_caret_diagnostic(
-          &parser_, static_cast<GumboError*>(
-              parser_._output->errors.data[i]), text_);
+      gumbo_print_caret_diagnostic(&parser_,
+          static_cast<GumboError*>(parser_._output->errors.data[i]), text_);
     }
   }
   gumbo_destroy_errors(&parser_);

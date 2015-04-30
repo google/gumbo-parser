@@ -39,8 +39,8 @@ GumboAttribute* GetAttribute(GumboNode* node, int index);
 // document (nodes are elements, nodes have the right tags) and then return
 // the body node.
 void GetAndAssertBody(GumboNode* root, GumboNode** body);
-void SanityCheckPointers(const char* input, size_t input_length,
-                         const GumboNode* node, int depth);
+void SanityCheckPointers(
+    const char* input, size_t input_length, const GumboNode* node, int depth);
 
 // Custom allocator machinery to sanity check for memory leaks.  Normally we can
 // use heapcheck/valgrind/ASAN for this, but they only give the

@@ -76,7 +76,6 @@ typedef struct {
  */
 extern const GumboSourcePosition kGumboEmptySourcePosition;
 
-
 /**
  * A struct representing a string or part of a string.  Strings within the
  * parser are represented by a char* and a length; the char* points into
@@ -111,7 +110,6 @@ bool gumbo_string_equals(
 bool gumbo_string_equals_ignore_case(
     const GumboStringPiece* str1, const GumboStringPiece* str2);
 
-
 /**
  * A simple vector implementation.  This stores a pointer to a data array and a
  * length.  All elements are stored as void*; client code must cast to the
@@ -143,7 +141,6 @@ extern const GumboVector kGumboEmptyVector;
  */
 int gumbo_vector_index_of(GumboVector* vector, const void* element);
 
-
 /**
  * An enum for all the tags defined in the HTML5 standard.  These correspond to
  * the tag names themselves.  Enum constants exist only for tags which appear in
@@ -157,8 +154,8 @@ int gumbo_vector_index_of(GumboVector* vector, const void* element);
  * strings.
  */
 typedef enum {
-  // Load all the tags from an external source, generated from tag.in.
-# include "tag_enum.h"
+// Load all the tags from an external source, generated from tag.in.
+#include "tag_enum.h"
   // Used for all tags that don't have special handling in HTML.  Add new tags
   // to the end of tag.in so as to preserve backwards-compatibility.
   GUMBO_TAG_UNKNOWN,
@@ -318,7 +315,9 @@ typedef enum {
  */
 typedef struct GumboInternalNode GumboNode;
 
-/** http://www.whatwg.org/specs/web-apps/current-work/complete/dom.html#quirks-mode */
+/**
+ * http://www.whatwg.org/specs/web-apps/current-work/complete/dom.html#quirks-mode
+ */
 typedef enum {
   GUMBO_DOCTYPE_NO_QUIRKS,
   GUMBO_DOCTYPE_QUIRKS,
@@ -415,7 +414,6 @@ typedef enum {
    */
   GUMBO_INSERTION_FOSTER_PARENTED = 1 << 10,
 } GumboParseFlags;
-
 
 /**
  * Information specific to document nodes.
@@ -535,9 +533,9 @@ struct GumboInternalNode {
 
   /** The actual node data. */
   union {
-    GumboDocument document;      // For GUMBO_NODE_DOCUMENT.
-    GumboElement element;        // For GUMBO_NODE_ELEMENT.
-    GumboText text;              // For everything else.
+    GumboDocument document;  // For GUMBO_NODE_DOCUMENT.
+    GumboElement element;    // For GUMBO_NODE_ELEMENT.
+    GumboText text;          // For everything else.
   } v;
 };
 
@@ -664,9 +662,7 @@ GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t buffer_length);
 
 /** Release the memory used for the parse tree & parse errors. */
-void gumbo_destroy_output(
-    const GumboOptions* options, GumboOutput* output);
-
+void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output);
 
 #ifdef __cplusplus
 }
