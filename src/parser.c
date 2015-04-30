@@ -733,6 +733,7 @@ static bool node_tag_in_set(const GumboNode* node, const gumbo_tagset tags) {
 
 // Like node_tag_in, but for the single-tag case.
 static bool node_qualified_tag_is(const GumboNode* node, GumboNamespaceEnum ns, GumboTag tag) {
+  assert(node);
   return (node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE) &&
     node->v.element.tag == tag &&
     node->v.element.tag_namespace == ns;
@@ -2046,6 +2047,7 @@ static void ignore_token(GumboParser* parser) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/the-end.html
 static void finish_parsing(GumboParser* parser) {
+  gumbo_debug("Finishing parsing");
   maybe_flush_text_node_buffer(parser);
   GumboParserState* state = parser->_parser_state;
   for (GumboNode* node = pop_current_node(parser); node;
@@ -3525,6 +3527,7 @@ static bool handle_in_template(GumboParser* parser, GumboToken* token) {
   if (token->type == GUMBO_TOKEN_WHITESPACE ||
       token->type == GUMBO_TOKEN_CHARACTER ||
       token->type == GUMBO_TOKEN_COMMENT ||
+      token->type == GUMBO_TOKEN_NULL ||
       token->type == GUMBO_TOKEN_DOCTYPE) {
     return handle_in_body(parser, token);
   } else if (tag_in(token, kStartTag, (gumbo_tagset) { TAG(BASE), TAG(BASEFONT), TAG(BGSOUND),
@@ -3779,6 +3782,7 @@ static bool handle_html_content(GumboParser* parser, GumboToken* token) {
 
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-inforeign
 static bool handle_in_foreign_content(GumboParser* parser, GumboToken* token) {
+  gumbo_debug("Handling foreign content");
   switch (token->type) {
     case GUMBO_TOKEN_NULL:
       parser_add_parse_error(parser, token);
