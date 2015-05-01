@@ -862,7 +862,7 @@ static void insert_node(
     }
 
     assert(index >= 0);
-    assert(index < children->length);
+    assert((unsigned int) index < children->length);
     node->parent = parent;
     node->index_within_parent = index;
     gumbo_vector_insert_at(parser, (void*) node, index, children);
@@ -1264,7 +1264,7 @@ static void reconstruct_active_formatting_elements(GumboParser* parser) {
   }
 
   // Step 2 & 3
-  int i = elements->length - 1;
+  unsigned int i = elements->length - 1;
   GumboNode* element = elements->data[i];
   if (element == &kActiveFormattingScopeMarker ||
       is_open_element(parser, element)) {
