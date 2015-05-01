@@ -728,12 +728,11 @@ static void append_node(
 // Inserts a node at the specified index within its parent, updating the
 // "parent" and "index_within_parent" fields of it and all its siblings.
 static void insert_node(
-    GumboParser* parser, GumboNode* parent, int index, GumboNode* node) {
+    GumboParser* parser, GumboNode* parent, unsigned int index, GumboNode* node) {
   assert(node->parent == NULL);
   assert(node->index_within_parent == -1);
   assert(parent->type == GUMBO_NODE_ELEMENT);
   GumboVector* children = &parent->v.element.children;
-  assert(index >= 0);
   assert(index < children->length);
   node->parent = parent;
   node->index_within_parent = index;
@@ -1674,7 +1673,7 @@ static bool adoption_agency_algorithm(
   GumboParserState* state = parser->_parser_state;
   gumbo_debug("Entering adoption agency algorithm.\n");
   // Steps 1-3 & 16:
-  for (int i = 0; i < 8; ++i) {
+  for (unsigned int i = 0; i < 8; ++i) {
     // Step 4.
     GumboNode* formatting_node = NULL;
     int formatting_node_in_open_elements = -1;
@@ -1780,7 +1779,7 @@ static bool adoption_agency_algorithm(
       }
       saved_node_index = --node_index;
       assert(node_index > 0);
-      assert(node_index < state->_open_elements.capacity);
+      assert((unsigned int) node_index < state->_open_elements.capacity);
       node = state->_open_elements.data[node_index];
       assert(node->parent);
       // Step 9.5.
@@ -1801,7 +1800,7 @@ static bool adoption_agency_algorithm(
       // Step 9.8.
       if (last_node == furthest_block) {
         bookmark = formatting_index + 1;
-        assert(bookmark <= state->_active_formatting_elements.length);
+        assert((unsigned int) bookmark <= state->_active_formatting_elements.length);
       }
       // Step 9.9.
       last_node->parse_flags |= GUMBO_INSERTION_ADOPTION_AGENCY_MOVED;
@@ -1862,7 +1861,7 @@ static bool adoption_agency_algorithm(
     gumbo_vector_remove_at(
         parser, formatting_node_index, &state->_active_formatting_elements);
     assert(bookmark >= 0);
-    assert(bookmark <= state->_active_formatting_elements.length);
+    assert((unsigned int) bookmark <= state->_active_formatting_elements.length);
     gumbo_vector_insert_at(parser, new_formatting_node, bookmark,
                            &state->_active_formatting_elements);
 
@@ -1872,7 +1871,7 @@ static bool adoption_agency_algorithm(
     int insert_at = gumbo_vector_index_of(
         &state->_open_elements, furthest_block) + 1;
     assert(insert_at >= 0);
-    assert(insert_at <= state->_open_elements.length);
+    assert((unsigned int) insert_at <= state->_open_elements.length);
     gumbo_vector_insert_at(
         parser, new_formatting_node, insert_at, &state->_open_elements);
   }
