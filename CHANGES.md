@@ -1,3 +1,7 @@
+Gumbo 0.10.1 (2015-04-30)
+
+Same as 0.10.0, but with the version number bumped because the last version-number commit to v0.9.4 makes GitHub think that v0.9.4 is the latest version and so it's not highlighted on the webpage.
+
 Gumbo 0.10.0 (2015-04-30)
 
 * Full support for <template> tag (kevinhendricks, nostrademons).
