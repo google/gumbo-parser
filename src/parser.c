@@ -792,7 +792,7 @@ InsertionLocation get_appropriate_insertion_location(
   int last_template_index = -1;
   int last_table_index = -1;
   GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  for (int i = 0; i < open_elements->length; ++i) {
+  for (unsigned int i = 0; i < open_elements->length; ++i) {
     if (node_html_tag_is(open_elements->data[i], GUMBO_TAG_TEMPLATE)) {
       last_template_index = i;
     }
@@ -867,7 +867,7 @@ static void insert_node(
     node->index_within_parent = index;
     gumbo_vector_insert_at(parser, (void*) node, index, children);
     assert(node->index_within_parent < children->length);
-    for (int i = index + 1; i < children->length; ++i) {
+    for (unsigned int i = index + 1; i < children->length; ++i) {
       GumboNode* sibling = children->data[i];
       sibling->index_within_parent = i;
       assert(sibling->index_within_parent < children->length);
@@ -1799,7 +1799,7 @@ static bool adoption_agency_algorithm(
     return false;
   }
   // Steps 2-4 & 20:
-  for (int i = 0; i < 8; ++i) {
+  for (unsigned int i = 0; i < 8; ++i) {
     // Step 5.
     GumboNode* formatting_node = NULL;
     int formatting_node_in_open_elements = -1;
@@ -1915,7 +1915,7 @@ static bool adoption_agency_algorithm(
       }
       saved_node_index = --node_index;
       assert(node_index > 0);
-      assert(node_index < state->_open_elements.capacity);
+      assert((unsigned int) node_index < state->_open_elements.capacity);
       node = state->_open_elements.data[node_index];
       assert(node->parent);
       if (node == formatting_node) {
@@ -1954,7 +1954,7 @@ static bool adoption_agency_algorithm(
       if (last_node == furthest_block) {
         bookmark = formatting_index + 1;
         gumbo_debug("Bookmark moved to %d.\n", bookmark);
-        assert(bookmark <= state->_active_formatting_elements.length);
+        assert((unsigned int) bookmark <= state->_active_formatting_elements.length);
       }
       // Step 13.9.
       last_node->parse_flags |= GUMBO_INSERTION_ADOPTION_AGENCY_MOVED;
@@ -2014,7 +2014,7 @@ static bool adoption_agency_algorithm(
     gumbo_vector_remove_at(
         parser, formatting_node_index, &state->_active_formatting_elements);
     assert(bookmark >= 0);
-    assert(bookmark <= state->_active_formatting_elements.length);
+    assert((unsigned int) bookmark <= state->_active_formatting_elements.length);
     gumbo_vector_insert_at(parser, new_formatting_node, bookmark,
         &state->_active_formatting_elements);
 
@@ -2023,7 +2023,7 @@ static bool adoption_agency_algorithm(
     int insert_at =
         gumbo_vector_index_of(&state->_open_elements, furthest_block) + 1;
     assert(insert_at >= 0);
-    assert(insert_at <= state->_open_elements.length);
+    assert((unsigned int) insert_at <= state->_open_elements.length);
     gumbo_vector_insert_at(
         parser, new_formatting_node, insert_at, &state->_open_elements);
   }  // Step 20.

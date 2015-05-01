@@ -1,3 +1,10 @@
+Gumbo 0.9.4 (2015-04-30)
+
+* Additional Visual Studio fixes (lowjoel/nostrademons)
+* Fixed some unused variable warnings.
+* Fix for glibtoolize vs. libtoolize build errors on Mac.
+* Fixed CDATA end tag handling.
+
 Gumbo 0.9.3 (2015-02-17)
 
 * Bugfix for &AElig; entities (rgrove)
