@@ -29,7 +29,7 @@
 // TODO(jdtang): This should be elsewhere, but there's no .c file for
 // SourcePositions and yet the constant needs some linkage, so this is as good
 // as any.
-const GumboSourcePosition kGumboEmptySourcePosition = { 0, 0, 0 };
+const GumboSourcePosition kGumboEmptySourcePosition = {0, 0, 0};
 
 void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
   return parser->_options->allocator(parser->_options->userdata, num_bytes);

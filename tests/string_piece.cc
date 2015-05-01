@@ -29,7 +29,7 @@ namespace {
 typedef GumboTest GumboStringPieceTest;
 
 #define INIT_GUMBO_STRING(varname, literal) \
-    GumboStringPiece varname = { literal, sizeof(literal) - 1 }
+  GumboStringPiece varname = {literal, sizeof(literal) - 1}
 
 TEST_F(GumboStringPieceTest, Equal) {
   INIT_GUMBO_STRING(str1, "foo");

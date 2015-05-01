@@ -25,21 +25,22 @@
 
 struct GumboInternalParser;
 
-const GumboVector kGumboEmptyVector = { NULL, 0, 0 };
+const GumboVector kGumboEmptyVector = {NULL, 0, 0};
 
-void gumbo_vector_init(
-    struct GumboInternalParser* parser, size_t initial_capacity, GumboVector* vector) {
+void gumbo_vector_init(struct GumboInternalParser* parser,
+    size_t initial_capacity, GumboVector* vector) {
   vector->length = 0;
   vector->capacity = initial_capacity;
   if (initial_capacity > 0) {
-    vector->data = gumbo_parser_allocate(
-        parser, sizeof(void*) * initial_capacity);
+    vector->data =
+        gumbo_parser_allocate(parser, sizeof(void*) * initial_capacity);
   } else {
     vector->data = NULL;
   }
 }
 
-void gumbo_vector_destroy(struct GumboInternalParser* parser, GumboVector* vector) {
+void gumbo_vector_destroy(
+    struct GumboInternalParser* parser, GumboVector* vector) {
   if (vector->capacity > 0) {
     gumbo_parser_deallocate(parser, vector->data);
   }
@@ -59,8 +60,8 @@ static void enlarge_vector_if_full(
     } else {
       // 0-capacity vector; no previous array to deallocate.
       vector->capacity = 2;
-      vector->data = gumbo_parser_allocate(
-          parser, sizeof(void*) * vector->capacity);
+      vector->data =
+          gumbo_parser_allocate(parser, sizeof(void*) * vector->capacity);
     }
   }
 }
@@ -90,15 +91,14 @@ int gumbo_vector_index_of(GumboVector* vector, const void* element) {
   return -1;
 }
 
-void gumbo_vector_insert_at(
-    struct GumboInternalParser* parser, void* element, unsigned int index,
-    GumboVector* vector) {
+void gumbo_vector_insert_at(struct GumboInternalParser* parser, void* element,
+    unsigned int index, GumboVector* vector) {
   assert(index >= 0);
   assert(index <= vector->length);
   enlarge_vector_if_full(parser, vector);
   ++vector->length;
   memmove(&vector->data[index + 1], &vector->data[index],
-          sizeof(void*) * (vector->length - index - 1));
+      sizeof(void*) * (vector->length - index - 1));
   vector->data[index] = element;
 }
 
@@ -111,13 +111,13 @@ void gumbo_vector_remove(
   gumbo_vector_remove_at(parser, index, vector);
 }
 
-void* gumbo_vector_remove_at(
-    struct GumboInternalParser* parser, unsigned int index, GumboVector* vector) {
+void* gumbo_vector_remove_at(struct GumboInternalParser* parser,
+    unsigned int index, GumboVector* vector) {
   assert(index >= 0);
   assert(index < vector->length);
   void* result = vector->data[index];
   memmove(&vector->data[index], &vector->data[index + 1],
-          sizeof(void*) * (vector->length - index - 1));
+      sizeof(void*) * (vector->length - index - 1));
   --vector->length;
   return result;
 }

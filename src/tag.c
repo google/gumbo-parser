@@ -21,15 +21,15 @@
 #include <string.h>
 
 const char* kGumboTagNames[] = {
-# include "tag_strings.h"
-  "",                   // TAG_UNKNOWN
-  "",                   // TAG_LAST
+#include "tag_strings.h"
+    "",  // TAG_UNKNOWN
+    "",  // TAG_LAST
 };
 
 static const unsigned char kGumboTagSizes[] = {
-# include "tag_sizes.h"
-  0, // TAG_UNKNOWN
-  0, // TAG_LAST
+#include "tag_sizes.h"
+    0,  // TAG_UNKNOWN
+    0,  // TAG_LAST
 };
 
 const char* gumbo_normalized_tagname(GumboTag tag) {
@@ -48,11 +48,11 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
   if (text->data[1] == '/') {
     // End tag.
     assert(text->length >= 3);
-    text->data += 2;    // Move past </
+    text->data += 2;  // Move past </
     text->length -= 3;
   } else {
     // Start tag.
-    text->data += 1;    // Move past <
+    text->data += 1;  // Move past <
     text->length -= 2;
     // strnchr is apparently not a standard C library function, so I loop
     // explicitly looking for whitespace or other illegal tag characters.
@@ -65,28 +65,25 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
   }
 }
 
-static int
-case_memcmp(const char *s1, const char *s2, unsigned int n)
-{
-	while (n--) {
-		unsigned char c1 = tolower(*s1++);
-		unsigned char c2 = tolower(*s2++);
-		if (c1 != c2)
-			return (int)c1 - (int)c2;
-	}
-	return 0;
+static int case_memcmp(const char* s1, const char* s2, unsigned int n) {
+  while (n--) {
+    unsigned char c1 = tolower(*s1++);
+    unsigned char c2 = tolower(*s2++);
+    if (c1 != c2) return (int) c1 - (int) c2;
+  }
+  return 0;
 }
 
 #include "tag_gperf.h"
-#define TAG_MAP_SIZE (sizeof(kGumboTagMap)/sizeof(kGumboTagMap[0]))
+#define TAG_MAP_SIZE (sizeof(kGumboTagMap) / sizeof(kGumboTagMap[0]))
 
 GumboTag gumbo_tagn_enum(const char* tagname, unsigned int length) {
   if (length) {
     unsigned int key = tag_hash(tagname, length);
     if (key < TAG_MAP_SIZE) {
       GumboTag tag = kGumboTagMap[key];
-      if (length == kGumboTagSizes[(int)tag] &&
-          !case_memcmp(tagname, kGumboTagNames[(int)tag], length))
+      if (length == kGumboTagSizes[(int) tag] &&
+          !case_memcmp(tagname, kGumboTagNames[(int) tag], length))
         return tag;
     }
   }

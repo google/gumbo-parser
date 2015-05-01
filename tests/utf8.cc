@@ -44,9 +44,7 @@ class Utf8Test : public GumboTest {
     return static_cast<GumboError*>(parser_._output->errors.data[0]);
   }
 
-  int GetNumErrors() {
-    return parser_._output->errors.length;
-  }
+  int GetNumErrors() { return parser_._output->errors.length; }
 
   Utf8Iterator input_;
 };
@@ -562,7 +560,7 @@ TEST_F(Utf8Test, MatchFollowedByNullByte) {
   utf8iterator_init(&parser_, text_, 7, &input_);
 
   EXPECT_TRUE(utf8iterator_maybe_consume_match(
-        &input_, "cdata", sizeof("cdata") - 1, false));
+      &input_, "cdata", sizeof("cdata") - 1, false));
 
   EXPECT_EQ(0, utf8iterator_current(&input_));
   EXPECT_EQ('\0', *utf8iterator_get_char_pointer(&input_));

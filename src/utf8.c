@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>
-#include <strings.h>    // For strncasecmp.
+#include <strings.h>  // For strncasecmp.
 
 #include "error.h"
 #include "gumbo.h"
@@ -47,9 +47,11 @@ const int kUtf8ReplacementChar = 0xFFFD;
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights to
+// in the Software without restriction, including without limitation the rights
+// to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
+// of the Software, and to permit persons to whom the Software is furnished to
+// do
 // so, subject to the following conditions:
 
 // The above copyright notice and this permission notice shall be included in
@@ -59,32 +61,35 @@ const int kUtf8ReplacementChar = 0xFFFD;
 #define UTF8_REJECT 12
 
 static const uint8_t utf8d[] = {
-  // The first part of the table maps bytes to character classes that
-  // to reduce the size of the transition table and create bitmasks.
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
-   7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-   8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-  10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8,
+    // The first part of the table maps bytes to character classes that
+    // to reduce the size of the transition table and create bitmasks.
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 9, 9,
+    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 2, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 11, 6, 6, 6, 5, 8, 8, 8, 8, 8,
+    8, 8, 8, 8, 8, 8,
 
-  // The second part is a transition table that maps a combination
-  // of a state of the automaton and a character class to a state.
-   0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
-  12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
-  12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
-  12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
-  12,36,12,12,12,12,12,12,12,12,12,12, 
+    // The second part is a transition table that maps a combination
+    // of a state of the automaton and a character class to a state.
+    0, 12, 24, 36, 60, 96, 84, 12, 12, 12, 48, 72, 12, 12, 12, 12, 12, 12, 12,
+    12, 12, 12, 12, 12, 12, 0, 12, 12, 12, 12, 12, 0, 12, 0, 12, 12, 12, 24, 12,
+    12, 12, 12, 12, 24, 12, 24, 12, 12, 12, 12, 12, 12, 12, 12, 12, 24, 12, 12,
+    12, 12, 12, 24, 12, 12, 12, 12, 12, 12, 12, 24, 12, 12, 12, 12, 12, 12, 12,
+    12, 12, 36, 12, 36, 12, 12, 12, 36, 12, 12, 12, 12, 12, 36, 12, 36, 12, 12,
+    12, 36, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
 };
 
 uint32_t static inline decode(uint32_t* state, uint32_t* codep, uint32_t byte) {
   uint32_t type = utf8d[byte];
 
-  *codep = (*state != UTF8_ACCEPT) ?
-    (byte & 0x3fu) | (*codep << 6) :
-    (0xff >> type) & (byte);
+  *codep = (*state != UTF8_ACCEPT) ? (byte & 0x3fu) | (*codep << 6)
+                                   : (0xff >> type) & (byte);
 
   *state = utf8d[256 + *state + type];
   return *state;
@@ -130,7 +135,7 @@ static void read_char(Utf8Iterator* iter) {
   uint32_t code_point = 0;
   uint32_t state = UTF8_ACCEPT;
   for (const char* c = iter->_start; c < iter->_end; ++c) {
-    decode(&state, &code_point, (uint32_t) (unsigned char) (*c));
+    decode(&state, &code_point, (uint32_t)(unsigned char) (*c));
     if (state == UTF8_ACCEPT) {
       iter->_width = c - iter->_start + 1;
       // This is the special handling for carriage returns that is mandated by
@@ -180,10 +185,10 @@ static void update_position(Utf8Iterator* iter) {
   if (iter->_current == '\n') {
     ++iter->_pos.line;
     iter->_pos.column = 1;
-  } else if(iter->_current == '\t') {
+  } else if (iter->_current == '\t') {
     int tab_stop = iter->_parser->_options->tab_stop;
     iter->_pos.column = ((iter->_pos.column / tab_stop) + 1) * tab_stop;
-  } else if(iter->_current != -1) {
+  } else if (iter->_current != -1) {
     ++iter->_pos.column;
   }
 }
@@ -192,13 +197,12 @@ static void update_position(Utf8Iterator* iter) {
 // forbidden by the HTML5 spec, such as undefined control chars.
 bool utf8_is_invalid_code_point(int c) {
   return (c >= 0x1 && c <= 0x8) || c == 0xB || (c >= 0xE && c <= 0x1F) ||
-      (c >= 0x7F && c <= 0x9F) || (c >= 0xFDD0 && c <= 0xFDEF) ||
-      ((c & 0xFFFF) == 0xFFFE) || ((c & 0xFFFF) == 0xFFFF);
+         (c >= 0x7F && c <= 0x9F) || (c >= 0xFDD0 && c <= 0xFDEF) ||
+         ((c & 0xFFFF) == 0xFFFE) || ((c & 0xFFFF) == 0xFFFF);
 }
 
-void utf8iterator_init(
-    GumboParser* parser, const char* source, size_t source_length,
-    Utf8Iterator* iter) {
+void utf8iterator_init(GumboParser* parser, const char* source,
+    size_t source_length, Utf8Iterator* iter) {
   iter->_start = source;
   iter->_end = source + source_length;
   iter->_pos.line = 1;
@@ -216,9 +220,7 @@ void utf8iterator_next(Utf8Iterator* iter) {
   read_char(iter);
 }
 
-int utf8iterator_current(const Utf8Iterator* iter) {
-  return iter->_current;
-}
+int utf8iterator_current(const Utf8Iterator* iter) { return iter->_current; }
 
 void utf8iterator_get_position(
     const Utf8Iterator* iter, GumboSourcePosition* output) {
@@ -233,12 +235,11 @@ const char* utf8iterator_get_end_pointer(const Utf8Iterator* iter) {
   return iter->_end;
 }
 
-bool utf8iterator_maybe_consume_match(
-    Utf8Iterator* iter, const char* prefix, size_t length,
-    bool case_sensitive) {
-  bool matched = (iter->_start + length <= iter->_end) && (case_sensitive ?
-      !strncmp(iter->_start, prefix, length) :
-      !strncasecmp(iter->_start, prefix, length));
+bool utf8iterator_maybe_consume_match(Utf8Iterator* iter, const char* prefix,
+    size_t length, bool case_sensitive) {
+  bool matched = (iter->_start + length <= iter->_end) &&
+                 (case_sensitive ? !strncmp(iter->_start, prefix, length)
+                                 : !strncasecmp(iter->_start, prefix, length));
   if (matched) {
     for (unsigned int i = 0; i < length; ++i) {
       utf8iterator_next(iter);
@@ -263,8 +264,7 @@ void utf8iterator_reset(Utf8Iterator* iter) {
 
 // Sets the position and original text fields of an error to the value at the
 // mark.
-void utf8iterator_fill_error_at_mark(
-    Utf8Iterator* iter, GumboError* error) {
+void utf8iterator_fill_error_at_mark(Utf8Iterator* iter, GumboError* error) {
   error->position = iter->_mark_pos;
   error->original_text = iter->_mark;
 }
