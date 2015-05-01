@@ -63,6 +63,7 @@ gumbo_parser.target.mk
 
 # Python dist artifacts
 *.pyc
+*.dylib
 dist
 build
 python/gumbo.egg-info
