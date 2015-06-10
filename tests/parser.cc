@@ -1954,4 +1954,25 @@ TEST_F(GumboParserTest, FragmentWithNamespace) {
   EXPECT_EQ(0, GetChildCount(div));
 }
 
+TEST_F(GumboParserTest, FragmentWithTwoNodes) {
+  ParseFragment("<h1>Hi</h1><br>", GUMBO_TAG_BODY, GUMBO_NAMESPACE_HTML);
+
+  EXPECT_EQ(1, GetChildCount(root_));
+
+  GumboNode* html = GetChild(root_, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, html->type);
+  EXPECT_EQ(GUMBO_TAG_HTML, html->v.element.tag);
+  EXPECT_EQ(2, GetChildCount(html));
+
+  GumboNode* h1 = GetChild(html, 0);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, h1->type);
+  EXPECT_EQ(GUMBO_TAG_H1, h1->v.element.tag);
+  EXPECT_EQ(1, GetChildCount(h1));
+
+  GumboNode* br = GetChild(html, 1);
+  ASSERT_EQ(GUMBO_NODE_ELEMENT, br->type);
+  EXPECT_EQ(GUMBO_TAG_BR, br->v.element.tag);
+  EXPECT_EQ(0, GetChildCount(br));
+}
+
 }  // namespace
