@@ -572,6 +572,10 @@ static GumboInsertionMode get_appropriate_insertion_mode(
   }
 
   assert(node->type == GUMBO_NODE_ELEMENT || node->type == GUMBO_NODE_TEMPLATE);
+  if (node->v.element.tag_namespace != GUMBO_NAMESPACE_HTML)
+    return is_last ?
+      GUMBO_INSERTION_MODE_IN_BODY : GUMBO_INSERTION_MODE_INITIAL;
+  
   switch (node->v.element.tag) {
     case GUMBO_TAG_SELECT: {
       if (is_last) {
