@@ -26,7 +26,7 @@ import sys
 import contextlib
 import ctypes
 import os.path
-import gumboc_tags
+from gumbo import gumboc_tags
 
 _name_of_lib = 'libgumbo.so'
 if sys.platform.startswith('darwin'):
