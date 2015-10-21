@@ -2468,6 +2468,8 @@ valid_named_ref := |*
 %% write data noerror nofinal;
 // clang-format on
 
+#define AVOID_UNUSED_VARIABLE_WARNING(i) (void)(i)
+
 static bool consume_named_ref(
     struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
     OneOrTwoCodepoints* output) {
@@ -2497,6 +2499,7 @@ static bool consume_named_ref(
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
+      AVOID_UNUSED_VARIABLE_WARNING(matched); // If asserts turned off...
       return true;
     } else if (is_in_attribute && (*te == '=' || isalnum(*te))) {
       output->first = kGumboNoChar;
@@ -2511,6 +2514,7 @@ static bool consume_named_ref(
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
+      AVOID_UNUSED_VARIABLE_WARNING(matched); // If asserts turned off...
       return false;
     }
   } else {
