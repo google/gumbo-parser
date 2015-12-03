@@ -59,7 +59,7 @@ static int print_message(
   }
 #endif
 
-  if (bytes_written > remaining_capacity) {
+  if (bytes_written >= remaining_capacity) {
     gumbo_string_buffer_reserve(
         parser, output->capacity + bytes_written, output);
     remaining_capacity = output->capacity - output->length;
