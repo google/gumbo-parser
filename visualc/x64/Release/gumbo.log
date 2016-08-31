@@ -1,0 +1,25 @@
+﻿  attribute.c
+  char_ref.c
+char_ref.rl(2496): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+  error.c
+..\src\error.c(65): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+..\src\error.c(36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  parser.c
+..\src\parser.c(815): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+..\src\parser.c(2848): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  string_buffer.c
+  string_piece.c
+  tag.c
+..\src\tag.c(94): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+  tokenizer.c
+..\src\tokenizer.c(380): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+..\src\tokenizer.c(754): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+..\src\tokenizer.c(842): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data
+  utf8.c
+..\src\utf8.c(140): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+..\src\utf8.c(167): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+..\src\utf8.c(179): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+  util.c
+  vector.c
+..\src\vector.c(33): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  gumbo.vcxproj -> C:\Users\Monitor\Documents\GitHub\ZRecovery\x64\Release\gumbo.lib
