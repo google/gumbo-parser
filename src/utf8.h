@@ -20,7 +20,7 @@
 // 1. Decoding errors are parse errors.
 // 2. Certain other codepoints (eg. control characters) are parse errors.
 // 3. Carriage returns and CR/LF groups are converted to line feeds.
-// http://www.whatwg.org/specs/web-apps/ui-work/multipage/infrastructure.html#decoded-as-utf-8,-with-error-handling
+// http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#decoded-as-utf-8,-with-error-handling
 //
 // Also, we want to keep track of source positions for error handling.  As a
 // result, we fold all that functionality into this decoder, and can't use an
@@ -48,7 +48,7 @@ struct GumboInternalParser;
 extern const int kUtf8ReplacementChar;
 
 typedef struct GumboInternalUtf8Iterator {
-  // Points at the start of the code point most recently read into 'ui'.
+  // Points at the start of the code point most recently read into 'current'.
   const char* _start;
 
   // Points at the mark.  The mark is initially set to the beginning of the
@@ -61,10 +61,10 @@ typedef struct GumboInternalUtf8Iterator {
   // The code point under the cursor.
   int _current;
 
-  // The width in bytes of the ui code point.
+  // The width in bytes of the current code point.
   int _width;
 
-  // The SourcePosition for the ui location.
+  // The SourcePosition for the current location.
   GumboSourcePosition _pos;
 
   // The SourcePosition for the mark.
@@ -84,17 +84,17 @@ bool utf8_is_invalid_code_point(int c);
 void utf8iterator_init(struct GumboInternalParser* parser, const char* source,
     size_t source_length, Utf8Iterator* iter);
 
-// Advances the ui position by one code point.
+// Advances the current position by one code point.
 void utf8iterator_next(Utf8Iterator* iter);
 
-// Returns the ui code point as an integer.
+// Returns the current code point as an integer.
 int utf8iterator_current(const Utf8Iterator* iter);
 
-// Retrieves and fills the output parameter with the ui source position.
+// Retrieves and fills the output parameter with the current source position.
 void utf8iterator_get_position(
     const Utf8Iterator* iter, GumboSourcePosition* output);
 
-// Retrieves a character pointer to the start of the ui character.
+// Retrieves a character pointer to the start of the current character.
 const char* utf8iterator_get_char_pointer(const Utf8Iterator* iter);
 
 // Retrieves a character pointer to 1 past the end of the buffer.  This is
@@ -118,7 +118,7 @@ bool utf8iterator_maybe_consume_match(
 // character before the error was detected.
 void utf8iterator_mark(Utf8Iterator* iter);
 
-// Returns the ui input stream position to the mark.
+// Returns the current input stream position to the mark.
 void utf8iterator_reset(Utf8Iterator* iter);
 
 // Sets the position and original text fields of an error to the value at the

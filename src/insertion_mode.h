@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-// http://www.whatwg.org/specs/web-apps/ui-work/complete/parsing.html#insertion-mode
+// http://www.whatwg.org/specs/web-apps/current-work/complete/parsing.html#insertion-mode
 // If new enum values are added, be sure to update the kTokenHandlers dispatch
 // table in parser.c.
 typedef enum {

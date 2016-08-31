@@ -84,10 +84,10 @@ void gumbo_tokenizer_state_destroy(struct GumboInternalParser* parser);
 void gumbo_tokenizer_set_state(
     struct GumboInternalParser* parser, GumboTokenizerEnum state);
 
-// Flags whether the ui node is a foreign content element.  This is
+// Flags whether the current node is a foreign content element.  This is
 // necessary for the markup declaration open state, where the tokenizer must be
 // aware of the state of the parser to properly tokenize bad comment tags.
-// http://www.whatwg.org/specs/web-apps/ui-work/multipage/tokenization.html#markup-declaration-open-state
+// http://www.whatwg.org/specs/web-apps/current-work/multipage/tokenization.html#markup-declaration-open-state
 void gumbo_tokenizer_set_is_current_node_foreign(
     struct GumboInternalParser* parser, bool is_foreign);
 
