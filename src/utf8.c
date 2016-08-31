@@ -33,7 +33,7 @@ const int kUtf8ReplacementChar = 0xFFFD;
 // Wikipedia: http://en.wikipedia.org/wiki/UTF-8#Description
 // RFC 3629: http://tools.ietf.org/html/rfc3629
 // HTML5 Unicode handling:
-// http://www.whatwg.org/specs/web-apps/current-work/multipage/syntax.html#preprocessing-the-input-stream
+// http://www.whatwg.org/specs/web-apps/ui-work/multipage/syntax.html#preprocessing-the-input-stream
 //
 // This implementation is based on a DFA-based decoder by Bjoern Hoehrmann
 // <bjoern@hoehrmann.de>.  We wrap the inner table-based decoder routine in our
@@ -97,7 +97,7 @@ uint32_t static inline decode(uint32_t* state, uint32_t* codep, uint32_t byte) {
 
 // END COPIED CODE.
 
-// Adds a decoding error to the parser's error list, based on the current state
+// Adds a decoding error to the parser's error list, based on the ui state
 // of the Utf8Iterator.
 static void add_error(Utf8Iterator* iter, GumboErrorType type) {
   GumboParser* parser = iter->_parser;
@@ -142,7 +142,7 @@ static void read_char(Utf8Iterator* iter) {
       // the HTML5 spec.  Since we're looking for particular 7-bit literal
       // characters, we operate in terms of chars and only need a check for iter
       // overrun, instead of having to read in a full next code point.
-      // http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream
+      // http://www.whatwg.org/specs/web-apps/ui-work/multipage/parsing.html#preprocessing-the-input-stream
       if (code_point == '\r') {
         assert(iter->_width == 1);
         const char* next = c + 1;
@@ -255,7 +255,7 @@ void utf8iterator_mark(Utf8Iterator* iter) {
   iter->_mark_pos = iter->_pos;
 }
 
-// Returns the current input stream position to the mark.
+// Returns the ui input stream position to the mark.
 void utf8iterator_reset(Utf8Iterator* iter) {
   iter->_start = iter->_mark;
   iter->_pos = iter->_mark_pos;

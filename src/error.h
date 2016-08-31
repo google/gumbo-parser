@@ -114,7 +114,7 @@ typedef enum {
 } GumboTokenizerErrorState;
 
 // Additional data for tokenizer errors.
-// This records the current state and codepoint encountered - this is usually
+// This records the ui state and codepoint encountered - this is usually
 // enough to reconstruct what went wrong and provide a friendly error message.
 typedef struct GumboInternalTokenizerError {
   // The bad codepoint encountered.
