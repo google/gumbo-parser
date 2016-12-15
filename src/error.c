@@ -140,7 +140,7 @@ static const char* find_last_newline(
     // There may be an error at EOF, which would be a nul byte.
     assert(*c || c == error_location);
   }
-  return c == original_text ? c : c + 1;
+  return c == original_text || c == error_location ? c : c + 1;
 }
 
 // Finds the next newline in the original source buffer from a given byte
