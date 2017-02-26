@@ -206,7 +206,7 @@ various contributors in other repositories:
 [OCGumbo]: https://github.com/tracy-e/OCGumbo
 [ObjectiveGumbo]: https://github.com/programmingthomas/ObjectiveGumbo
 [GumboBindings]: https://github.com/rgripper/GumboBindings
-[GumboPHP]: https://github.com/BipSync/gumbo
+[Gumbo PHP]: https://github.com/layershifter/gumbo-php
 [Gumbo.jl]: https://github.com/porterjamesj/Gumbo.jl
 [gumbo-libxml]: https://github.com/nostrademons/gumbo-libxml
 
