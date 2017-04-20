@@ -51,7 +51,17 @@ void gumbo_parser_deallocate(struct GumboInternalParser* parser, void* ptr);
 
 // Debug wrapper for printf, to make it easier to turn off debugging info when
 // required.
-void gumbo_debug(const char* format, ...);
+// Debug function to trace operation of the parser.  Pass --copts=-DGUMBO_DEBUG
+// to use.
+void inline gumbo_debug(const char* format, ...) {
+#ifdef GUMBO_DEBUG
+  va_list args;
+  va_start(args, format);
+  vprintf(format, args);
+  va_end(args);
+  fflush(stdout);
+#endif
+}
 
 #ifdef __cplusplus
 }
