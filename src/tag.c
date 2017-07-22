@@ -57,14 +57,14 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
     // explicitly looking for whitespace or other illegal tag characters.
     for (const char* c = text->data; c != text->data + text->length; ++c) {
       switch (*c) {
-      case '/':
-      case ' ':
-      case '\t':
-      case '\n':
-      case '\f':
-      case '\r':
-        text->length = c - text->data;
-        return;
+        case '/':
+        case ' ':
+        case '\t':
+        case '\n':
+        case '\f':
+        case '\r':
+          text->length = c - text->data;
+          return;
       }
     }
   }
