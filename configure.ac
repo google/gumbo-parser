@@ -11,8 +11,8 @@ AC_CONFIG_FILES([Makefile gumbo.pc])
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC_C99
-AC_DEFUN([GUMBO_CHECK_PROG],[
-AC_ARG_VAR([$1],[[$3]])
+AC_DEFUN([GUMBO_CHECK_PROG],[dnl
+AC_ARG_VAR([$1],[$3])
 AC_CHECK_PROG([$1],[[$2]],[yes],[no])
 AM_CONDITIONAL([$1_FOUND],[[[ "x${$1}" = 'xyes' ]]])])
 GUMBO_CHECK_PROG([PYTHON],[python],[Path to python interpreter])
