@@ -25,7 +25,6 @@
 #include "char_ref.h"
 
 #include <assert.h>
-#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>     // Only for debug assertions at present.
@@ -226,6 +225,7 @@ static bool maybe_add_invalid_named_reference(
   return true;
 }
 
+// clang-format off
 %%{
 machine char_ref;
 
@@ -2464,10 +2464,30 @@ valid_named_ref := |*
 *|;
 }%%
 
-// clang-format off
 %% write data noerror nofinal;
 // clang-format on
 
+static bool gumbo_isalnum(unsigned char ch) {
+#ifdef __GNUC__
+  switch (ch) {
+  case 'a'...'z':
+  case 'A'...'Z':
+  case '0'...'9':
+    return true;
+  default:
+    return false;
+  }
+#else
+  if ('a' <= ch && ch <= 'z')
+    return true;
+  else if ('A' <= ch && ch <= 'Z')
+    return true;
+  else if ('0' <= ch && ch <= '9')
+    return true;
+  else
+    return false;
+#endif
+}
 static bool consume_named_ref(
     struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
     OneOrTwoCodepoints* output) {
@@ -2498,7 +2518,7 @@ static bool consume_named_ref(
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
       return true;
-    } else if (is_in_attribute && (*te == '=' || isalnum(*te))) {
+    } else if (is_in_attribute && (*te == '=' || gumbo_isalnum(*te))) {
       output->first = kGumboNoChar;
       output->second = kGumboNoChar;
       utf8iterator_reset(input);

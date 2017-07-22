@@ -15,7 +15,6 @@
 // Author: jdtang@google.com (Jonathan Tang)
 
 #include <assert.h>
-#include <ctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -3167,6 +3166,18 @@ static bool handle_in_table(GumboParser* parser, GumboToken* token) {
   }
 }
 
+static bool gumbo_isspace(unsigned char ch) {
+  switch (ch) {
+  case ' ':
+  case '\f':
+  case '\r':
+  case '\n':
+  case '\t':
+    return true;
+  default:
+    return false;
+  }
+}
 // http://www.whatwg.org/specs/web-apps/current-work/complete/tokenization.html#parsing-main-intabletext
 static bool handle_in_table_text(GumboParser* parser, GumboToken* token) {
   if (token->type == GUMBO_TOKEN_NULL) {
@@ -3186,7 +3197,7 @@ static bool handle_in_table_text(GumboParser* parser, GumboToken* token) {
     // of any one byte that is not whitespace means we flip the flag, so this
     // loop is still valid.
     for (unsigned int i = 0; i < buffer->length; ++i) {
-      if (!isspace((unsigned char) buffer->data[i]) ||
+      if (!gumbo_isspace((unsigned char) buffer->data[i]) ||
           buffer->data[i] == '\v') {
         state->_foster_parent_insertions = true;
         reconstruct_active_formatting_elements(parser);
