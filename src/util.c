@@ -17,11 +17,11 @@
 #include "util.h"
 
 #include <assert.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 #include "gumbo.h"
 #include "parser.h"

@@ -37,9 +37,21 @@ clean-local:
 
 endif !HAVE_SHARED_LIBGTEST
 
-gentags: src/tag.in
+if PYTHON_FOUND
+if GPERF_FOUND
+@srcdir@/src/tag_gperf.h: src/tag.in gentags.py genperf.py
+	@echo GENPERF $<
 	@python gentags.py $<
-	@gperf -LANSI-C --ignore-case -m200 $< |python genperf.py >src/tag_gperf.h
+	@echo GPERF $<
+	@gperf -LANSI-C --ignore-case -m200 $< |python genperf.py >@srcdir@/src/tag_gperf.h
+endif
+endif
+
+if RAGEL_FOUND
+@srcdir@/src/char_ref.c: src/char_ref.rl
+	@echo RAGEL src/char_ref.rl
+	@cd @srcdir@/src && ragel -F0 char_ref.rl > char_ref.c
+endif
 
 lib_LTLIBRARIES = libgumbo.la
 libgumbo_la_CFLAGS = -Wall
