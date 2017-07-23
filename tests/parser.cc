@@ -1954,6 +1954,32 @@ TEST_F(GumboParserTest, FragmentWithNamespace) {
   EXPECT_EQ(0, GetChildCount(div));
 }
 
+TEST_F(GumboParserTest, OutOfMemory) {
+  GumboOptions options;
+  memcpy((void*)&options, (void*)&kGumboDefaultOptions, sizeof options);
+  struct Count {
+    size_t count = 0;
+    size_t count_max = 0;
+  } count;
+  options.userdata = (void*)&count;
+  options.allocator = [](void *userdata, size_t size) {
+    auto count = (Count*)userdata;
+    if (count->count) {
+      count->count--;
+      return malloc(size);
+    } else {
+      count->count = ++count->count_max;
+      return (void*)nullptr;
+    }
+  };
+  const char buf[] = "<html><head><title>dummy</title></head><body>some text</body></html>";
+  GumboOutput *output;
+  do {
+     output = gumbo_parse_with_options(&options, buf, sizeof buf - 1);
+  } while (output == nullptr);
+  gumbo_destroy_output(&options, output);
+}
+
 TEST_F(GumboParserTest, FragmentWithTwoNodes) {
   ParseFragment("<h1>Hi</h1><br>", GUMBO_TAG_BODY, GUMBO_NAMESPACE_HTML);
 
