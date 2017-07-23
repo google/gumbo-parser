@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <setjmp.h>
 
 #include "attribute.h"
 #include "error.h"
@@ -38,6 +39,12 @@
   { literal, sizeof(literal) - 1 }
 #define TERMINATOR \
   { "", 0 }
+
+#ifndef _WIN32
+#define SETJMP(x) (sigsetjmp(x, 0))
+#else
+#define SETJMP(x) (setjmp(x))
+#endif
 
 typedef char gumbo_tagset[GUMBO_TAG_LAST];
 #define TAG(tag) [GUMBO_TAG_##tag] = (1 << GUMBO_NAMESPACE_HTML)
@@ -398,6 +405,13 @@ typedef struct GumboInternalParserState {
   // flag appropriately.
   bool _closed_body_tag;
   bool _closed_html_tag;
+
+  // Jump buf to jump to on memory exhaustion.
+#ifdef _WIN32
+  jmp_buf oom_buf;
+#else
+  sigjmp_buf oom_buf;
+#endif
 } GumboParserState;
 
 static bool token_has_attribute(const GumboToken* token, const char* name) {
@@ -476,6 +490,7 @@ static void output_init(GumboParser* parser) {
 static void parser_state_init(GumboParser* parser) {
   GumboParserState* parser_state =
       gumbo_parser_allocate(parser, sizeof(GumboParserState));
+  if (NULL == parser_state) return;
   parser_state->_insertion_mode = GUMBO_INSERTION_MODE_INITIAL;
   parser_state->_reprocess_current_token = false;
   parser_state->_frameset_ok = true;
@@ -2350,6 +2365,8 @@ static bool handle_after_head(GumboParser* parser, GumboToken* token) {
 }
 
 static void destroy_node(GumboParser* parser, GumboNode* node) {
+  if (NULL == node)
+    return;
   switch (node->type) {
     case GUMBO_NODE_DOCUMENT: {
       GumboDocument* doc = &node->v.document;
@@ -4075,10 +4092,23 @@ GumboOutput* gumbo_parse(const char* buffer) {
 GumboOutput* gumbo_parse_with_options(
     const GumboOptions* options, const char* buffer, size_t length) {
   GumboParser parser;
+  memset(&parser, 0, sizeof parser);
   parser._options = options;
+
+  if (SETJMP(parser._oom_buf)) {
+    if (parser._parser_state)
+      parser_state_destroy(&parser);
+    if (parser._tokenizer_state)
+      gumbo_tokenizer_state_destroy(&parser);
+    return NULL;
+  }
+
   output_init(&parser);
   gumbo_tokenizer_state_init(&parser, buffer, length);
   parser_state_init(&parser);
+
+  if (NULL == parser._parser_state)
+    return NULL;
 
   if (options->fragment_context != GUMBO_TAG_LAST) {
     fragment_parser_init(
@@ -4179,6 +4209,8 @@ void gumbo_destroy_node(GumboOptions* options, GumboNode* node) {
 }
 
 void gumbo_destroy_output(const GumboOptions* options, GumboOutput* output) {
+  if (NULL == output)
+    return;
   // Need a dummy GumboParser because the allocator comes along with the
   // options object.
   GumboParser parser;

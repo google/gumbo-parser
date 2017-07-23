@@ -17,11 +17,12 @@
 #include "util.h"
 
 #include <assert.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 #include "gumbo.h"
 #include "parser.h"
@@ -32,7 +33,16 @@
 const GumboSourcePosition kGumboEmptySourcePosition = {0, 0, 0};
 
 void* gumbo_parser_allocate(GumboParser* parser, size_t num_bytes) {
-  return parser->_options->allocator(parser->_options->userdata, num_bytes);
+  void *v = parser->_options->allocator(parser->_options->userdata, num_bytes);
+  if (NULL == v) {
+#ifndef _WIN32
+    siglongjmp(parser->_oom_buf, 1);
+#else
+    longjmp(parser->_oom_buf, 1);
+#endif
+  } else {
+    return memset(v, '\0', num_bytes);
+  }
 }
 
 void gumbo_parser_deallocate(GumboParser* parser, void* ptr) {
