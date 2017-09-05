@@ -2616,7 +2616,6 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
         ;
       return success;
     } else {
-      bool result = true;
       const GumboNode* node = state->_form_element;
       assert(!node || node->type == GUMBO_NODE_ELEMENT);
       state->_form_element = NULL;
@@ -2626,19 +2625,10 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
         ignore_token(parser);
         return false;
       }
-      // This differs from implicitly_close_tags because we remove *only* the
-      // <form> element; other nodes are left in scope.
-      generate_implied_end_tags(parser, GUMBO_TAG_LAST);
-      if (get_current_node(parser) != node) {
-        parser_add_parse_error(parser, token);
-        result = false;
-      }
-
-      GumboVector* open_elements = &state->_open_elements;
-      int index = gumbo_vector_index_of(open_elements, node);
-      assert(index >= 0);
-      gumbo_vector_remove_at(parser, index, open_elements);
-      return result;
+      // Retrieve <form> element by using implicitly_close_tags rather than
+      // generate_implied_end_tags(parser, GUMBO_TAG_LAST);
+	  return implicitly_close_tags(
+		  parser, token, GUMBO_NAMESPACE_HTML, GUMBO_TAG_FORM);
     }
   } else if (tag_is(token, kEndTag, GUMBO_TAG_P)) {
     if (!has_an_element_in_button_scope(parser, GUMBO_TAG_P)) {
