@@ -24,12 +24,16 @@ set(HEADERS
     src/error.h
     src/gumbo.h
     src/insertion_mode.h
+    src/parser.h
     src/string_buffer.h
     src/string_piece.h
-    src/parser.h
-    src/token_type.h
+    src/tag_enum.h
+    src/tag_gperf.h
+    src/tag_sizes.h
+    src/tag_strings.h
     src/tokenizer.h
     src/tokenizer_states.h
+    src/token_type.h
     src/utf8.h
     src/util.h
     src/vector.h)
