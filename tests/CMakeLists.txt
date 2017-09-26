@@ -1,4 +1,4 @@
-enable_testing()
+set(GTEST_ROOT "${PROJECT_SOURCE_DIR}/third_party/gtest")
 find_package(GTest REQUIRED)
 
 add_executable(gumbo_parser_unittests
@@ -11,7 +11,9 @@ add_executable(gumbo_parser_unittests
     tokenizer.cc
     utf8.cc
     vector.cc)
+
 target_include_directories(gumbo_parser_unittests
-    PUBLIC "${PROJECT_SOURCE_DIR}/src" ${CMAKE_CURRENT_SOURCE_DIR})
+    PUBLIC "${PROJECT_SOURCE_DIR}/src"
+           ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gumbo_parser_unittests gumbo GTest::GTest GTest::Main)
 add_test(gumbo_parser_unittests gumbo_parser_unittests)

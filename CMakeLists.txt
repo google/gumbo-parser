@@ -42,6 +42,12 @@ add_library(gumbo ${SRC})
 target_include_directories(gumbo PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
 
+if(WIN32)
+    list(APPEND HEADERS visualc/include/strings.h)
+    target_include_directories(gumbo PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/visualc>)
+endif()
+
 # Installation (https://github.com/forexample/package-example)
 
 # Layout. This works for all platforms:
