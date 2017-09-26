@@ -13,8 +13,8 @@ install:
   - sudo pip install html5lib==0.95
 
 script:
-  - cd third_party/gtest && cmake . && make
-  - mkdir build && cmake .. && make && make test
+  - cd third_party/gtest && cmake . && make && cd ../../
+  - mkdir build && cd build && cmake .. && make && make test && cd ..
   - ./autogen.sh && ./configure && make && make check
   - python python/gumbo/gumboc_test.py
   - python python/gumbo/html5lib_adapter_test.py
