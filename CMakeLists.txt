@@ -45,7 +45,7 @@ target_include_directories(gumbo PUBLIC
 if(WIN32)
     list(APPEND HEADERS visualc/include/strings.h)
     target_include_directories(gumbo PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/visualc>)
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/visualc/include>)
 endif()
 
 # Installation (https://github.com/forexample/package-example)
