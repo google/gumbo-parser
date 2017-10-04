@@ -110,7 +110,7 @@ TEST_F(CharRefTest, NumericUtfInvalid) {
 TEST_F(CharRefTest, NumericHuge) {
   errors_are_expected_ = true;
   EXPECT_FALSE(ConsumeCharRef("&#x80000007x"));
-  EXPECT_GE(output_.first, 0);
+  EXPECT_EQ(0xFFFD, output_.first);
   EXPECT_EQ(kGumboNoChar, output_.second);
   EXPECT_EQ('x', utf8iterator_current(&iter_));
 }
