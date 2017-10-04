@@ -138,8 +138,15 @@ static bool consume_numeric_ref(
 
   int codepoint = 0;
   bool status = true;
+  bool poisoned = false;
   do {
-    codepoint = (codepoint * (is_hex ? 16 : 10)) + digit;
+    if (!poisoned) {
+      codepoint = (codepoint * (is_hex ? 16 : 10)) + digit;
+      if (codepoint > 0x10FFFF) {
+        codepoint = 0;
+        poisoned = true;
+      }
+    }
     utf8iterator_next(input);
     digit = parse_digit(utf8iterator_current(input), is_hex);
   } while (digit != -1);
