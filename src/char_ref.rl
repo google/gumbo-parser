@@ -168,7 +168,7 @@ static bool consume_numeric_ref(
   do {
     if (!poisoned) {
       codepoint = (codepoint * (is_hex ? 16 : 10)) + digit;
-      if (codepoint < 0) {
+      if (codepoint > 0x10FFFF) {
         codepoint = 0;
         poisoned = true;
       }
