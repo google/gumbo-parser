@@ -42,7 +42,7 @@ add_library(gumbo ${SRC})
 target_include_directories(gumbo PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
 
-if(WIN32)
+if(MSVC)
     list(APPEND HEADERS visualc/include/strings.h)
     target_include_directories(gumbo PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/visualc/include>)
