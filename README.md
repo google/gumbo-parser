@@ -196,6 +196,8 @@ various contributors in other repositories:
 * Perl: [HTML::Gumbo] by Ruslan Zakirov
 * Julia: [Gumbo.jl] by James Porter
 * C/Libxml: [gumbo-libxml] by Jonathan Tang
+* Chicken scheme: [chicken-gumbo] by Caolan McMahon
+* Gerbil scheme: [gerbil-gumbo] by Daniel Szmulewicz
 
 [gumbo-query]: https://github.com/lazytiger/gumbo-query
 [ruby-gumbo]: https://github.com/nevir/ruby-gumbo
@@ -209,6 +211,8 @@ various contributors in other repositories:
 [GumboPHP]: https://github.com/BipSync/gumbo
 [Gumbo.jl]: https://github.com/porterjamesj/Gumbo.jl
 [gumbo-libxml]: https://github.com/nostrademons/gumbo-libxml
+[chicken-gumbo]: https://github.com/caolan/chicken-gumbo
+[gerbil-gumbo]: https://github.com/danielsz/gerbil-gumbo
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
