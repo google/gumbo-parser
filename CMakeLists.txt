@@ -29,7 +29,6 @@ endif()
 
 # Library target.
 add_library(gumbo
-
         # headers
         src/attribute.h
         src/char_ref.h
@@ -49,7 +48,6 @@ add_library(gumbo
         src/token_type.h
         src/tag_strings.h
         src/tag_sizes.h
-
         # sources
         src/attribute.c
         src/vector.c
@@ -69,5 +67,11 @@ install(TARGETS gumbo
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-file(GLOB HEAD_FILES gumbo.h)
+file(GLOB HEAD_FILES
+        */gumbo.h
+        */tag_enum.h
+        gumbo.h
+        tag_enum.h)
+
 install(FILES ${HEAD_FILES} DESTINATION include/gumbo)
+file(INSTALL ${HEAD_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gumbo)
