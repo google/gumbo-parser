@@ -28,26 +28,26 @@ if(CMAKE_COMPILER_IS_GNUCC OR
 endif()
 
 # Library target.
-add_library(gumbo
+add_library(gumbo STATIC
         # headers
-        src/attribute.h
-        src/char_ref.h
-        src/error.h
-        src/gumbo.h
-        src/insertion_mode.h
-        src/parser.h
-        src/string_buffer.h
-        src/string_piece.h
-        src/tag_enum.h
-        src/tag_gperf.h
-        src/vector.h
-        src/util.h
-        src/utf8.h
-        src/tokenizer_states.h
-        src/tokenizer.h
-        src/token_type.h
-        src/tag_strings.h
-        src/tag_sizes.h
+        include/gumbo/attribute.h
+        include/gumbo/char_ref.h
+        include/gumbo/error.h
+        include/gumbo/gumbo.h
+        include/gumbo/insertion_mode.h
+        include/gumbo/parser.h
+        include/gumbo/string_buffer.h
+        include/gumbo/string_piece.h
+        include/gumbo/tag_enum.h
+        include/gumbo/tag_gperf.h
+        include/gumbo/vector.h
+        include/gumbo/util.h
+        include/gumbo/utf8.h
+        include/gumbo/tokenizer_states.h
+        include/gumbo/tokenizer.h
+        include/gumbo/token_type.h
+        include/gumbo/tag_strings.h
+        include/gumbo/tag_sizes.h
         # sources
         src/attribute.c
         src/vector.c
@@ -63,15 +63,24 @@ add_library(gumbo
         src/char_ref.rl
         )
 
+target_include_directories(gumbo
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+        #visualc/include
+        )
+
 install(TARGETS gumbo
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+        ARCHIVE DESTINATION lib
+        )
 
 file(GLOB HEAD_FILES
-        */gumbo.h
-        */tag_enum.h
-        gumbo.h
-        tag_enum.h)
+        include/gumbo/gumbo.h
+        include/gumbo/tag_enum.h
+        )
 
-install(FILES ${HEAD_FILES} DESTINATION include/gumbo)
-file(INSTALL ${HEAD_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gumbo)
+install(FILES
+        ${HEAD_FILES} DESTINATION
+        include/gumbo)
+

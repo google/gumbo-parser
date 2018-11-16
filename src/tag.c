@@ -14,20 +14,20 @@
 //
 // Author: jdtang@google.com (Jonathan Tang)
 
-#include "gumbo.h"
+#include "gumbo/gumbo.h"
 
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
 
 const char* kGumboTagNames[] = {
-#include "tag_strings.h"
+#include "gumbo/tag_strings.h"
     "",  // TAG_UNKNOWN
     "",  // TAG_LAST
 };
 
 static const unsigned char kGumboTagSizes[] = {
-#include "tag_sizes.h"
+#include "../include/gumbo/tag_sizes.h"
     0,  // TAG_UNKNOWN
     0,  // TAG_LAST
 };
@@ -74,7 +74,7 @@ static int case_memcmp(const char* s1, const char* s2, unsigned int n) {
   return 0;
 }
 
-#include "tag_gperf.h"
+#include "../include/gumbo/tag_gperf.h"
 #define TAG_MAP_SIZE (sizeof(kGumboTagMap) / sizeof(kGumboTagMap[0]))
 
 GumboTag gumbo_tagn_enum(const char* tagname, unsigned int length) {

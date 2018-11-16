@@ -21,16 +21,16 @@
 #include <string.h>
 #include <strings.h>
 
-#include "attribute.h"
-#include "error.h"
-#include "gumbo.h"
-#include "insertion_mode.h"
-#include "parser.h"
-#include "tokenizer.h"
-#include "tokenizer_states.h"
-#include "utf8.h"
-#include "util.h"
-#include "vector.h"
+#include "gumbo/attribute.h"
+#include "gumbo/error.h"
+#include "gumbo/gumbo.h"
+#include "gumbo/insertion_mode.h"
+#include "gumbo/parser.h"
+#include "gumbo/tokenizer.h"
+#include "gumbo/tokenizer_states.h"
+#include "gumbo/utf8.h"
+#include "gumbo/util.h"
+#include "gumbo/vector.h"
 
 #define AVOID_UNUSED_VARIABLE_WARNING(i) (void)(i)
 

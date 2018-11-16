@@ -14,7 +14,7 @@
 //
 // Author: jdtang@google.com (Jonathan Tang)
 
-#include "util.h"
+#include "../include/gumbo/util.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -23,8 +23,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "gumbo.h"
-#include "parser.h"
+#include "gumbo/gumbo.h"
+#include "gumbo/parser.h"
 
 // TODO(jdtang): This should be elsewhere, but there's no .c file for
 // SourcePositions and yet the constant needs some linkage, so this is as good

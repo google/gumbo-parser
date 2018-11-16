@@ -22,7 +22,7 @@
 // The generated source is also checked into source control so that most people
 // hacking on the parser do not need to install ragel.
 
-#include "char_ref.h"
+#include "../include/gumbo/char_ref.h"
 
 #include <assert.h>
 #include <ctype.h>
@@ -30,10 +30,10 @@
 #include <stdio.h>
 #include <string.h>     // Only for debug assertions at present.
 
-#include "error.h"
-#include "string_piece.h"
-#include "utf8.h"
-#include "util.h"
+#include <gumbo/error.h>
+#include "gumbo/string_piece.h"
+#include "gumbo/utf8.h"
+#include "gumbo/util.h"
 
 struct GumboInternalParser;
 
