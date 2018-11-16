@@ -69,6 +69,12 @@ target_include_directories(gumbo
         $<INSTALL_INTERFACE:include>
         #visualc/include
         )
+if(WIN32)
+  target_include_directories(gumbo
+          PUBLIC
+          visualc/include
+          )
+endif()
 
 install(TARGETS gumbo
         LIBRARY DESTINATION lib
@@ -82,5 +88,6 @@ file(GLOB HEAD_FILES
 
 install(FILES
         ${HEAD_FILES} DESTINATION
-        include/gumbo)
+        ${CMAKE_INSTALL_PREFIX}/include/gumbo
+        )
 
