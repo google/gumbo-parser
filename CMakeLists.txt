@@ -78,4 +78,7 @@ install(
         INCLUDES DESTINATION "${CMAKE_INSTALL_PREFIX}/include/gumbo"
         )
 
-add_subdirectory(tests)
+option(BUILD_GUMBO_TESTS "Builds gumbo tests" OFF)
+if(BUILD_GUMBO_TESTS)
+        add_subdirectory(tests)
+endif()
