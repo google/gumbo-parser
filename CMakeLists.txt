@@ -13,7 +13,7 @@ file(GLOB EXPORT_HEADERS_FILES
         )
 		
 if(MSVC)
-    list(APPEND HEADERS_EXPORT_FILES visualc/include/strings.h)
+    list(APPEND EXPORT_HEADERS_FILES visualc/include/strings.h)
 endif()
 
 file(INSTALL ${EXPORT_HEADERS_FILES} DESTINATION ${CMAKE_BINARY_DIR}/include/gumbo)		
@@ -31,7 +31,7 @@ target_include_directories(gumbo
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
-        # For support include different way. (gq/Document.h or Document.h)
+        # For support include different way. (gq/gumbo.h or gumbo.h)
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/gumbo>
         $<INSTALL_INTERFACE:include/gumbo>
         )
