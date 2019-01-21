@@ -31,14 +31,13 @@ target_include_directories(gumbo
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
-        # For support include different way. (gq/gumbo.h or gumbo.h)
+        # For support include different way. (gumbo/gumbo.h or gumbo.h)
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/gumbo>
         $<INSTALL_INTERFACE:include/gumbo>
         )
 
-install(FILES
-        ${EXPORT_HEADERS_FILES} DESTINATION
-        ${CMAKE_INSTALL_PREFIX}/include/gumbo
+install(FILES ${EXPORT_HEADERS_FILES} 
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gumbo
         )
 
 install(
