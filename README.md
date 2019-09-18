@@ -194,6 +194,7 @@ various contributors in other repositories:
 * C#: [GumboBindings] by Vladimir Zotov
 * PHP: [GumboPHP] by Paul Preece
 * Perl: [HTML::Gumbo] by Ruslan Zakirov
+* Raku/Perl 6: [perl6-Gumbo] by Sylvain Colinet
 * Julia: [Gumbo.jl] by James Porter
 * C/Libxml: [gumbo-libxml] by Jonathan Tang
 
@@ -209,6 +210,7 @@ various contributors in other repositories:
 [GumboPHP]: https://github.com/BipSync/gumbo
 [Gumbo.jl]: https://github.com/porterjamesj/Gumbo.jl
 [gumbo-libxml]: https://github.com/nostrademons/gumbo-libxml
+[perl6-Gumbo]: https://github.com/Skarsnik/perl6-gumbo
 
 [HTML5 parsing algorithm]: http://www.whatwg.org/specs/web-apps/current-work/multipage/#auto-toc-12
 [HTML5 spec]: http://www.whatwg.org/specs/web-apps/current-work/multipage/
