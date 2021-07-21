@@ -105,7 +105,9 @@ gumbo_test_DEPENDENCIES += check-local
 gumbo_test_LDADD += gtest/lib/libgtest.la gtest/lib/libgtest_main.la
 endif
 
+if HAVE_EXAMPLES
 noinst_PROGRAMS = clean_text find_links get_title positions_of_class benchmark serialize prettyprint
+endif
 LDADD = libgumbo.la
 AM_CPPFLAGS = -I"$(srcdir)/src"
 
