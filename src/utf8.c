@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>
-#include <strings.h>  // For strncasecmp.
+#include "string_util.h"  // For strncasecmp.
 
 #include "error.h"
 #include "gumbo.h"
