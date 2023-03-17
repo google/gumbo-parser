@@ -9,8 +9,8 @@ AC_CONFIG_SRCDIR([src/parser.c])
 AC_CONFIG_FILES([Makefile gumbo.pc])
 
 # Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC_C99
+AC_PROG_CXX
 
 # Checks for libraries.
 
@@ -26,6 +26,10 @@ AC_CHECK_LIB([gtest_main],
              [main],
              AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [true]),
              AM_CONDITIONAL(HAVE_SHARED_LIBGTEST, [false]))
+
+AC_ARG_ENABLE([examples],
+              AS_HELP_STRING([--disable-examples], [Disable examples]))
+AM_CONDITIONAL([HAVE_EXAMPLES], [test "x$enable_examples" != "xno"])
 
 # Init Automake & libtool
 AM_INIT_AUTOMAKE([foreign subdir-objects])
