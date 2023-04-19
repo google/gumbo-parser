@@ -540,6 +540,18 @@ struct GumboInternalNode {
 };
 
 /**
+ * The type for a tree traversal callback.
+ */
+typedef size_t (*gumbo_tree_iter_callback)(void* userdata, GumboNode* node);
+
+/**
+ * Call `cb` for each child of `node` and for `node` itself, passing it
+ * the node and `userdata` as arguments.
+ */
+size_t gumbo_tree_traverse(
+    GumboNode* node, void* userdata, gumbo_tree_iter_callback cb);
+
+/**
  * The type for an allocator function.  Takes the 'userdata' member of the
  * GumboParser struct as its first argument.  Semantics should be the same as
  * malloc, i.e. return a block of size_t bytes on success or NULL on failure.
