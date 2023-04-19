@@ -258,6 +258,8 @@ void gumbo_print_caret_diagnostic(
 }
 
 void gumbo_error_destroy(GumboParser* parser, GumboError* error) {
+  if (NULL == error)
+    return;
   if (error->type == GUMBO_ERR_PARSER ||
       error->type == GUMBO_ERR_UNACKNOWLEDGED_SELF_CLOSING_TAG) {
     gumbo_vector_destroy(parser, &error->v.parser.tag_stack);
