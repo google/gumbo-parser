@@ -9,9 +9,9 @@ os:
   - osx
 
 install:
-  - wget 'https://googletest.googlecode.com/files/gtest-1.7.0.zip'
-  - unzip gtest-1.7.0.zip
-  - ln -s gtest-1.7.0 gtest
+  - git clone --branch release-1.7.0 --depth 1 https://github.com/google/googletest.git gtest
+  - touch gtest/build-aux/config.h.in
+  - cd gtest && ../autogen.sh && cd ..
   - sudo pip install BeautifulSoup
   - sudo pip install html5lib==0.95
 
