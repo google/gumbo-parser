@@ -9,7 +9,16 @@ os:
   - osx
 
 install:
-  - wget 'https://googletest.googlecode.com/files/gtest-1.7.0.zip'
+
+  # Set up gtest
+  - apt-get install libgtest-dev  # Debian/Ubuntu
+  - sudo apt-get install cmake
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt
+  - sudo make
+  - sudo cp *.a /usr/lib
+
+  # This project
   - unzip gtest-1.7.0.zip
   - ln -s gtest-1.7.0 gtest
   - sudo pip install BeautifulSoup
