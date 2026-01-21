@@ -30,7 +30,7 @@
 #include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <string.h>  // Only for debug assertions at present.
+#include <string.h>     // Only for debug assertions at present.
 
 #include "error.h"
 #include "string_piece.h"
@@ -49,18 +49,44 @@ typedef struct {
   int to_char;
 } CharReplacement;
 
-static const CharReplacement kCharReplacements[] = {{0x00, 0xfffd},
-    {0x0d, 0x000d}, {0x80, 0x20ac}, {0x81, 0x0081}, {0x82, 0x201A},
-    {0x83, 0x0192}, {0x84, 0x201E}, {0x85, 0x2026}, {0x86, 0x2020},
-    {0x87, 0x2021}, {0x88, 0x02C6}, {0x89, 0x2030}, {0x8A, 0x0160},
-    {0x8B, 0x2039}, {0x8C, 0x0152}, {0x8D, 0x008D}, {0x8E, 0x017D},
-    {0x8F, 0x008F}, {0x90, 0x0090}, {0x91, 0x2018}, {0x92, 0x2019},
-    {0x93, 0x201C}, {0x94, 0x201D}, {0x95, 0x2022}, {0x96, 0x2013},
-    {0x97, 0x2014}, {0x98, 0x02DC}, {0x99, 0x2122}, {0x9A, 0x0161},
-    {0x9B, 0x203A}, {0x9C, 0x0153}, {0x9D, 0x009D}, {0x9E, 0x017E},
-    {0x9F, 0x0178},
-    // Terminator.
-    {-1, -1}};
+static const CharReplacement kCharReplacements[] = {
+  { 0x00, 0xfffd },
+  { 0x0d, 0x000d },
+  { 0x80, 0x20ac },
+  { 0x81, 0x0081 },
+  { 0x82, 0x201A },
+  { 0x83, 0x0192 },
+  { 0x84, 0x201E },
+  { 0x85, 0x2026 },
+  { 0x86, 0x2020 },
+  { 0x87, 0x2021 },
+  { 0x88, 0x02C6 },
+  { 0x89, 0x2030 },
+  { 0x8A, 0x0160 },
+  { 0x8B, 0x2039 },
+  { 0x8C, 0x0152 },
+  { 0x8D, 0x008D },
+  { 0x8E, 0x017D },
+  { 0x8F, 0x008F },
+  { 0x90, 0x0090 },
+  { 0x91, 0x2018 },
+  { 0x92, 0x2019 },
+  { 0x93, 0x201C },
+  { 0x94, 0x201D },
+  { 0x95, 0x2022 },
+  { 0x96, 0x2013 },
+  { 0x97, 0x2014 },
+  { 0x98, 0x02DC },
+  { 0x99, 0x2122 },
+  { 0x9A, 0x0161 },
+  { 0x9B, 0x203A },
+  { 0x9C, 0x0153 },
+  { 0x9D, 0x009D },
+  { 0x9E, 0x017E },
+  { 0x9F, 0x0178 },
+  // Terminator.
+  { -1, -1 }
+};
 
 static int parse_digit(int c, bool allow_hex) {
   if (c >= '0' && c <= '9') {
@@ -85,8 +111,9 @@ static void add_no_digit_error(
   error->type = GUMBO_ERR_NUMERIC_CHAR_REF_NO_DIGITS;
 }
 
-static void add_codepoint_error(struct GumboInternalParser* parser,
-    Utf8Iterator* input, GumboErrorType type, int codepoint) {
+static void add_codepoint_error(
+    struct GumboInternalParser* parser, Utf8Iterator* input,
+    GumboErrorType type, int codepoint) {
   GumboError* error = gumbo_add_error(parser);
   if (!error) {
     return;
@@ -96,8 +123,9 @@ static void add_codepoint_error(struct GumboInternalParser* parser,
   error->v.codepoint = codepoint;
 }
 
-static void add_named_reference_error(struct GumboInternalParser* parser,
-    Utf8Iterator* input, GumboErrorType type, GumboStringPiece text) {
+static void add_named_reference_error(
+    struct GumboInternalParser* parser, Utf8Iterator* input,
+    GumboErrorType type, GumboStringPiece text) {
   GumboError* error = gumbo_add_error(parser);
   if (!error) {
     return;
@@ -183,7 +211,8 @@ static bool maybe_add_invalid_named_reference(
   // worry about consuming characters.
   const char* start = utf8iterator_get_char_pointer(input);
   int c = utf8iterator_current(input);
-  while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+  while ((c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
          (c >= '0' && c <= '9')) {
     utf8iterator_next(input);
     c = utf8iterator_current(input);
@@ -199,7 +228,9 @@ static bool maybe_add_invalid_named_reference(
   return true;
 }
 
+
 #line 2465 "char_ref.rl"
+
 
 // clang-format off
 
@@ -13937,8 +13968,11 @@ static const int char_ref_en_valid_named_ref = 7623;
 #line 2469 "char_ref.rl"
 // clang-format on
 
-static bool consume_named_ref(struct GumboInternalParser* parser,
-    Utf8Iterator* input, bool is_in_attribute, OneOrTwoCodepoints* output) {
+#define AVOID_UNUSED_VARIABLE_WARNING(i) (void)(i)
+
+static bool consume_named_ref(
+    struct GumboInternalParser* parser, Utf8Iterator* input, bool is_in_attribute,
+    OneOrTwoCodepoints* output) {
   assert(output->first == kGumboNoChar);
   const char* p = utf8iterator_get_char_pointer(input);
   const char* pe = utf8iterator_get_end_pointer(input);
@@ -13947,9 +13981,9 @@ static bool consume_named_ref(struct GumboInternalParser* parser,
   const char *ts, *start;
   int cs, act;
 
-// clang-format off
+  // clang-format off
   
-#line 13985 "char_ref.c"
+#line 13987 "char_ref.c"
 	{
 	cs = char_ref_start;
 	ts = 0;
@@ -13957,7 +13991,7 @@ static bool consume_named_ref(struct GumboInternalParser* parser,
 	act = 0;
 	}
 
-#line 2484 "char_ref.rl"
+#line 2486 "char_ref.rl"
   // Avoid unused variable warnings.
   (void) act;
   (void) ts;
@@ -13965,7 +13999,7 @@ static bool consume_named_ref(struct GumboInternalParser* parser,
 
   start = p;
   
-#line 14001 "char_ref.c"
+#line 14003 "char_ref.c"
 	{
 	int _slen;
 	int _trans;
@@ -13987,7 +14021,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 14023 "char_ref.c"
+#line 14025 "char_ref.c"
 		}
 	}
 
@@ -22970,7 +23004,7 @@ _eof_trans:
 #line 2273 "char_ref.rl"
 	{{p = ((te))-1;}{ output->first = 0xd7; {p++; goto _out; } }}
 	break;
-#line 23006 "char_ref.c"
+#line 23008 "char_ref.c"
 		}
 	}
 
@@ -22983,7 +23017,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 23019 "char_ref.c"
+#line 23021 "char_ref.c"
 		}
 	}
 
@@ -23003,7 +23037,7 @@ _again:
 	_out: {}
 	}
 
-#line 2491 "char_ref.rl"
+#line 2493 "char_ref.rl"
   // clang-format on
 
   if (cs >= 7623) {
@@ -23013,6 +23047,7 @@ _again:
     if (last_char == ';') {
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
+      AVOID_UNUSED_VARIABLE_WARNING(matched); // If asserts turned off...
       return true;
     } else if (is_in_attribute && (*te == '=' || isalnum(*te))) {
       output->first = kGumboNoChar;
@@ -23027,6 +23062,7 @@ _again:
           parser, input, GUMBO_ERR_NAMED_CHAR_REF_WITHOUT_SEMICOLON, bad_ref);
       bool matched = utf8iterator_maybe_consume_match(input, start, len, true);
       assert(matched);
+      AVOID_UNUSED_VARIABLE_WARNING(matched); // If asserts turned off...
       return false;
     }
   } else {
@@ -23038,9 +23074,10 @@ _again:
   }
 }
 
-bool consume_char_ref(struct GumboInternalParser* parser,
-    struct GumboInternalUtf8Iterator* input, int additional_allowed_char,
-    bool is_in_attribute, OneOrTwoCodepoints* output) {
+bool consume_char_ref(
+    struct GumboInternalParser* parser, struct GumboInternalUtf8Iterator* input,
+    int additional_allowed_char, bool is_in_attribute,
+    OneOrTwoCodepoints* output) {
   utf8iterator_mark(input);
   utf8iterator_next(input);
   int c = utf8iterator_current(input);
