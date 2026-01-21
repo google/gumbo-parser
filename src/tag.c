@@ -17,7 +17,6 @@
 #include "gumbo.h"
 
 #include <assert.h>
-#include <ctype.h>
 #include <string.h>
 
 const char* kGumboTagNames[] = {
@@ -57,18 +56,27 @@ void gumbo_tag_from_original_text(GumboStringPiece* text) {
     // strnchr is apparently not a standard C library function, so I loop
     // explicitly looking for whitespace or other illegal tag characters.
     for (const char* c = text->data; c != text->data + text->length; ++c) {
-      if (isspace(*c) || *c == '/') {
-        text->length = c - text->data;
-        break;
+      switch (*c) {
+        case '/':
+        case ' ':
+        case '\t':
+        case '\n':
+        case '\f':
+        case '\r':
+          text->length = c - text->data;
+          return;
       }
     }
   }
 }
 
+static unsigned char ascii_tolower(unsigned char ch) {
+  return 'A' <= ch && ch <= 'Z' ? ch + 32 : ch;
+}
 static int case_memcmp(const char* s1, const char* s2, unsigned int n) {
   while (n--) {
-    unsigned char c1 = tolower(*s1++);
-    unsigned char c2 = tolower(*s2++);
+    unsigned char c1 = ascii_tolower(*s1++);
+    unsigned char c2 = ascii_tolower(*s2++);
     if (c1 != c2) return (int) c1 - (int) c2;
   }
   return 0;
