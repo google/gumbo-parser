@@ -93,7 +93,8 @@ gumbo_test_SOURCES = \
 				tests/tokenizer.cc \
 				tests/test_utils.cc \
 				tests/utf8.cc \
-				tests/vector.cc
+				tests/vector.cc \
+				tests/error.cc
 gumbo_test_DEPENDENCIES = libgumbo.la
 gumbo_test_LDADD = libgumbo.la
 
