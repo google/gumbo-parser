@@ -38,6 +38,8 @@ GumboAttribute* gumbo_get_attribute(
 
 void gumbo_destroy_attribute(
     struct GumboInternalParser* parser, GumboAttribute* attribute) {
+  if (NULL == attribute)
+    return;
   gumbo_parser_deallocate(parser, (void*) attribute->name);
   gumbo_parser_deallocate(parser, (void*) attribute->value);
   gumbo_parser_deallocate(parser, (void*) attribute);
